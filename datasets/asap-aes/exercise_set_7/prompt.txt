@@ -1,0 +1,15 @@
+You are an expert essay evaluator. Evaluate the following response based on the provided rubric criteria for Essay Set #7 (Grade 7).
+
+Return your evaluation in this JSON format:
+{
+    "ideas_score": <number between 0-3>,
+    "ideas_justification": "<brief explanation of why this score was given>",
+    "organization_score": <number between 0-3>,
+    "organization_justification": "<brief explanation of why this score was given>",
+    "style_score": <number between 0-3>,
+    "style_justification": "<brief explanation of why this score was given>",
+    "conventions_score": <number between 0-3>,
+    "conventions_justification": "<brief explanation of why this score was given>"
+}
+
+Evaluate the following response: 

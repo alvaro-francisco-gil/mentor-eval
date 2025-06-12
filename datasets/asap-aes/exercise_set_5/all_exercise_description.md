@@ -1,22 +1,16 @@
-# Essay Set #5
+# Exercise Set 5
 
-## Essay Type
-Source Dependent Responses
 
-## Grade Level
-8
+## Characteristics
 
-## Rubric Range
-0-4
+Essay Type: Source Dependent Responses
+Grade Level: 8
+Rubric Range: 0-4
 
-## Prompt
+## Complementary Exercise Texts
 
-Describe the mood created by the author in the memoir. Support your answer with relevant and specific information from the memoir.
-
-## Source Essay
-
-Narciso Rodriguez
-from Home: The Blueprints of Our Lives
+**The Blueprints of Our Lives**
+Narciso Rodriguez, from Home: 
 
 My parents, originally from Cuba, arrived in the United States in 1956. After living for a year in a furnished one-room apartment, twenty-one-year-old Rawedia Maria and twenty-seven-year-old Narciso Rodriguez, Sr., could afford to move into a modest, three-room apartment I would soon call home.
 
@@ -37,23 +31,31 @@ Hometown: Newark, New Jersey
 
 "Narciso Rodriguez" by Narciso Rodriguez, from Home: The Blueprints of Our Lives. Copyright © 2006 by John Edwards.
 
+## Question
+
+Describe the mood created by the author in the memoir. Support your answer with relevant and specific information from the memoir.
+
 ## Rubric Guidelines
 
-### Score Point 4
-The response is a clear, complete, and accurate description of the mood created by the author. The response includes relevant and specific information from the memoir.
+**Score Point 4**: The response is a clear, complete, and accurate description of the mood created by the author. The response includes relevant and specific information from the memoir.
 
-### Score Point 3
-The response is a mostly clear, complete, and accurate description of the mood created by the author. The response includes relevant but often general information from the memoir.
+**Score Point 3**: The response is a mostly clear, complete, and accurate description of the mood created by the author. The response includes relevant but often general information from the memoir.
 
-### Score Point 2
-The response is a partial description of the mood created by the author. The response includes limited information from the memoir and may include misinterpretations.
+**Score Point 2**: The response is a partial description of the mood created by the author. The response includes limited information from the memoir and may include misinterpretations.
 
-### Score Point 1
-The response is a minimal description of the mood created by the author. The response includes little or no information from the memoir and may include misinterpretations.
-
+**Score Point 1**: The response is a minimal description of the mood created by the author. The response includes little or no information from the memoir and may include misinterpretations.
 OR
-
 The response relates minimally to the task.
 
-### Score Point 0
-The response is incorrect or irrelevant or contains insufficient information to demonstrate comprehension.
+**Score Point 0**: The response is incorrect or irrelevant or contains insufficient information to demonstrate comprehension.
+
+## Default Prompt
+You are an expert essay evaluator. Evaluate the following response based on the provided rubric criteria for Essay Set #5 (Grade 8).
+
+Return your evaluation in this JSON format:
+{
+    "score": <number between 0-4>,
+    "justification": "<brief explanation of why this score was given>"
+}
+
+Evaluate the following response:

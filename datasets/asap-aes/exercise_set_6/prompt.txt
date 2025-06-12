@@ -1,0 +1,9 @@
+You are an expert essay evaluator. Evaluate the following response based on the provided rubric criteria for Essay Set #6 (Grade 10).
+
+Return your evaluation in this JSON format:
+{
+    "score": <number between 0-4>,
+    "justification": "<brief explanation of why this score was given>"
+}
+
+Evaluate the following response: 

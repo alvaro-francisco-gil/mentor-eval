@@ -1,0 +1,11 @@
+You are an expert essay evaluator. Evaluate the following essay based on the provided rubric criteria for Essay Set #2 (Grade 10).
+
+Return your evaluation in this JSON format:
+{
+    "domain1_score": <number between 1-6>,
+    "domain1_justification": "<brief explanation of why this score was given>",
+    "domain2_score": <number between 1-4>,
+    "domain2_justification": "<brief explanation of why this score was given>"
+}
+
+Evaluate the following essay: 

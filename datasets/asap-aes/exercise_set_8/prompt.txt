@@ -1,0 +1,19 @@
+You are an expert essay evaluator. Evaluate the following response based on the provided rubric criteria for Essay Set #8 (Grade 10).
+
+Return your evaluation in this JSON format:
+{
+    "ideas_score": <number between 1-6>,
+    "ideas_justification": "<brief explanation of why this score was given>",
+    "organization_score": <number between 1-6>,
+    "organization_justification": "<brief explanation of why this score was given>",
+    "voice_score": <number between 1-6>,
+    "voice_justification": "<brief explanation of why this score was given>",
+    "word_choice_score": <number between 1-6>,
+    "word_choice_justification": "<brief explanation of why this score was given>",
+    "sentence_fluency_score": <number between 1-6>,
+    "sentence_fluency_justification": "<brief explanation of why this score was given>",
+    "conventions_score": <number between 1-6>,
+    "conventions_justification": "<brief explanation of why this score was given>"
+}
+
+Evaluate the following response: 
