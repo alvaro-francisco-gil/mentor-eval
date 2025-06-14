@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Optional, List
 from pathlib import Path
 from dataclasses import dataclass
+from paths import ASAP_DATASET_DIR, ASAP2_DATASET_DIR
 
 @dataclass
 class ExerciseComponents:
@@ -84,14 +85,73 @@ class ASAPMarkdownConverter(MarkdownConverter):
         
         return ExerciseComponents(sections=sections)
 
-if __name__ == "__main__":
-    # Run directly for all exercise sets
-    base_dir = Path(__file__).parent.parent.parent / "datasets" / "asap-aes"
+class ASAP2MarkdownConverter(MarkdownConverter):
+    """Concrete implementation for ASAP2 dataset with common prompt and rubric files."""
     
-    # Process all exercise sets from 1 to 8
+    def __init__(self, output_dir: Path, common_dir: Path):
+        super().__init__(output_dir)
+        self.common_dir = common_dir
+    
+    def get_available_components(self, source_dir: Path) -> List[str]:
+        # For this specific structure, we just return ['1'] since there's only one question
+        return ['1']
+    
+    def load_components(self, source_dir: Path, component_id: str) -> ExerciseComponents:
+        def load_file(file_path: Path) -> str:
+            if file_path.exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    return f.read().strip()
+            return ""
+        
+        # Load exercise-specific components
+        question = load_file(source_dir / "question.txt")
+        complementary_texts = load_file(source_dir / "complementary_exercise_texts.txt")
+        
+        # Load common components from the root directory
+        root_dir = source_dir.parent
+        prompt = load_file(root_dir / "prompt.txt")
+        rubric = load_file(root_dir / "rubric.txt")
+        
+        # Create sections in the desired order
+        sections = []
+        if complementary_texts:
+            sections.append(complementary_texts)
+        if question:
+            sections.append(question)
+        if rubric:
+            sections.append(rubric)
+        if prompt:
+            sections.append("## Default Prompt\n" + prompt)
+        
+        return ExerciseComponents(sections=sections)
+
+def process_asap_aes_dataset(base_dir: Path) -> None:
+    """Process the ASAP-AES dataset."""
+    asap_dir = ASAP_DATASET_DIR
     for set_num in range(1, 9):
-        set_dir = base_dir / f"exercise_set_{set_num}"
-        print(f"\nProcessing exercise set {set_num}...")
+        set_dir = asap_dir / f"exercise_set_{set_num}"
+        print(f"\nProcessing ASAP-AES exercise set {set_num}...")
         converter = ASAPMarkdownConverter(output_dir=set_dir)
         converter.process_all_components(set_dir)
-        print(f"Markdown file saved as: {set_dir / 'all_exercise_description.md'}") 
+        print(f"Markdown file saved as: {set_dir / 'all_exercise_description.md'}")
+
+def process_asap2_dataset(base_dir: Path) -> None:
+    """Process the ASAP2 dataset."""
+    asap2_dir = ASAP2_DATASET_DIR
+    
+    # Get all exercise folders
+    exercise_folders = [f for f in asap2_dir.iterdir() if f.is_dir()]
+    
+    for exercise_dir in exercise_folders:
+        print(f"\nProcessing ASAP2 exercise: {exercise_dir.name}...")
+        converter = ASAP2MarkdownConverter(output_dir=exercise_dir, common_dir=asap2_dir)
+        converter.process_all_components(exercise_dir)
+        print(f"Markdown file saved as: {exercise_dir / 'all_exercise_description.md'}")
+
+if __name__ == "__main__":
+    # Process both datasets
+    print("Processing ASAP-AES dataset...")
+    process_asap_aes_dataset(None)
+    
+    print("\nProcessing ASAP2 dataset...")
+    process_asap2_dataset(None) 
