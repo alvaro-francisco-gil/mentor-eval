@@ -83,10 +83,13 @@ class OpenAIClient(Generic[T]):
                 return self._cache[similar_cache_key]
 
         try:
+            # Add explicit instruction about JSON format
+            enhanced_prompt = f"{prompt}\n\nPlease ensure your response is a complete, valid JSON object with both opening and closing braces."
+            
             payload = {
                 "model": self.model,
                 "messages": [
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": enhanced_prompt}
                 ],
                 "temperature": self.temperature
             }
@@ -118,6 +121,29 @@ class OpenAIClient(Generic[T]):
             if content.endswith("```"):
                 content = content[:-3]  # Remove ```
             content = content.strip()
+            
+            # Check if JSON is complete
+            if not content.endswith("}"):
+                print("Warning: Incomplete JSON detected, retrying with more explicit instructions")
+                # Retry with more explicit instructions
+                payload["messages"][0]["content"] = f"{prompt}\n\nIMPORTANT: Your response must be a complete, valid JSON object. Make sure to include the closing brace '}}' at the end of your response."
+                response = requests.post(
+                    self.base_url,
+                    headers=self.headers,
+                    json=payload,
+                    timeout=30
+                )
+                response_data = response.json()
+                content = response_data["choices"][0]["message"]["content"]
+                # Clean the content again
+                content = content.strip()
+                if content.startswith("```json"):
+                    content = content[7:]
+                if content.startswith("```"):
+                    content = content[3:]
+                if content.endswith("```"):
+                    content = content[:-3]
+                content = content.strip()
             
             try:
                 result = self.parser(content)

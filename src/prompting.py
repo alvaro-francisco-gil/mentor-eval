@@ -165,12 +165,17 @@ class ASAPLoader(DatasetLoader):
 class ASAP2Loader(DatasetLoader):
     """Concrete implementation for loading data from the ASAP2 dataset."""
     
-    def __init__(self):
-        """Initialize the ASAP2 loader using internal path constants."""
+    def __init__(self, custom_prompt: Optional[str] = None):
+        """Initialize the ASAP2 loader using internal path constants.
+        
+        Args:
+            custom_prompt: Optional custom prompt text to use instead of the default prompt.txt
+        """
         super().__init__()
         self.dataset_path = ASAP2_DATASET_DIR
         self.responses_df = pd.read_csv(ASAP2_RESPONSES_FILE)
         self.exercise_set_path = ASAP2_DATASET_DIR
+        self.custom_prompt = custom_prompt
     
     def get_responses(self) -> List[str]:
         """Get all student responses from the ASAP2 dataset.
@@ -223,8 +228,8 @@ class ASAP2Loader(DatasetLoader):
             question = load_and_clean(exercise_dir / 'question.txt')
             complementary_texts = load_and_clean(exercise_dir / 'complementary_exercise_texts.txt') if include_exercise_texts else None
             
-            # Load common components from root directory
-            prompt = load_and_clean(base_path / 'prompt.txt')
+            # Use custom prompt if provided, otherwise load from file
+            prompt = self.custom_prompt if self.custom_prompt is not None else load_and_clean(base_path / 'prompt.txt')
             rubric = load_and_clean(base_path / 'rubric.txt') if include_rubric else None
             
             # Get student answers for this exercise
