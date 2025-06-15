@@ -3,21 +3,41 @@
 
 ## Complementary Exercise Texts
 
-Making Mona Lisa Smile (Reconstructed)
 
-Can a machine really tell if you’re happy or sad—just by looking at your face? Thanks to a new computer system, the answer might surprise you.
+**Making Mona Lisa Smile** (Reconstructed by GPT from student commentary and direct quotes)
 
-Using a powerful scientific tool called the Facial Action Coding System (FACS), researchers have taught computers to "read" human emotions. By analyzing tiny movements in a person’s facial muscles, the system can identify six basic emotions: happiness, surprise, anger, disgust, fear, and sadness.
+Imagine a computer that can tell exactly how you’re feeling—just by reading your face. It might sound like science fiction, but thanks to a new technology called the Facial Action Coding System (FACS), it’s now a reality.
 
-The technology works by tracking the specific ways our facial muscles move. For example, when someone is angry, the muscles around the mouth—like the orbicularis oris—tighten. When someone is happy, the corners of their mouth lift. Dr. Paul Ekman, one of the world’s leading researchers in this field, mapped out these expressions and proved that they are universal—shared by all people, regardless of culture or language. As Dr. Qiang Huang puts it, “The facial expressions for each emotion are universal, even though individuals often show varying degrees of expression.”
 
-Now, scientists are applying this technology in creative ways. In one project, researchers used FACS to analyze the expression of Leonardo da Vinci’s famous portrait, the Mona Lisa. The computer determined that she was 83 percent happy, 9 percent disgusted, 6 percent fearful, and 2 percent angry. For the first time, people could “read” her emotions using data—not just guesswork.
+This groundbreaking technology comes from the work of Professor Thomas Huang at the Beckman Institute for Advanced Science at the University of Illinois, in collaboration with Dr. Nicu Sebe of the University of Amsterdam. Their software allows computers to analyze and identify human emotions by tracking tiny facial movements. These experts are part of a field focused on building better ways for humans and computers to communicate.
 
-This kind of analysis allows artists, historians, and scientists to study ancient portraits in new ways. And thanks to advances in 3D modeling, researchers can even simulate the way facial muscles move in real life, just like da Vinci did in his detailed studies of human anatomy. It turns out that his understanding of muscle structure helped him paint more lifelike emotions centuries before computers existed.
+The process starts when a computer builds a 3-D model of the human face. This model includes all 44 major facial muscles, each one moving like real human muscles. A movement of one or more muscles is called an “action unit.” These action units form the basis for emotional expression.
 
-But FACS isn’t just for art. This same technology is being explored in education, therapy, advertising, and even public safety. For instance, in a classroom, computers might one day be able to help teachers recognize if students are confused, bored, or engaged—just by analyzing their facial expressions. It’s a powerful tool with exciting possibilities—but it also raises important questions about privacy and how such data should be used.
+The system draws from the work of Dr. Paul Ekman, who identified six basic emotions:
+happiness, surprise, anger, disgust, fear, and sadness.
+Each of these emotions is associated with a unique combination of muscle movements. For instance, your frontalis pars lateralis raises your eyebrows when surprised, while your orbicularis oris tightens around the mouth when you’re angry.
 
-Still, the idea that a computer can now make Mona Lisa smile—or at least tell us how she was feeling—might just be the start of a new era in how we see emotions in others... and in ourselves.
+These expressions are universal, notes Dr. Huang. Although people may show different intensities of emotion, the basic facial expressions appear across all cultures.
+
+The researchers decided to put their system to the test by analyzing the most famously mysterious face in art—Leonardo da Vinci’s Mona Lisa. What is she really feeling? According to the system’s analysis:
+“She’s 83 percent happy, 9 percent disgusted, 6 percent fearful, and 2 percent angry.”
+
+This finding reveals that the Mona Lisa’s expression may contain mixed emotions, something previously difficult to define in a single image. The computer compares facial features to a “neutral face” to weigh different expressions and determine emotional states.
+
+While the Mona Lisa analysis might bring a smile to your face, this technology has real-world applications, especially in classrooms. Dr. Huang predicts,
+“A classroom computer could recognize when a student is becoming confused or bored. Then it could modify the lesson, like an effective human instructor.”
+
+That means educational software could become adaptive, adjusting lessons based on students’ emotional feedback. It could also alert teachers when students feel frustrated, distracted, or disengaged—offering more chances for help.
+
+In addition, this software might enhance video games, virtual surgeries, or even ads. For example,
+“If you smile when a Web ad appears, a similar ad might follow. But if you frown, the next ad will be different.”
+
+The system can also help spot fake smiles or forced emotions. It turns out that a genuine smile involves muscles near the eyes, like the orbicularis oculi, which creates "crow’s feet." Fake smiles, on the other hand, often only activate the zygomatic major, stretching the mouth sideways without engaging the eyes.
+
+These clues are sometimes used to spot when a celebrity or politician isn’t being truthful, highlighting the potential for lie detection and behavioral analysis.
+
+Though some may worry about privacy or accuracy, this technology opens up powerful possibilities. As Dr. Huang notes:
+“Most human communication is nonverbal, including emotional communication. So computers need to understand that too.”
 
 ## Question
 In the article "Making Mona Lisa Smile," the author describes how a new technology called the Facial Action Coding System enables computers to identify human emotions. Using details from the article, write an essay arguing whether the use of this technology to read the emotional expressions of students in a classroom is valuable.

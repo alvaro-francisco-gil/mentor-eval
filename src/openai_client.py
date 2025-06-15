@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Callable, TypeVar, Generic
 import json
 import time
 import os
@@ -14,18 +14,23 @@ from collections import defaultdict
 # Load environment variables
 load_dotenv()
 
+# Generic type for the response parser
+T = TypeVar('T')
+
 class ScoringResponse(BaseModel):
     score: int = Field(ge=1, le=6)  # Score between 1 and 6
     justification: str
 
-class OpenAIClient:
+class OpenAIClient(Generic[T]):
     def __init__(
         self, 
+        parser: Callable[[str], T],
         api_key: Optional[str] = None, 
         model: Optional[str] = None,
-        similarity_threshold: float = 0.7
+        similarity_threshold: float = 0.8,
+        temperature: float = 0.3,
+        response_format: Optional[Dict] = None  # Make response format configurable
     ):
-        # Load from environment variables if not provided
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("OpenAI API key not found. Please set OPENAI_API_KEY in .env file or provide it directly.")
@@ -36,10 +41,12 @@ class OpenAIClient:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        # Initialize cache
-        self._cache: Dict[str, ScoringResponse] = {}
-        self._prompt_cache: Dict[str, str] = {}  # Stores prompt -> cache_key mapping
+        self._cache: Dict[str, T] = {}
+        self._prompt_cache: Dict[str, str] = {}
         self.similarity_threshold = similarity_threshold
+        self.parser = parser
+        self.temperature = temperature
+        self.response_format = response_format
 
     def _get_cache_key(self, prompt: str) -> str:
         """Generate a cache key for the prompt."""
@@ -60,52 +67,77 @@ class OpenAIClient:
                 return cache_key
         return None
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
-    def _make_api_call(self, prompt: str, use_cache: bool = True) -> ScoringResponse:
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        reraise=True
+    )
+    def _make_api_call(self, prompt: str, use_cache: bool = True) -> T:
         if use_cache:
-            # First check for exact match
             cache_key = self._get_cache_key(prompt)
             if cache_key in self._cache:
                 return self._cache[cache_key]
             
-            # Then check for similar prompts
             similar_cache_key = self._find_similar_prompt(prompt)
             if similar_cache_key and similar_cache_key in self._cache:
                 return self._cache[similar_cache_key]
 
-        # If no cache hit, make the API call
-        payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "system", "content": "You are a scoring assistant that provides scores and justifications in JSON format."},
-                {"role": "user", "content": prompt}
-            ],
-            "temperature": 0.7,
-            "response_format": {"type": "json_object"}
-        }
-
-        response = requests.post(
-            self.base_url,
-            headers=self.headers,
-            json=payload
-        )
-        
-        if response.status_code != 200:
-            raise Exception(f"API call failed with status {response.status_code}: {response.text}")
-
         try:
+            payload = {
+                "model": self.model,
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": self.temperature
+            }
+            
+            if self.response_format:
+                payload["response_format"] = self.response_format
+
+            response = requests.post(
+                self.base_url,
+                headers=self.headers,
+                json=payload,
+                timeout=30
+            )
+            
+            if response.status_code != 200:
+                error_msg = f"API call failed with status {response.status_code}: {response.text}"
+                print(f"Error details: {error_msg}")
+                raise Exception(error_msg)
+
             response_data = response.json()
             content = response_data["choices"][0]["message"]["content"]
-            result = ScoringResponse.parse_raw(content)
             
-            # Cache the result
+            # Clean the content by removing markdown code block formatting
+            content = content.strip()
+            if content.startswith("```json"):
+                content = content[7:]  # Remove ```json
+            if content.startswith("```"):
+                content = content[3:]  # Remove ```
+            if content.endswith("```"):
+                content = content[:-3]  # Remove ```
+            content = content.strip()
+            
+            try:
+                result = self.parser(content)
+            except Exception as parse_error:
+                print(f"Parser error for content: {content}")
+                print(f"Parse error details: {str(parse_error)}")
+                raise Exception(f"Failed to parse response: {str(parse_error)}")
+            
             if use_cache:
                 self._cache[cache_key] = result
                 self._prompt_cache[prompt] = cache_key
             
             return result
-        except (KeyError, json.JSONDecodeError) as e:
-            raise Exception(f"Failed to parse API response: {str(e)}")
+            
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {str(e)}")
+            raise
+        except Exception as e:
+            print(f"Unexpected error: {str(e)}")
+            raise
 
     def process_batch(
         self, 
@@ -113,13 +145,15 @@ class OpenAIClient:
         batch_size: int = 5, 
         delay: float = 1.0,
         use_cache: bool = True
-    ) -> List[ScoringResponse]:
+    ) -> List[T]:
         """
         Process a batch of prompts with automatic similarity detection and caching.
         """
         results = []
         cache_hits = 0
         total_prompts = len(prompts)
+        last_progress = 0
+        processed_count = 0
         
         for i in range(0, len(prompts), batch_size):
             batch = prompts[i:i + batch_size]
@@ -133,16 +167,19 @@ class OpenAIClient:
                         cache_hits += 1
                 except Exception as e:
                     print(f"Error processing prompt: {str(e)}")
+                    print(f"Problematic prompt: {prompt[:100]}...")  # Print first 100 chars of the prompt
                     batch_results.append(None)
+                processed_count += 1
             
             results.extend(batch_results)
             
-            # Print progress and cache hit rate
-            processed = min(i + batch_size, total_prompts)
-            cache_hit_rate = (cache_hits / processed) * 100 if processed > 0 else 0
-            print(f"Processed {processed}/{total_prompts} prompts. Cache hit rate: {cache_hit_rate:.2f}%")
+            current_progress = (processed_count / total_prompts) * 100
+            if current_progress - last_progress >= 5:
+                cache_hit_rate = (cache_hits / processed_count) * 100
+                print(f"Progress: {current_progress:.1f}% ({processed_count}/{total_prompts})")
+                print(f"Cache hit rate: {cache_hit_rate:.2f}%")
+                last_progress = current_progress
             
-            # Add delay between batches
             if i + batch_size < len(prompts):
                 time.sleep(delay)
         
