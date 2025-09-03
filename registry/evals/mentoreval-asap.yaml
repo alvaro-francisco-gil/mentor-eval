@@ -1,0 +1,199 @@
+# Test ASAP Evaluation (limited samples)
+mentoreval-asap-ex1-test:  
+  id: mentoreval-asap-ex1-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 1 with only 3 samples  
+mentoreval-asap-ex1-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_1/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_1/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3  # This limits to only 3 test samples
+
+mentoreval-asap-ex2-test:  
+  id: mentoreval-asap-ex2-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 2 with only 3 samples  
+mentoreval-asap-ex2-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_2/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_2/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex3-test:  
+  id: mentoreval-asap-ex3-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 3 with only 3 samples  
+mentoreval-asap-ex3-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_3/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_3/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex4-test:  
+  id: mentoreval-asap-ex4-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 4 with only 3 samples  
+mentoreval-asap-ex4-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_4/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_4/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex5-test:  
+  id: mentoreval-asap-ex5-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 5 with only 3 samples  
+mentoreval-asap-ex5-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_5/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_5/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex6-test:  
+  id: mentoreval-asap-ex6-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 6 with only 3 samples  
+mentoreval-asap-ex6-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_6/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_6/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex7-test:  
+  id: mentoreval-asap-ex7-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 7 with only 3 samples  
+mentoreval-asap-ex7-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_7/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_7/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-ex8-test:  
+  id: mentoreval-asap-ex8-test.dev.v0  
+  metrics: [accuracy]  
+  description: Test eval for ASAP exercise set 8 with only 3 samples  
+mentoreval-asap-ex8-test.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_8/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_8/train.jsonl  
+    num_few_shot: -1  
+    max_samples: 3
+
+mentoreval-asap-test:
+  evals:
+    - mentoreval-asap-ex1-test
+    - mentoreval-asap-ex2-test
+    - mentoreval-asap-ex3-test
+    - mentoreval-asap-ex4-test
+    - mentoreval-asap-ex5-test
+    - mentoreval-asap-ex6-test
+    - mentoreval-asap-ex7-test
+    - mentoreval-asap-ex8-test
+
+# Actual ASAP Evaluation
+mentoreval-asap-ex1:  
+  id: mentoreval-asap-ex1.dev.v0  
+  metrics: [accuracy]  
+mentoreval-asap-ex1.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_1/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_1/train.jsonl  
+    num_few_shot: -1  # Use ALL training examples
+
+mentoreval-asap-ex2:  
+  id: mentoreval-asap-ex2.dev.v0  
+  metrics: [accuracy]  
+mentoreval-asap-ex2.dev.v0:  
+  class: evals.elsuite.basic.match:Match  
+  args:  
+    samples_jsonl: mentoreval/asap/exercise_set_2/test.jsonl  
+    few_shot_jsonl: mentoreval/asap/exercise_set_2/train.jsonl  
+    num_few_shot: -1
+
+mentoreval-asap-ex3:
+  id: mentoreval-asap-ex3.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex3.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_3/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_3/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap-ex4: 
+  id: mentoreval-asap-ex4.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex4.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_4/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_4/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap-ex5: 
+  id: mentoreval-asap-ex5.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex5.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_5/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_5/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap-ex6:
+  id: mentoreval-asap-ex6.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex6.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_6/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_6/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap-ex7:
+  id: mentoreval-asap-ex7.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex7.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_7/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_7/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap-ex8:
+  id: mentoreval-asap-ex8.dev.v0
+  metrics: [accuracy]
+mentoreval-asap-ex8.dev.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: mentoreval/asap/exercise_set_8/test.jsonl
+    few_shot_jsonl: mentoreval/asap/exercise_set_8/train.jsonl
+    num_few_shot: -1
+
+mentoreval-asap:  
+  evals:  
+    - mentoreval-asap-ex1  
+    - mentoreval-asap-ex2  
+    - mentoreval-asap-ex3  
+    - mentoreval-asap-ex4  
+    - mentoreval-asap-ex5  
+    - mentoreval-asap-ex6  
+    - mentoreval-asap-ex7  
+    - mentoreval-asap-ex8
