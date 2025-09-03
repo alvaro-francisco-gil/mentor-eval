@@ -54,8 +54,8 @@ class ASAP2Processor:
             with open(rubric_file, 'r', encoding='utf-8') as f:
                 metadata['rubric'] = f.read().strip()
         
-        # Load complementary texts
-        comp_texts_file = set_dir / "complementary_exercise_texts.txt"
+        # Load exercise texts (renamed from complementary_exercise_texts.txt)
+        comp_texts_file = set_dir / "exercise_texts.txt"
         if comp_texts_file.exists():
             with open(comp_texts_file, 'r', encoding='utf-8') as f:
                 metadata['complementary_texts'] = f.read().strip()
@@ -94,13 +94,18 @@ class ASAP2Processor:
                 
             metadata = self.exercise_sets[exercise_set]
             
+            # Build question, optionally prepending exercise texts
+            question_text = metadata['question']
+            if metadata.get('complementary_texts'):
+                question_text = f"{metadata['complementary_texts'].strip()}\n\n{question_text}"
+            
             # Create base sample with essay content and metadata
             sample = {
                 "input": [{
                     "role": "user", 
                     "content": "Question: {question}\n\nStudent Answer: {student_answer}\n\nRubric: {rubric}\n\nEvaluate this response."
                 }],
-                "question": metadata['question'],
+                "question": question_text,
                 "student_answer": row['student_text'],
                 "rubric": metadata['rubric'],
                 "academic_level": metadata['academic_level'],
@@ -108,7 +113,6 @@ class ASAP2Processor:
                 "essay_type": metadata['essay_type'],
                 "exercise_set": exercise_set,
                 "num_metrics": metadata['num_metrics'],
-                "complementary_texts": metadata['complementary_texts'],
                 "ideal": str(int(row['score'])),  # Single holistic score
                 # Include all demographic fields from CSV
                 "economically_disadvantaged": row['economically_disadvantaged'] if pd.notna(row['economically_disadvantaged']) else None,
@@ -123,67 +127,103 @@ class ASAP2Processor:
         
         return samples
     
-    def create_train_test_splits(self, samples, test_size=0.3, random_state=42):
-        train_samples = []
-        test_samples = []
+    def _ideal_as_float(self, ideal_value: str) -> float:
+        try:
+            return float(ideal_value)
+        except Exception:
+            try:
+                return float(int(ideal_value))
+            except Exception:
+                return float('inf')
+    
+    def create_train_test_splits_by_set(self, samples):
+        """Create per-set splits for ASAP2.
+        Training: one example per unique ideal value (1-6) present in the set.
+        The rest go to testing. Outputs are sorted by ideal ascending.
+        """
+        splits_by_set = {}
         
         for exercise_set in range(1, 8):  # ASAP2 has 7 exercise sets
             set_samples = [s for s in samples if s['exercise_set'] == exercise_set]
-            if len(set_samples) > 0:
-                score_counts = {}
-                for sample in set_samples:
-                    score = sample['ideal']
-                    score_counts[score] = score_counts.get(score, 0) + 1
-                
-                can_stratify = all(count >= 2 for count in score_counts.values()) and len(score_counts) > 1
-                
-                if can_stratify:
-                    set_train, set_test = train_test_split(
-                        set_samples, 
-                        test_size=test_size, 
-                        random_state=random_state,
-                        stratify=[s['ideal'] for s in set_samples]
-                    )
-                else:
-                    set_train, set_test = train_test_split(
-                        set_samples, 
-                        test_size=test_size, 
-                        random_state=random_state
-                    )
-                
-                train_samples.extend(set_train)
-                test_samples.extend(set_test)
+            if len(set_samples) == 0:
+                continue
+            
+            # Group by ideal value
+            groups = {}
+            for s in set_samples:
+                groups.setdefault(s['ideal'], []).append(s)
+            
+            # Sort unique ideal values numerically ascending
+            unique_ideals_sorted = sorted(groups.keys(), key=lambda v: self._ideal_as_float(v))
+            
+            train_samples = []
+            test_samples = []
+            
+            for ideal_value in unique_ideals_sorted:
+                samples_for_value = groups[ideal_value]
+                if len(samples_for_value) > 0:
+                    train_samples.append(samples_for_value[0])
+                    test_samples.extend(samples_for_value[1:])
+            
+            # Sort outputs from worst to best by ideal
+            train_samples_sorted = sorted(train_samples, key=lambda s: self._ideal_as_float(s['ideal']))
+            test_samples_sorted = sorted(test_samples, key=lambda s: self._ideal_as_float(s['ideal']))
+            
+            splits_by_set[exercise_set] = {
+                'train': train_samples_sorted,
+                'test': test_samples_sorted,
+                'total': len(set_samples)
+            }
+            
+            print(f"Exercise Set {exercise_set}: Train={len(train_samples_sorted)}, Test={len(test_samples_sorted)}, Total={len(set_samples)}")
         
-        return train_samples, test_samples
+        return splits_by_set
     
-    def save_jsonl(self, samples, filename):
-        output_file = self.output_dir / filename
-        with open(output_file, 'w', encoding='utf-8') as f:
-            for sample in samples:
-                f.write(json.dumps(sample, ensure_ascii=False) + '\n')
-        print(f"Saved {len(samples)} samples to {filename}")
+    def save_jsonl_by_set(self, splits_by_set):
+        """Save train and test files for each exercise set in separate folders"""
+        for exercise_set, splits in splits_by_set.items():
+            set_output_dir = self.output_dir / f"exercise_set_{exercise_set}"
+            set_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            train_file = set_output_dir / "train.jsonl"
+            with open(train_file, 'w', encoding='utf-8') as f:
+                for sample in splits['train']:
+                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
+            
+            test_file = set_output_dir / "test.jsonl"
+            with open(test_file, 'w', encoding='utf-8') as f:
+                for sample in splits['test']:
+                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
+            
+            print(f"Saved Exercise Set {exercise_set} to {set_output_dir}")
     
-    def process(self, test_size=0.3, random_state=42):
-        """Main processing pipeline: load, clean, create samples, split, and save"""
+    def process(self):
+        """Main processing pipeline: load, clean, create samples, split per set, and save"""
         print("Starting ASAP2 dataset processing...")
         
         self.load_dataset()
         self.clean_data()
         
         samples = self.create_samples()
-        train_samples, test_samples = self.create_train_test_splits(samples, test_size, random_state)
+        splits_by_set = self.create_train_test_splits_by_set(samples)
         
-        self.save_jsonl(train_samples, "train.jsonl")
-        self.save_jsonl(test_samples, "test.jsonl")
+        self.save_jsonl_by_set(splits_by_set)
         
-        print(f"Total: {len(samples)}, Train: {len(train_samples)}, Test: {len(test_samples)}")
+        total_samples = sum(s['total'] for s in splits_by_set.values())
+        total_train = sum(len(s['train']) for s in splits_by_set.values())
+        total_test = sum(len(s['test']) for s in splits_by_set.values())
+        
+        print(f"\nSummary:")
+        print(f"Total samples: {total_samples}")
+        print(f"Total training samples: {total_train}")
+        print(f"Total testing samples: {total_test}")
         print("ASAP2 dataset processing completed!")
+
 
 def main():
     np.random.seed(42)
-    test_size = float(os.environ.get('TEST_SIZE', 0.3))
     processor = ASAP2Processor()
-    processor.process(test_size=test_size, random_state=42)
+    processor.process()
 
 if __name__ == "__main__":
     main()
