@@ -1,10 +1,13 @@
 # Makefile for MentorEval project
 # Provides convenient commands for dataset processing and testing
 
-.PHONY: help datasets tests test-basic test-metrics test-scores test-rubric test-all clean
+.PHONY: help datasets tests test-basic test-metrics test-scores test-rubric test-all clean venv
 
 help:
 	@echo "MentorEval Project - Available Commands:"
+	@echo ""
+	@echo "🐍 Environment:"
+	@echo "  make venv        - Create venv and install all dependencies"
 	@echo ""
 	@echo "📊 Dataset Processing:"
 	@echo "  make datasets     - Process all datasets (ASAP, ASAP2, Mohler)"
@@ -34,17 +37,32 @@ datasets: asap asap2 mohler
 
 asap:
 	@echo "🔄 Processing ASAP dataset..."
-	@cd original_datasets/asap && python3 process_asap.py
+	@PY="python3"; \
+	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
+	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
+	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	fi; \
+	$$PY original_datasets/asap/process_asap.py
 	@echo "✅ ASAP dataset processed!"
 
 asap2:
 	@echo "🔄 Processing ASAP2 dataset..."
-	@cd original_datasets/asap2 && python3 process_asap.py
+	@PY="python3"; \
+	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
+	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
+	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	fi; \
+	$$PY original_datasets/asap2/process_asap2.py
 	@echo "✅ ASAP2 dataset processed!"
 
 mohler:
 	@echo "🔄 Processing Mohler dataset..."
-	@cd original_datasets/mohler && python3 process_mohler.py
+	@PY="python3"; \
+	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
+	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
+	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	fi; \
+	$$PY original_datasets/mohler/process_mohler.py
 	@echo "✅ Mohler dataset processed!"
 
 # Testing targets
@@ -86,6 +104,22 @@ install:
 	@echo "📦 Installing dependencies..."
 	@pip3 install -r requirements.txt
 	@echo "✅ Dependencies installed"
+
+# Create venv and install deps (works on Linux/WSL and Windows)
+venv:
+	@echo "🐍 Creating virtual environment..."
+	@python3 -m venv venv 2>/dev/null || python -m venv venv
+	@echo "📦 Installing dependencies into venv..."
+	@if [ -x "venv/bin/pip" ]; then \
+		venv/bin/pip install -r requirements.txt -r original_datasets/requirements.txt; \
+	elif [ -x "venv/Scripts/pip.exe" ]; then \
+		venv/Scripts/pip.exe install -r requirements.txt -r original_datasets/requirements.txt; \
+	elif [ -x "venv/Scripts/pip" ]; then \
+		venv/Scripts/pip install -r requirements.txt -r original_datasets/requirements.txt; \
+	else \
+		echo "❌ Could not find venv pip. Ensure Python venv was created."; exit 1; \
+	fi
+	@echo "✅ venv ready. You can now run: make asap2"
 
 # Check if dataset files exist
 check-datasets:
