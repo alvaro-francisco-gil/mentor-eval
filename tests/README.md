@@ -8,7 +8,7 @@ This directory contains comprehensive validation tests for the MentorEval datase
 - **`test_all.py`** - Main orchestrator that runs all validation tests
 
 ### **Individual Test Modules**
-- **`test_jsonl_basic.py`** - Basic JSONL validation (JSON syntax, required fields)
+- **`test_jsonl_basic.py`** - Enhanced JSONL validation (JSON syntax, required fields, proper JSONL format)
 - **`test_metrics_consistency.py`** - Validates `num_metrics` matches `ideal_*` field count
 - **`test_score_sums.py`** - Validates `ideal` equals sum of all `ideal_*` values
 - **`test_rubric_ranges.py`** - Validates rubric range format and ideal values within ranges
@@ -18,38 +18,22 @@ This directory contains comprehensive validation tests for the MentorEval datase
 ### **Run All Tests**
 ```bash
 # From project root
-make tests
-# or
 python tests/test_all.py
 ```
 
 ### **Run Individual Tests**
 ```bash
-# Basic JSONL validation only
-make test-basic
+# Enhanced JSONL validation (syntax, fields, and format)
 python tests/test_jsonl_basic.py
 
 # Metrics consistency only
-make test-metrics
 python tests/test_metrics_consistency.py
 
 # Score sum validation only
-make test-scores
 python tests/test_score_sums.py
 
 # Rubric range validation only
-make test-rubric
 python tests/test_rubric_ranges.py
-```
-
-### **Make Commands**
-```bash
-make tests        # Run all tests
-make test-basic   # Basic validation only
-make test-metrics # Metrics consistency only
-make test-scores  # Score sums only
-make test-rubric  # Rubric ranges only
-make test-all     # Same as make tests
 ```
 
 ## 🔍 Enhanced Error Reporting
@@ -74,10 +58,18 @@ All tests now provide **focused debugging information** instead of verbose outpu
 
 The test suite validates:
 
-1. **JSONL Format** - Valid JSON syntax and required fields
+1. **Enhanced JSONL Format** - Valid JSON syntax, required fields, AND proper JSONL format (one JSON per line)
 2. **Metrics Consistency** - `num_metrics` matches `ideal_*` field count
 3. **Score Validation** - `ideal` equals sum of individual scores
 4. **Rubric Ranges** - Format validation and value range checking
+
+### **Enhanced JSONL Validation Details**
+The `test_jsonl_basic.py` now performs comprehensive validation:
+
+- ✅ **JSON Syntax** - Each line contains valid JSON
+- ✅ **Required Fields** - Every line has `input` and `ideal` fields
+- ✅ **JSONL Format** - Each JSON object is on a separate line
+- ✅ **No Multi-line JSON** - Detects violations of JSONL specification
 
 ## 🎯 Test Results
 

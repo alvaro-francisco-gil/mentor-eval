@@ -2,8 +2,11 @@
 """
 Basic JSONL validation for all datasets in registry/data/mentoreval
 
-This test ensures that all JSONL files are properly formatted with valid JSON syntax
-and contain the required 'input' and 'ideal' fields on every line.
+This test ensures that all JSONL files are properly formatted with:
+1. Valid JSON syntax on each line
+2. Required 'input' and 'ideal' fields on every line
+3. Proper JSONL format (each JSON object on a separate line)
+4. No multi-line JSON objects that violate JSONL specification
 """
 
 import json
@@ -28,7 +31,7 @@ def get_all_jsonl_files():
     return jsonl_files
 
 def validate_jsonl_file(file_path):
-    """Validate a single JSONL file for basic JSON syntax and required fields."""
+    """Validate a single JSONL file for basic JSON syntax, required fields, and proper JSONL format."""
     results = {
         "file_path": str(file_path),
         "total_lines": 0,
@@ -40,43 +43,73 @@ def validate_jsonl_file(file_path):
     
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            for line_num, line in enumerate(f, 1):
-                results["total_lines"] += 1
+            content = f.read()
+            
+        # Check for proper JSONL format: each JSON object should be on a separate line
+        lines = content.split('\n')
+        results["total_lines"] = len(lines)
+        
+        # Check for multi-line JSON objects (violates JSONL format)
+        if '{\n' in content or '}\n' in content:
+            # Look for patterns that suggest multi-line JSON
+            brace_count = 0
+            in_string = False
+            escape_next = False
+            
+            for char in content:
+                if escape_next:
+                    escape_next = False
+                    continue
+                    
+                if char == '\\':
+                    escape_next = True
+                    continue
+                    
+                if char == '"' and not escape_next:
+                    in_string = not in_string
+                    continue
+                    
+                if not in_string:
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        
+                    # If we have unmatched braces across lines, it's likely multi-line JSON
+                    if brace_count < 0:
+                        error_msg = "File contains multi-line JSON objects (violates JSONL format)"
+                        results["errors"].append(error_msg)
+                        results["example_errors"].append({
+                            "line_num": "N/A",
+                            "line_content": "Multi-line JSON detected",
+                            "error": error_msg
+                        })
+                        results["invalid_lines"] += 1
+                        break
+        
+        for line_num, line in enumerate(lines, 1):
+            # Skip empty lines
+            if not line.strip():
+                continue
                 
-                # Skip empty lines
-                if not line.strip():
+            try:
+                # Try to parse JSON
+                sample = json.loads(line.strip())
+                
+                # Check for required fields
+                if "input" not in sample:
+                    error_msg = f"Line {line_num}: Missing 'input' field"
+                    results["errors"].append(error_msg)
+                    results["example_errors"].append({
+                        "line_num": line_num,
+                        "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
+                        "error": error_msg
+                    })
+                    results["invalid_lines"] += 1
                     continue
                 
-                try:
-                    # Try to parse JSON
-                    sample = json.loads(line.strip())
-                    
-                    # Check for required fields
-                    if "input" not in sample:
-                        error_msg = f"Line {line_num}: Missing 'input' field"
-                        results["errors"].append(error_msg)
-                        results["example_errors"].append({
-                            "line_num": line_num,
-                            "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
-                            "error": error_msg
-                        })
-                        results["invalid_lines"] += 1
-                        continue
-                    
-                    if "ideal" not in sample:
-                        error_msg = f"Line {line_num}: Missing 'ideal' field"
-                        results["errors"].append(error_msg)
-                        results["example_errors"].append({
-                            "line_num": line_num,
-                            "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
-                            "error": error_msg
-                        })
-                        results["invalid_lines"] += 1
-                        continue
-                    
-                    results["valid_lines"] += 1
-                except json.JSONDecodeError as e:
-                    error_msg = f"Line {line_num}: Invalid JSON - {e}"
+                if "ideal" not in sample:
+                    error_msg = f"Line {line_num}: Missing 'ideal' field"
                     results["errors"].append(error_msg)
                     results["example_errors"].append({
                         "line_num": line_num,
@@ -84,15 +117,27 @@ def validate_jsonl_file(file_path):
                         "error": error_msg
                     })
                     results["invalid_lines"] += 1
-                except Exception as e:
-                    error_msg = f"Line {line_num}: Unexpected error - {e}"
-                    results["errors"].append(error_msg)
-                    results["example_errors"].append({
-                        "line_num": line_num,
-                        "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
-                        "error": error_msg
-                    })
-                    results["invalid_lines"] += 1
+                    continue
+                
+                results["valid_lines"] += 1
+            except json.JSONDecodeError as e:
+                error_msg = f"Line {line_num}: Invalid JSON - {e}"
+                results["errors"].append(error_msg)
+                results["example_errors"].append({
+                    "line_num": line_num,
+                    "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
+                    "error": error_msg
+                })
+                results["invalid_lines"] += 1
+            except Exception as e:
+                error_msg = f"Line {line_num}: Unexpected error - {e}"
+                results["errors"].append(error_msg)
+                results["example_errors"].append({
+                    "line_num": line_num,
+                    "line_content": line.strip()[:200] + "..." if len(line.strip()) > 200 else line.strip(),
+                    "error": error_msg
+                })
+                results["invalid_lines"] += 1
                     
     except Exception as e:
         results["errors"].append(f"File reading error: {e}")
@@ -100,7 +145,7 @@ def validate_jsonl_file(file_path):
     return results
 
 def test_all_jsonl_files():
-    """Test that all JSONL files have valid JSON syntax and required fields."""
+    """Test that all JSONL files have valid JSON syntax, required fields, and proper JSONL format."""
     jsonl_files = get_all_jsonl_files()
     
     if not jsonl_files:
@@ -147,6 +192,7 @@ def test_all_jsonl_files():
     if all_passed:
         print("🎉 All JSONL files are valid!")
         print("✅ All lines have 'input' and 'ideal' fields")
+        print("✅ All files follow proper JSONL format (one JSON per line)")
     else:
         print("❌ Some JSONL files have errors")
     print("="*60)
