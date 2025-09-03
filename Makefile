@@ -37,32 +37,32 @@ datasets: asap asap2 mohler
 
 asap:
 	@echo "🔄 Processing ASAP dataset..."
-	@PY="python3"; \
-	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
-	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
-	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
-	$$PY original_datasets/asap/process_asap.py
+	cd original_datasets/asap && "$$PY" process_asap.py
 	@echo "✅ ASAP dataset processed!"
 
 asap2:
 	@echo "🔄 Processing ASAP2 dataset..."
-	@PY="python3"; \
-	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
-	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
-	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
-	$$PY original_datasets/asap2/process_asap2.py
+	cd original_datasets/asap2 && "$$PY" process_asap2.py
 	@echo "✅ ASAP2 dataset processed!"
 
 mohler:
 	@echo "🔄 Processing Mohler dataset..."
-	@PY="python3"; \
-	if [ -x "venv/bin/python" ]; then PY="venv/bin/python"; \
-	elif [ -x "venv/Scripts/python.exe" ]; then PY="venv/Scripts/python.exe"; \
-	elif [ -x "venv/Scripts/python" ]; then PY="venv/Scripts/python"; \
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
-	$$PY original_datasets/mohler/process_mohler.py
+	cd original_datasets/mohler && "$$PY" process_mohler.py
 	@echo "✅ Mohler dataset processed!"
 
 # Testing targets
