@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Metrics consistency validation for all datasets in registry/data/mentoreval
+Metrics consistency validation for all datasets in data/processed
 
 This test ensures that num_metrics matches the count of ideal_* fields.
 """
@@ -9,20 +9,19 @@ import json
 from pathlib import Path
 
 # Path to the registry data directory
-REGISTRY_DATA_DIR = Path(__file__).parent.parent / "registry" / "data" / "mentoreval"
+REGISTRY_DATA_DIR = Path(__file__).parent.parent / "data" / "processed"
 
 def get_all_jsonl_files():
-    """Get all JSONL files in the registry data directory."""
+    """Get all JSONL files in the data directory (recursive search)."""
     jsonl_files = []
     
     if not REGISTRY_DATA_DIR.exists():
-        print(f"Registry data directory not found: {REGISTRY_DATA_DIR}")
+        print(f"Data directory not found: {REGISTRY_DATA_DIR}")
         return []
     
-    for dataset_dir in REGISTRY_DATA_DIR.iterdir():
-        if dataset_dir.is_dir():
-            for jsonl_file in dataset_dir.glob("*.jsonl"):
-                jsonl_files.append(jsonl_file)
+    # Search recursively for all .jsonl files
+    for jsonl_file in REGISTRY_DATA_DIR.rglob("*.jsonl"):
+        jsonl_files.append(jsonl_file)
     
     return jsonl_files
 

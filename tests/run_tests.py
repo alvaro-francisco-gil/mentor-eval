@@ -23,9 +23,9 @@ def main():
     print("=" * 60)
     
     # Check if registry data directory exists
-    registry_dir = Path(__file__).parent.parent / "registry" / "data" / "mentoreval"
+    registry_dir = Path(__file__).parent.parent / "data" / "processed"
     if not registry_dir.exists():
-        print(f"❌ Registry data directory not found: {registry_dir}")
+        print(f"❌ Data directory not found: {registry_dir}")
         print("Please run the dataset processing scripts first.")
         sys.exit(1)
     
