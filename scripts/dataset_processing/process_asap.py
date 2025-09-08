@@ -124,7 +124,7 @@ class ASAPProcessor:
                     if len(rubric_ranges) > 1:
                         metadata['rubric_range'] = rubric_dict
                     else:
-                        metadata['rubric_range'] = ' | '.join(rubric_ranges)
+                        metadata['rubric_range'] = {"ideal": rubric_ranges[0]}
                 
                 type_match = re.search(r'Essay Type:\s*(.*?)(?=\n|\Z)', content)
                 if type_match:

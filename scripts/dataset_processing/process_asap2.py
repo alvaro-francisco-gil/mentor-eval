@@ -33,7 +33,7 @@ class ASAP2Processor:
             'rubric': '',
             'complementary_texts': '',
             'academic_level': '10',
-            'rubric_range': '1-6',
+            'rubric_range': {"ideal": "1-6"},
             'essay_type': 'argumentative',
             'scoring_type': 'holistic',
             'num_metrics': 1
