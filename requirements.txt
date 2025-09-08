@@ -1,4 +1,4 @@
-deepevals
+deepeval
 pandas>=1.5.0
 numpy>=1.21.0
 scikit-learn>=1.1.0
