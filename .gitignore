@@ -16,3 +16,5 @@ venv/
 Icon?
 # Test output
 *.log
+
+.deepeval/
