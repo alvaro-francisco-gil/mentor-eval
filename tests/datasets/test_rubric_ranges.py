@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 # Path to the registry data directory
-REGISTRY_DATA_DIR = Path(__file__).parent.parent / "data" / "processed"
+REGISTRY_DATA_DIR = Path(__file__).parent.parent.parent / "data" / "processed"
 
 def get_all_jsonl_files():
     """Get all JSONL files in the data directory (recursive search)."""

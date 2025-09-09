@@ -7,11 +7,11 @@ This directory contains comprehensive validation tests for the MentorEval datase
 ### **Main Test Runner**
 - **`test_all.py`** - Main orchestrator that runs all validation tests
 
-### **Individual Test Modules**
-- **`test_jsonl_basic.py`** - Enhanced JSONL validation (JSON syntax, required fields, proper JSONL format)
-- **`test_metrics_consistency.py`** - Validates `num_metrics` matches `ideal_*` field count
-- **`test_score_sums.py`** - Validates `ideal` equals sum of all `ideal_*` values
-- **`test_rubric_ranges.py`** - Validates rubric range format and ideal values within ranges
+### **Dataset Validation Tests** (`datasets/` folder)
+- **`datasets/test_jsonl_basic.py`** - Enhanced JSONL validation (JSON syntax, required fields, proper JSONL format)
+- **`datasets/test_metrics_consistency.py`** - Validates `num_metrics` matches `ideal_*` field count
+- **`datasets/test_score_sums.py`** - Validates `ideal` equals sum of all `ideal_*` values
+- **`datasets/test_rubric_ranges.py`** - Validates rubric range format and ideal values within ranges
 
 ## 🚀 Usage
 
@@ -24,16 +24,16 @@ python tests/test_all.py
 ### **Run Individual Tests**
 ```bash
 # Enhanced JSONL validation (syntax, fields, and format)
-python tests/test_jsonl_basic.py
+python tests/datasets/test_jsonl_basic.py
 
 # Metrics consistency only
-python tests/test_metrics_consistency.py
+python tests/datasets/test_metrics_consistency.py
 
 # Score sum validation only
-python tests/test_score_sums.py
+python tests/datasets/test_score_sums.py
 
 # Rubric range validation only
-python tests/test_rubric_ranges.py
+python tests/datasets/test_rubric_ranges.py
 ```
 
 ## 🔍 Enhanced Error Reporting
@@ -64,7 +64,7 @@ The test suite validates:
 4. **Rubric Ranges** - Format validation and value range checking
 
 ### **Enhanced JSONL Validation Details**
-The `test_jsonl_basic.py` now performs comprehensive validation:
+The `datasets/test_jsonl_basic.py` now performs comprehensive validation:
 
 - ✅ **JSON Syntax** - Each line contains valid JSON
 - ✅ **Required Fields** - Every line has `input` and `ideal` fields
@@ -83,3 +83,21 @@ Currently supports validation of:
 - **Mohler** dataset (train/test)
 
 Each dataset is validated independently, with clear reporting of which files passed/failed.
+
+## 📂 Test Structure
+
+The test suite is organized as follows:
+
+```
+tests/
+├── test_all.py              # Main test runner
+├── README.md               # This documentation
+└── datasets/               # Dataset validation tests
+    ├── __init__.py         # Package initialization
+    ├── test_jsonl_basic.py # JSONL format validation
+    ├── test_metrics_consistency.py # Metrics consistency
+    ├── test_score_sums.py  # Score sum validation
+    └── test_rubric_ranges.py # Rubric range validation
+```
+
+This organization separates dataset-specific validation tests from the main test runner, making the codebase more maintainable and easier to navigate.

@@ -9,10 +9,10 @@ This file orchestrates the execution of all validation tests:
 4. Rubric range validation
 """
 
-from test_jsonl_basic import test_all_jsonl_files
-from test_metrics_consistency import test_metrics_consistency
-from test_score_sums import test_score_sum_validation
-from test_rubric_ranges import test_rubric_range_format, test_ideal_within_rubric_range
+from datasets.test_jsonl_basic import test_all_jsonl_files
+from datasets.test_metrics_consistency import test_metrics_consistency
+from datasets.test_score_sums import test_score_sum_validation
+from datasets.test_rubric_ranges import test_rubric_range_format, test_ideal_within_rubric_range
 
 def run_all_tests():
     """Run all validation tests."""

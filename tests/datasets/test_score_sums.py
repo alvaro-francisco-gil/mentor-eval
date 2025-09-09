@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Metrics consistency validation for all datasets in data/processed
+Score sum validation for all datasets in data/processed
 
-This test ensures that num_metrics matches the count of ideal_* fields.
+This test ensures that ideal equals the sum of all ideal_* values.
 """
 
 import json
 from pathlib import Path
 
 # Path to the registry data directory
-REGISTRY_DATA_DIR = Path(__file__).parent.parent / "data" / "processed"
+REGISTRY_DATA_DIR = Path(__file__).parent.parent.parent / "data" / "processed"
 
 def get_all_jsonl_files():
     """Get all JSONL files in the data directory (recursive search)."""
@@ -25,8 +25,8 @@ def get_all_jsonl_files():
     
     return jsonl_files
 
-def validate_metrics_consistency(file_path):
-    """Validate that num_metrics matches the count of ideal_* fields."""
+def validate_score_sum(file_path):
+    """Validate that ideal equals the sum of all ideal_* values."""
     results = {
         "file_path": str(file_path),
         "total_lines": 0,
@@ -48,48 +48,48 @@ def validate_metrics_consistency(file_path):
                 try:
                     sample = json.loads(line.strip())
                     
-                    # Check if num_metrics field exists
-                    if "num_metrics" not in sample:
-                        error_msg = f"Line {line_num}: Missing 'num_metrics' field"
+                    # Check if ideal field exists
+                    if "ideal" not in sample:
+                        error_msg = f"Line {line_num}: Missing 'ideal' field"
                         results["errors"].append(error_msg)
                         results["example_errors"].append({
                             "line_num": line_num,
-                            "error": error_msg,
-                            "available_fields": [k for k in sample.keys() if k.startswith('ideal_') or k in ['ideal', 'num_metrics']]
+                            "error": error_msg
                         })
                         results["invalid_lines"] += 1
                         continue
                     
-                    num_metrics = sample["num_metrics"]
+                    ideal_value = sample["ideal"]
                     
-                    # Count ideal_* fields (excluding 'ideal' itself)
+                    # Get all ideal_* fields (excluding 'ideal' itself)
                     ideal_score_fields = [key for key in sample.keys() if key.startswith("ideal_") and key != "ideal"]
                     
-                    # Special case: if num_metrics is 1, just check for 'ideal' field
-                    if num_metrics == 1:
-                        if "ideal" not in sample:
-                            error_msg = f"Line {line_num}: num_metrics=1 but missing 'ideal' field"
+                    if ideal_score_fields:
+                        # Calculate sum of all ideal_* values
+                        try:
+                            score_sum = sum(int(sample[field]) for field in ideal_score_fields)
+                            
+                            # Check if sum matches ideal
+                            if score_sum != int(ideal_value):
+                                error_msg = f"Line {line_num}: ideal={ideal_value} but sum of scores={score_sum} (scores: {[f'{field}={sample[field]}' for field in ideal_score_fields]})"
+                                results["errors"].append(error_msg)
+                                results["example_errors"].append({
+                                    "line_num": line_num,
+                                    "error": error_msg,
+                                    "ideal_value": ideal_value,
+                                    "ideal_fields": {field: sample[field] for field in ideal_score_fields},
+                                    "calculated_sum": score_sum
+                                })
+                                results["invalid_lines"] += 1
+                                continue
+                        except (ValueError, TypeError) as e:
+                            error_msg = f"Line {line_num}: Error calculating score sum - {e}"
                             results["errors"].append(error_msg)
                             results["example_errors"].append({
                                 "line_num": line_num,
                                 "error": error_msg,
-                                "num_metrics": num_metrics,
-                                "ideal_fields_found": ideal_score_fields
-                            })
-                            results["invalid_lines"] += 1
-                            continue
-                    else:
-                        # Check if count matches num_metrics
-                        if len(ideal_score_fields) != num_metrics:
-                            error_msg = f"Line {line_num}: num_metrics={num_metrics} but found {len(ideal_score_fields)} ideal_* fields: {ideal_score_fields}"
-                            results["errors"].append(error_msg)
-                            results["example_errors"].append({
-                                "line_num": line_num,
-                                "error": error_msg,
-                                "num_metrics": num_metrics,
-                                "ideal_fields_found": ideal_score_fields,
-                                "expected_count": num_metrics,
-                                "actual_count": len(ideal_score_fields)
+                                "ideal_value": ideal_value,
+                                "ideal_fields": {field: sample[field] for field in ideal_score_fields}
                             })
                             results["invalid_lines"] += 1
                             continue
@@ -117,8 +117,8 @@ def validate_metrics_consistency(file_path):
     
     return results
 
-def test_metrics_consistency():
-    """Test that num_metrics matches the count of ideal_* fields."""
+def test_score_sum_validation():
+    """Test that ideal equals the sum of all ideal_* values."""
     jsonl_files = get_all_jsonl_files()
     
     if not jsonl_files:
@@ -130,13 +130,13 @@ def test_metrics_consistency():
         print(f"  - {jsonl_file.relative_to(Path.cwd())}")
     
     print("\n" + "="*60)
-    print("METRICS CONSISTENCY VALIDATION")
+    print("SCORE SUM VALIDATION")
     print("="*60)
     
     all_passed = True
     
     for jsonl_file in jsonl_files:
-        results = validate_metrics_consistency(jsonl_file)
+        results = validate_score_sum(jsonl_file)
         
         print(f"\n📁 {results['file_path']}")
         print(f"   Total lines: {results['total_lines']:,}")
@@ -156,31 +156,27 @@ def test_metrics_consistency():
                 print(f"      Line {example['line_num']}: {example['error']}")
                 
                 # Show specific debugging info based on error type
-                if 'available_fields' in example:
-                    print(f"         Available fields: {example['available_fields']}")
-                if 'num_metrics' in example:
-                    print(f"         Num metrics: {example['num_metrics']}")
-                if 'ideal_fields_found' in example:
-                    print(f"         Ideal fields found: {example['ideal_fields_found']}")
-                if 'expected_count' in example:
-                    print(f"         Expected count: {example['expected_count']}")
-                if 'actual_count' in example:
-                    print(f"         Actual count: {example['actual_count']}")
+                if 'ideal_value' in example:
+                    print(f"         Ideal value: {example['ideal_value']}")
+                if 'ideal_fields' in example:
+                    print(f"         Ideal fields: {example['ideal_fields']}")
+                if 'calculated_sum' in example:
+                    print(f"         Calculated sum: {example['calculated_sum']}")
                 print()
             
             all_passed = False
         else:
-            print(f"   ✅ All lines have consistent metrics")
+            print(f"   ✅ All lines have correct score sums")
     
     print("\n" + "="*60)
     if all_passed:
-        print("🎉 All files have consistent metrics!")
-        print("✅ num_metrics matches ideal_* field count")
+        print("🎉 All files have correct score sums!")
+        print("✅ ideal equals sum of all ideal_* values")
     else:
-        print("❌ Some files have inconsistent metrics")
+        print("❌ Some files have incorrect score sums")
     print("="*60)
     
     return all_passed
 
 if __name__ == "__main__":
-    test_metrics_consistency()
+    test_score_sum_validation()
