@@ -1,0 +1,35 @@
+{
+  "run_id": 0,
+  "model_name": "template",
+  "benchmark_mode": "template",
+  "configuration": {
+    "mode": "mentoreval-test",
+    "use_few_shot": true,
+    "include_rubric": true,
+    "prompt_type": "with_explanation",
+    "n_test_samples": 1,
+    "model_name": "gpt-4o-mini",
+    "model_provider": "openai",
+    "verbose": true
+  },
+  "status": "template",
+  "_comment": "Template for MentorEval runs. Copy this file and modify the configuration as needed.",
+  "_available_options": {
+    "mode": ["mentoreval", "mentoreval-test"],
+    "use_few_shot": [true, false],
+    "include_rubric": [true, false],
+    "prompt_type": ["with_explanation", "grade_only"],
+    "n_test_samples": ["null (all samples)", "1", "5", "10", "etc."],
+    "model_name": ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo", "claude-3-haiku", "claude-3-sonnet", "claude-3-opus", "grok-3-mini-latest", "etc."],
+    "model_provider": ["openai", "anthropic", "xai", "etc."],
+    "verbose": [true, false]
+  },
+  "_benchmark_modes": {
+    "mentoreval": "Full benchmark with all training data, rubric, and explanations",
+    "mentoreval-test": "Test benchmark with limited training data (one example per set), rubric, and explanations"
+  },
+  "_prompt_types": {
+    "with_explanation": "Forces LLM to provide brief explanations for each grade",
+    "grade_only": "Expects only the actual grade without explanations"
+  }
+}
