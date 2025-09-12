@@ -19,3 +19,5 @@ Icon?
 
 .deepeval/
 results_detailed/
+
+data/processed/asap2/asap2_processed.csv

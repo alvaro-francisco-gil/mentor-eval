@@ -8,11 +8,14 @@ import json
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from sklearn.model_selection import train_test_split
 import re
 
 class ASAPProcessor:
-    def __init__(self, data_dir="../../data/raw/asap", output_dir="../../data/processed/asap"):
+    def __init__(self, data_dir=None, output_dir=None):
+        if data_dir is None:
+            data_dir = Path(__file__).parent.parent.parent / 'data' / 'raw' / 'asap'
+        if output_dir is None:
+            output_dir = Path(__file__).parent.parent.parent / 'data' / 'processed' / 'asap'
         self.data_dir = Path(data_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -265,86 +268,92 @@ class ASAPProcessor:
         
         return samples
     
-    def _ideal_as_float(self, ideal_value: str) -> float:
-        try:
-            return float(ideal_value)
-        except Exception:
-            try:
-                return float(int(ideal_value))
-            except Exception:
-                return float('inf')
     
-    def create_train_test_splits_by_set(self, samples):
-        """Create per-set train/test splits with special sampling for sets 2, 7 and 8.
-        - Set 2: one train example for every second unique ideal value (approx half)
-        - Sets 1,3-6: one train example per unique ideal value
-        - Set 7: one train example for every second unique ideal value (approx half)
-        - Set 8: one train example for every fourth unique ideal value (approx quarter)
-        The rest go to test. Train and test are sorted by ideal ascending.
-        """
-        splits_by_set = {}
+    def create_unified_dataset(self, samples):
+        """Create a unified dataset in the same format as Mohler dataset"""
+        unified_data = []
         
-        for essay_set in range(1, 9):
-            set_samples = [s for s in samples if s['essay_set'] == essay_set]
-            if len(set_samples) == 0:
-                continue
+        for sample in samples:
+            # Extract grade from ideal field (final sum for multi-rubric exercises)
+            try:
+                grade = float(sample.get('ideal', 0))
+            except (ValueError, TypeError):
+                grade = 0.0
             
-            groups = {}
-            for s in set_samples:
-                groups.setdefault(s['ideal'], []).append(s)
+            # Determine min and max grades from rubric_range
+            min_grade = 1.0
+            max_grade = 6.0  # Default fallback
             
-            unique_ideals_sorted = sorted(groups.keys(), key=lambda v: self._ideal_as_float(v))
+            if 'rubric_range' in sample and sample['rubric_range']:
+                if isinstance(sample['rubric_range'], dict):
+                    # For multi-metric sets, calculate total range
+                    if len(sample['rubric_range']) > 1:
+                        total_min = 0
+                        total_max = 0
+                        for key, value in sample['rubric_range'].items():
+                            if isinstance(value, str) and '-' in value:
+                                try:
+                                    min_val, max_val = map(float, value.split('-'))
+                                    total_min += min_val
+                                    total_max += max_val
+                                except ValueError:
+                                    pass
+                        if total_max > 0:
+                            min_grade = total_min
+                            max_grade = total_max
+                    else:
+                        # Single metric
+                        for key, value in sample['rubric_range'].items():
+                            if isinstance(value, str) and '-' in value:
+                                try:
+                                    min_val, max_val = map(float, value.split('-'))
+                                    min_grade = min_val
+                                    max_grade = max_val
+                                except ValueError:
+                                    pass
+                            break
             
-            # Determine sampling stride
-            if essay_set in (2, 7):
-                stride = 2
-            elif essay_set == 8:
-                stride = 4
-            else:
-                stride = 1
-            
-            chosen_ideals = set(unique_ideals_sorted[::stride])
-            
-            train_samples = []
-            test_samples = []
-            
-            for ideal_value in unique_ideals_sorted:
-                samples_for_value = groups[ideal_value]
-                if ideal_value in chosen_ideals and len(samples_for_value) > 0:
-                    train_samples.append(samples_for_value[0])
-                    test_samples.extend(samples_for_value[1:])
-                else:
-                    test_samples.extend(samples_for_value)
-            
-            train_samples_sorted = sorted(train_samples, key=lambda s: self._ideal_as_float(s['ideal']))
-            test_samples_sorted = sorted(test_samples, key=lambda s: self._ideal_as_float(s['ideal']))
-            
-            splits_by_set[essay_set] = {
-                'train': train_samples_sorted,
-                'test': test_samples_sorted,
-                'total': len(set_samples)
+            unified_sample = {
+                'dataset': 'asap',
+                'exercise_set': sample.get('essay_set', 1),
+                'question': sample.get('question', ''),
+                'answer': sample.get('student_answer', ''),
+                'grade': grade,
+                'min_grade': min_grade,
+                'max_grade': max_grade,
+                'subject': 'english',
+                'exercise_type': 'essay_writing',
+                'isced_level': 3,
+                'rubric': sample.get('rubric', ''),
+                'desired_answer': np.nan,  # NaN as requested
+                'metadata': np.nan  # NaN as requested
             }
             
-            print(f"Exercise Set {essay_set}: Train={len(train_samples_sorted)}, Test={len(test_samples_sorted)}, Total={len(set_samples)}")
+            unified_data.append(unified_sample)
         
-        return splits_by_set
+        return pd.DataFrame(unified_data)
     
-    def save_jsonl_by_set(self, splits_by_set):
-        for essay_set, splits in splits_by_set.items():
-            set_output_dir = self.output_dir / f"exercise_set_{essay_set}"
-            set_output_dir.mkdir(parents=True, exist_ok=True)
-            
-            train_file = set_output_dir / "train.jsonl"
-            with open(train_file, 'w', encoding='utf-8') as f:
-                for sample in splits['train']:
-                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
-            
-            test_file = set_output_dir / "test.jsonl"
-            with open(test_file, 'w', encoding='utf-8') as f:
-                for sample in splits['test']:
-                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
-            
-            print(f"Saved Exercise Set {essay_set} to {set_output_dir}")
+    def save_unified_dataset(self, unified_df):
+        """Save the unified dataset as both CSV and parquet files"""
+        # Create output directory (use the main asap output directory)
+        output_dir = self.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save as CSV
+        csv_file = output_dir / 'asap_processed.csv'
+        unified_df.to_csv(csv_file, index=False)
+        print(f"Saved unified ASAP dataset to {csv_file}")
+        
+        # Save as parquet
+        parquet_file = output_dir / 'asap_processed.parquet'
+        unified_df.to_parquet(parquet_file, index=False)
+        print(f"Saved unified ASAP dataset to {parquet_file}")
+        
+        # Print statistics
+        print(f"Unified dataset contains {len(unified_df)} rows")
+        print(f"Exercise sets: {sorted(unified_df['exercise_set'].unique())}")
+        print(f"Grade distribution:")
+        print(unified_df['grade'].value_counts().sort_index())
     
     def process(self):
         print("Starting ASAP dataset processing...")
@@ -353,18 +362,14 @@ class ASAPProcessor:
         self.clean_data()
         
         samples = self.create_samples()
-        splits_by_set = self.create_train_test_splits_by_set(samples)
         
-        self.save_jsonl_by_set(splits_by_set)
-        
-        total_samples = sum(s['total'] for s in splits_by_set.values())
-        total_train = sum(len(s['train']) for s in splits_by_set.values())
-        total_test = sum(len(s['test']) for s in splits_by_set.values())
+        # Create unified dataset in the same format as Mohler
+        print("Creating unified dataset...")
+        unified_df = self.create_unified_dataset(samples)
+        self.save_unified_dataset(unified_df)
         
         print(f"\nSummary:")
-        print(f"Total samples: {total_samples}")
-        print(f"Total training samples: {total_train}")
-        print(f"Total testing samples: {total_test}")
+        print(f"Total samples: {len(samples)}")
         print("ASAP dataset processing completed!")
 
 

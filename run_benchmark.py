@@ -9,8 +9,9 @@ import os
 import sys
 import argparse
 import json
+import glob
 from dotenv import load_dotenv
-from mentoreval import MentorEvalBenchmark, MentorEvalConfig, RunManager, BenchmarkMode, PromptType
+from mentoreval import MentorEvalBenchmark, MentorEvalConfig, RunManager, BenchmarkMode, PromptType, AsyncConfig
 
 
 def main():
@@ -77,46 +78,93 @@ def main():
 
 def check_and_run_incomplete(run_manager: RunManager):
     """Check for incomplete runs and execute them."""
-    incomplete_runs = run_manager.get_incomplete_runs()
+    incomplete_runs = find_incomplete_runs()
     
     if not incomplete_runs:
         print("✅ No incomplete runs found.")
         return
     
     print(f"🔍 Found {len(incomplete_runs)} incomplete runs:")
-    for run in incomplete_runs:
-        print(f"   Run {run.run_id}: {run.model_name} - {run.benchmark_mode} ({run.status})")
+    for run_data in incomplete_runs:
+        print(f"   Run {run_data['run_id']}: {run_data['model_name']} - {run_data['benchmark_mode']}")
     
-    # Check API key
-    if not os.getenv('OPENAI_API_KEY'):
-        print("\n❌ Please set your OpenAI API key:")
-        print("   $env:OPENAI_API_KEY='your-api-key'")
+    # Check API keys based on the models being used
+    api_keys_needed = set()
+    for run_data in incomplete_runs:
+        provider = run_data['configuration'].get('model_provider', 'openai').lower()
+        if provider == 'openai':
+            api_keys_needed.add('OPENAI_API_KEY')
+        elif provider == 'anthropic':
+            api_keys_needed.add('ANTHROPIC_API_KEY')
+        elif provider == 'xai':
+            api_keys_needed.add('XAI_API_KEY')
+    
+    missing_keys = []
+    for key in api_keys_needed:
+        if not os.getenv(key):
+            missing_keys.append(key)
+    
+    if missing_keys:
+        print(f"\n❌ Please set the following API keys:")
+        for key in missing_keys:
+            print(f"   $env:{key}='your-api-key'")
         return
     
     # Execute incomplete runs
-    for run in incomplete_runs:
-        print(f"\n🚀 Executing Run {run.run_id}...")
+    for run_data in incomplete_runs:
+        print(f"\n🚀 Executing Run {run_data['run_id']}...")
         try:
-            # Create config from run
-            config = create_config_from_run(run)
+            # Create config from run data
+            config = create_config_from_run_data(run_data)
             
             # Create benchmark and run
             benchmark = MentorEvalBenchmark(config)
             model = benchmark.create_model()
             
-            # Update status to running
-            run_manager.update_run_status(run.run_id, 'running')
+            # Execute benchmark (will use async if configured)
+            results = benchmark.evaluate_with_config(model, run_data['run_id'])
             
-            # Execute benchmark
-            results = benchmark.evaluate(model)
-            
-            print(f"✅ Run {run.run_id} completed successfully!")
+            print(f"✅ Run {run_data['run_id']} completed successfully!")
             print(f"   Overall NMAE: {results.get('nmae', {}).get('normalized_value', 0.0):.3f}")
             print(f"   Overall NRMSE: {results.get('nrmse', {}).get('normalized_value', 0.0):.3f}")
             
         except Exception as e:
-            print(f"❌ Run {run.run_id} failed: {e}")
-            run_manager.update_run_status(run.run_id, 'failed')
+            print(f"❌ Run {run_data['run_id']} failed: {e}")
+
+
+def find_incomplete_runs():
+    """Find runs that don't have corresponding result files."""
+    incomplete_runs = []
+    
+    # Get all run JSON files in the runs directory
+    run_files = glob.glob("runs/*.json")
+    
+    for run_file in run_files:
+        # Skip template file
+        if "template" in run_file.lower():
+            continue
+            
+        try:
+            # Load run data
+            with open(run_file, 'r', encoding='utf-8') as f:
+                run_data = json.load(f)
+            
+            run_id = run_data.get('run_id')
+            if run_id is None:
+                continue
+            
+            # Check if result file exists
+            result_files = glob.glob(f"results/{run_id}_*.json")
+            
+            if not result_files:
+                # No result file found, this run is incomplete
+                incomplete_runs.append(run_data)
+                
+        except Exception as e:
+            print(f"⚠️  Error reading {run_file}: {e}")
+            continue
+    
+    return incomplete_runs
 
 
 def create_and_run(run_manager: RunManager, run_file: str):
@@ -134,33 +182,49 @@ def create_and_run(run_manager: RunManager, run_file: str):
         print(f"❌ Error loading run file: {e}")
         return
     
-    # Check API key
-    if not os.getenv('OPENAI_API_KEY'):
+    # Check API key based on the model provider
+    provider = run_data['configuration'].get('model_provider', 'openai').lower()
+    if provider == 'openai' and not os.getenv('OPENAI_API_KEY'):
         print("❌ Please set your OpenAI API key:")
         print("   $env:OPENAI_API_KEY='your-api-key'")
         return
+    elif provider == 'anthropic' and not os.getenv('ANTHROPIC_API_KEY'):
+        print("❌ Please set your Anthropic API key:")
+        print("   $env:ANTHROPIC_API_KEY='your-api-key'")
+        return
+    elif provider == 'xai' and not os.getenv('XAI_API_KEY'):
+        print("❌ Please set your XAI API key:")
+        print("   $env:XAI_API_KEY='your-api-key'")
+        return
     
-    # Create new run
+    # Check if run already has results
+    run_id = run_data.get('run_id')
+    if run_id:
+        result_files = glob.glob(f"results/{run_id}_*.json")
+        if result_files:
+            print(f"⚠️  Run {run_id} already has results. Skipping.")
+            return
+    
+    # Create config from run data
     config = create_config_from_run_data(run_data)
-    run_info = run_manager.create_run(config)
     
-    print(f"🚀 Created Run {run_info.run_id} from {run_file}")
-    print(f"   Model: {run_info.model_name}")
-    print(f"   Mode: {run_info.benchmark_mode}")
+    print(f"🚀 Executing Run {run_id} from {run_file}")
+    print(f"   Model: {run_data.get('model_name', 'unknown')}")
+    print(f"   Mode: {run_data.get('benchmark_mode', 'unknown')}")
     
     try:
         # Execute benchmark
         benchmark = MentorEvalBenchmark(config)
         model = benchmark.create_model()
         
-        results = benchmark.evaluate(model)
+        results = benchmark.evaluate_with_config(model, run_id)
         
-        print(f"✅ Run {run_info.run_id} completed successfully!")
+        print(f"✅ Run {run_id} completed successfully!")
         print(f"   Overall NMAE: {results.get('nmae', {}).get('normalized_value', 0.0):.3f}")
         print(f"   Overall NRMSE: {results.get('nrmse', {}).get('normalized_value', 0.0):.3f}")
         
     except Exception as e:
-        print(f"❌ Run {run_info.run_id} failed: {e}")
+        print(f"❌ Run {run_id} failed: {e}")
 
 
 def create_config_from_run(run_info):
@@ -184,6 +248,14 @@ def create_config_from_run_data(config_data):
     else:
         prompt_type = PromptType.WITH_EXPLANATION
     
+    # Handle async configuration
+    async_config_data = config_data.get('async_config', {})
+    async_config = AsyncConfig(
+        run_async=async_config_data.get('run_async', True),
+        max_concurrent=async_config_data.get('max_concurrent', 20),
+        throttle_value=async_config_data.get('throttle_value', 0.0)
+    )
+    
     # Create config
     config = MentorEvalConfig(
         mode=mode,
@@ -191,8 +263,10 @@ def create_config_from_run_data(config_data):
         include_rubric=config_data.get('include_rubric', True),
         prompt_type=prompt_type,
         n_test_samples=config_data.get('n_test_samples'),
+        test_percentage=config_data.get('test_percentage'),
         model_name=config_data.get('model_name', 'gpt-4o-mini'),
-        model_provider=config_data.get('model_provider', 'openai')
+        model_provider=config_data.get('model_provider', 'openai').lower(),
+        async_config=async_config
     )
     
     # Set verbose if specified

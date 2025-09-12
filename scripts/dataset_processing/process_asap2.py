@@ -8,11 +8,14 @@ import json
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from sklearn.model_selection import train_test_split
 import re
 
 class ASAP2Processor:
-    def __init__(self, data_dir="../../data/raw/asap2", output_dir="../../data/processed/asap2"):
+    def __init__(self, data_dir=None, output_dir=None):
+        if data_dir is None:
+            data_dir = Path(__file__).parent.parent.parent / 'data' / 'raw' / 'asap2'
+        if output_dir is None:
+            output_dir = Path(__file__).parent.parent.parent / 'data' / 'processed' / 'asap2'
         self.data_dir = Path(data_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -114,70 +117,91 @@ class ASAP2Processor:
             samples.append(sample)
         return samples
     
-    def _ideal_as_float(self, ideal_value: str) -> float:
-        try:
-            return float(ideal_value)
-        except Exception:
+    def create_unified_dataset(self, samples):
+        """Create a unified dataset in the same format as Mohler dataset"""
+        unified_data = []
+        
+        for sample in samples:
+            # Extract grade from ideal field
             try:
-                return float(int(ideal_value))
-            except Exception:
-                return float('inf')
-    
-    def create_train_test_splits_by_set(self, samples):
-        splits_by_set = {}
-        for exercise_set in range(1, 7 + 1):
-            set_samples = [s for s in samples if s['exercise_set'] == exercise_set]
-            if len(set_samples) == 0:
-                continue
-            groups = {}
-            for s in set_samples:
-                groups.setdefault(s['ideal'], []).append(s)
-            unique_ideals_sorted = sorted(groups.keys(), key=lambda v: self._ideal_as_float(v))
-            train_samples = []
-            test_samples = []
-            for ideal_value in unique_ideals_sorted:
-                samples_for_value = groups[ideal_value]
-                if len(samples_for_value) > 0:
-                    train_samples.append(samples_for_value[0])
-                    test_samples.extend(samples_for_value[1:])
-            train_samples_sorted = sorted(train_samples, key=lambda s: self._ideal_as_float(s['ideal']))
-            test_samples_sorted = sorted(test_samples, key=lambda s: self._ideal_as_float(s['ideal']))
-            splits_by_set[exercise_set] = {
-                'train': train_samples_sorted,
-                'test': test_samples_sorted,
-                'total': len(set_samples)
+                grade = float(sample.get('ideal', 0))
+            except (ValueError, TypeError):
+                grade = 0.0
+            
+            # Create metadata JSON from demographic fields
+            metadata_dict = {}
+            if sample.get('economically_disadvantaged') is not None:
+                metadata_dict['economically_disadvantaged'] = sample['economically_disadvantaged']
+            if sample.get('student_disability_status') is not None:
+                metadata_dict['student_disability_status'] = sample['student_disability_status']
+            if sample.get('ell_status') is not None:
+                metadata_dict['ell_status'] = sample['ell_status']
+            if sample.get('race_ethnicity') is not None:
+                metadata_dict['race_ethnicity'] = sample['race_ethnicity']
+            if sample.get('gender') is not None:
+                metadata_dict['gender'] = sample['gender']
+            if sample.get('exercise') is not None:
+                metadata_dict['exercise'] = sample['exercise']
+            
+            # Convert metadata to JSON string, or NaN if empty
+            metadata_json = json.dumps(metadata_dict) if metadata_dict else np.nan
+            
+            unified_sample = {
+                'dataset': 'asap2',
+                'exercise_set': sample.get('exercise_set', 1),
+                'question': sample.get('question', ''),
+                'answer': sample.get('student_answer', ''),
+                'grade': grade,
+                'min_grade': 1.0,
+                'max_grade': 6.0,
+                'subject': 'english',
+                'exercise_type': 'essay_writing',
+                'isced_level': 3,
+                'rubric': sample.get('rubric', ''),
+                'desired_answer': np.nan,  # NaN as requested
+                'metadata': metadata_json
             }
-            print(f"Exercise Set {exercise_set}: Train={len(train_samples_sorted)}, Test={len(test_samples_sorted)}, Total={len(set_samples)}")
-        return splits_by_set
+            
+            unified_data.append(unified_sample)
+        
+        return pd.DataFrame(unified_data)
     
-    def save_jsonl_by_set(self, splits_by_set):
-        for exercise_set, splits in splits_by_set.items():
-            set_output_dir = self.output_dir / f"exercise_set_{exercise_set}"
-            set_output_dir.mkdir(parents=True, exist_ok=True)
-            train_file = set_output_dir / "train.jsonl"
-            with open(train_file, 'w', encoding='utf-8') as f:
-                for sample in splits['train']:
-                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
-            test_file = set_output_dir / "test.jsonl"
-            with open(test_file, 'w', encoding='utf-8') as f:
-                for sample in splits['test']:
-                    f.write(json.dumps(sample, ensure_ascii=False) + '\n')
-            print(f"Saved Exercise Set {exercise_set} to {set_output_dir}")
+    def save_unified_dataset(self, unified_df):
+        """Save the unified dataset as both CSV and parquet files"""
+        # Create output directory (use the main asap2 output directory)
+        output_dir = self.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save as CSV
+        csv_file = output_dir / 'asap2_processed.csv'
+        unified_df.to_csv(csv_file, index=False)
+        print(f"Saved unified ASAP2 dataset to {csv_file}")
+        
+        # Save as parquet
+        parquet_file = output_dir / 'asap2_processed.parquet'
+        unified_df.to_parquet(parquet_file, index=False)
+        print(f"Saved unified ASAP2 dataset to {parquet_file}")
+        
+        # Print statistics
+        print(f"Unified dataset contains {len(unified_df)} rows")
+        print(f"Exercise sets: {sorted(unified_df['exercise_set'].unique())}")
+        print(f"Grade distribution:")
+        print(unified_df['grade'].value_counts().sort_index())
+    
     
     def process(self):
         print("Starting ASAP2 dataset processing...")
         self.load_dataset()
         self.clean_data()
         samples = self.create_samples()
-        splits_by_set = self.create_train_test_splits_by_set(samples)
-        self.save_jsonl_by_set(splits_by_set)
-        total_samples = sum(s['total'] for s in splits_by_set.values())
-        total_train = sum(len(s['train']) for s in splits_by_set.values())
-        total_test = sum(len(s['test']) for s in splits_by_set.values())
+        
+        # Create unified dataset in the same format as Mohler
+        print("Creating unified dataset...")
+        unified_df = self.create_unified_dataset(samples)
+        self.save_unified_dataset(unified_df)
+        
         print(f"\nSummary:")
-        print(f"Total samples: {total_samples}")
-        print(f"Total training samples: {total_train}")
-        print(f"Total testing samples: {total_test}")
+        print(f"Total samples: {len(samples)}")
         print("ASAP2 dataset processing completed!")
 
 
