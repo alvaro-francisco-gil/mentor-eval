@@ -1,7 +1,7 @@
 from .mentoreval import MentorEvalBenchmark  
 from .task import MentorEvalTask, MentorEvalTasks, MentorEvalDataset  
 from .template import MentorEvalTemplate  
-from .config import MentorEvalConfig, BenchmarkMode, PromptType
+from .config import MentorEvalConfig, BenchmarkMode, PromptType, AsyncConfig
 from .models import ModelFactory, ModelProvider, create_model_from_config
 from .run_manager import RunManager, RunInfo
 from .metrics import (
@@ -31,6 +31,7 @@ __all__ = [
     'MentorEvalConfig',
     'BenchmarkMode',
     'PromptType',
+    'AsyncConfig',
     'ModelFactory',
     'ModelProvider',
     'create_model_from_config',

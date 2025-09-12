@@ -4,6 +4,7 @@ import json
 import os  
 import re  
 import glob
+import asyncio
 from datetime import datetime
 from tqdm import tqdm  
 from deepeval.benchmarks.base_benchmark import DeepEvalBaseBenchmark  
@@ -47,6 +48,7 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
         # Initialize run manager
         self.run_manager = RunManager()
         self.current_run: Optional[RunInfo] = None
+        self.interactions_file: Optional[str] = None
     
     def create_model(self) -> DeepEvalBaseLLM:
         """
@@ -207,6 +209,82 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
             'raw_output': model_output,  
             'individual_scores': individual_scores,  
             'overall_score': overall_score  
+        }
+    
+    async def a_predict(self, model: DeepEvalBaseLLM, golden: Golden, task: MentorEvalTask, exercise_metrics: List[str]) -> Dict:  
+        """Async version of predict method for concurrent evaluation."""
+        metadata = getattr(golden, 'additional_metadata', None) or {}  
+        # Extract question from context list
+        context_list = getattr(golden, 'context', []) or []
+        question = context_list[0] if context_list else metadata.get('question', '')
+        
+        # Get training examples for few-shot if configured
+        train_set = None
+        n_shots = 0
+        if self.config.use_few_shot and task.value in self.training_data:
+            train_set = self.training_data[task.value]
+            n_shots = len(train_set)
+        
+        prompt = MentorEvalTemplate.generate_output(  
+            question=question,  
+            student_answer=getattr(golden, 'input', ''),  
+            rubric=metadata.get('rubric', ''),  
+            academic_level=metadata.get('academic_level'),  
+            essay_type=metadata.get('essay_type'),  
+            metrics_list=exercise_metrics,  
+            rubric_range=metadata.get('rubric_range', {}),  
+            n_shots=n_shots,  
+            train_set=train_set,  
+            task=task,
+            prompt_type=self.config.prompt_type,
+            include_rubric=self.config.include_rubric
+        )  
+        
+        # Use async model generation if available
+        if hasattr(model, 'a_generate'):
+            model_output = await model.a_generate(prompt)
+        else:
+            # Fallback to sync generation in thread pool
+            loop = asyncio.get_event_loop()
+            model_output = await loop.run_in_executor(None, model.generate, prompt)
+        
+        # Handle case where model.generate returns a tuple (text, metadata)
+        if isinstance(model_output, tuple):
+            model_output = model_output[0]  # Extract just the text
+
+        # Try JSON block first  
+        parsed = self._parse_json_block(model_output)
+        individual_scores: Dict[str, float] = {}  
+        overall_score = None  
+        if isinstance(parsed, dict):  
+            for metric in exercise_metrics:  
+                key = f"{metric.lower()}_score"  
+                if key in parsed:  
+                    try:  
+                        individual_scores[metric.title()] = float(parsed[key])  
+                    except Exception:  
+                        continue  
+            if 'overall_score' in parsed:  
+                try:  
+                    overall_score = float(parsed['overall_score'])  
+                except Exception:  
+                    overall_score = None  
+
+        # Fallback parsing if needed  
+        if not individual_scores:  
+            individual_scores = self._parse_scores_fallback(model_output, exercise_metrics)  
+
+        # If overall score is missing, compute sum of individual scores if available  
+        if overall_score is None and individual_scores:  
+            try:  
+                overall_score = float(sum(individual_scores.values()))  
+            except Exception:  
+                overall_score = None  
+
+        return {  
+            'raw_output': model_output,  
+            'individual_scores': individual_scores,  
+            'overall_score': overall_score  
         }  
   
     def calculate_mae(self, golden: Golden, prediction_result: Dict) -> Tuple[Dict[str, float], Dict[str, float]]:  
@@ -293,9 +371,16 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
   
         return results  
   
-    def evaluate(self, model: DeepEvalBaseLLM):  
-        # Create a new run
-        self.current_run = self.run_manager.create_run(self.config)
+    def evaluate(self, model: DeepEvalBaseLLM, run_id: Optional[int] = None):  
+        # Use existing run or create a new one
+        if run_id is not None:
+            self.current_run = self.run_manager.get_run_info(run_id)
+            if self.current_run is None:
+                raise ValueError(f"Run {run_id} not found")
+            # Update config to use the configuration from the existing run
+            self.config = self._create_config_from_run_data(self.current_run.configuration)
+        else:
+            self.current_run = self.run_manager.create_run(self.config)
         self.run_manager.update_run_status(self.current_run.run_id, 'running')
         
         if self.config.verbose:
@@ -307,120 +392,342 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
         try:
             # Use deepeval's benchmark tracking
             with capture_benchmark_run("MentorEval", len(self.tasks)):  
+                predictions_row = []  
+
+            # NEW 4-LEVEL ARCHITECTURE: Collect all samples per exercise before calculating metrics
+            exercise_data: Dict[str, Dict] = {}  # task -> {predictions, ground_truth, rubric_ranges}
+            task_counts: Dict[str, int] = {}  
+
+            # PHASE 1: Collect all samples per exercise
+            for task in self.tasks:  
+                goldens = self.load_benchmark_dataset(task)  
+                
+                # Apply sample limiting based on configuration
+                if self.config.n_test_samples and self.config.n_test_samples < len(goldens):  
+                    goldens = goldens[:self.config.n_test_samples]
+                elif self.config.test_percentage:
+                    # Calculate number of samples based on percentage
+                    n_samples = max(1, int(len(goldens) * self.config.test_percentage))
+                    if self.config.verbose:
+                        print(f"  Exercise {task.exercise_set}: Limiting to {n_samples} samples ({self.config.test_percentage*100:.1f}% of {len(goldens)})")
+                    goldens = goldens[:n_samples]
+
+                if not goldens:  
+                    continue  
+
+                # Initialize exercise data collection
+                exercise_data[task.value] = {
+                    'all_predictions': [],
+                    'all_ground_truth': [],
+                    'all_rubric_ranges': [],
+                    'predictions_row': []
+                }
+
+                for idx, golden in enumerate(tqdm(goldens, desc=f"Processing {task.value}")):  
+                    exercise_metrics = self.extract_metrics_from_data(golden)  
+                    prediction_result = self.predict(model, golden, task, exercise_metrics)  
+
+                    # Extract predicted and ground truth scores for this sample
+                    predicted_scores = {}
+                    ground_truth_scores = {}
+                    rubric_ranges = {}
+                    
+                    metadata = getattr(golden, 'additional_metadata', None) or {}
+                    
+                    # Extract rubric ranges
+                    try:
+                        rubric_ranges = extract_rubric_ranges_from_metadata(metadata)
+                    except Exception as e:
+                        if self.config.verbose:
+                            print(f"Warning: Could not extract rubric ranges for {task.value}: {e}")
+                        continue
+                    
+                    # Extract scores for each metric
+                    for metric in exercise_metrics:
+                        metric_name = metric.title()
+                        
+                        # Get predicted score
+                        pred_score = prediction_result.get('individual_scores', {}).get(metric_name, None)
+                        if pred_score is not None:
+                            predicted_scores[metric_name] = float(pred_score)
+                        
+                        # Get ground truth score
+                        gt_score = metadata.get(f"ideal_{metric.lower()}_score", None)
+                        if gt_score is not None:
+                            ground_truth_scores[metric_name] = float(gt_score)
+                    
+                    # Only add if we have valid scores
+                    if predicted_scores and ground_truth_scores and rubric_ranges:
+                        exercise_data[task.value]['all_predictions'].append(predicted_scores)
+                        exercise_data[task.value]['all_ground_truth'].append(ground_truth_scores)
+                        exercise_data[task.value]['all_rubric_ranges'].append(rubric_ranges)
+                        
+                        # Calculate per-sample metrics for this sample
+                        try:
+                            per_sample_metrics = self.metrics_calculator.calculate_per_sample_metrics(
+                                predicted_scores, ground_truth_scores, rubric_ranges
+                            )
+                            
+                            # Extract NMAE and NRMSE for backward compatibility
+                            sample_nmae = per_sample_metrics.get('nmae', {}).value if 'nmae' in per_sample_metrics else 0.0
+                            sample_nrmse = per_sample_metrics.get('nrmse', {}).value if 'nrmse' in per_sample_metrics else 0.0
+                            
+                        except Exception as e:
+                            if self.config.verbose:
+                                print(f"Warning: Could not calculate per-sample metrics for {task.value} sample {idx}: {e}")
+                            sample_nmae = 0.0
+                            sample_nrmse = 0.0
+                        
+                        # Store prediction row for detailed results
+                        prediction_row = {  
+                            'Dataset': task.dataset.value,  
+                            'Exercise_Set': task.exercise_set,  
+                            'Task': task.value,  
+                            'Input': getattr(golden, 'input', ''),  
+                            'Prediction': prediction_result,  
+                            'Predicted_Scores': predicted_scores,
+                            'Expected_Scores': ground_truth_scores,
+                            'Sample_NMAE': sample_nmae,
+                            'Sample_NRMSE': sample_nrmse
+                        }
+                        
+                        exercise_data[task.value]['predictions_row'].append(prediction_row)
+                        predictions_row.append(prediction_row)
+                        
+                        task_counts[task.value] = task_counts.get(task.value, 0) + 1
+                        
+                        if self.config.verbose:  
+                            print(f"Sample {idx}: NMAE = {sample_nmae:.3f}, NRMSE = {sample_nrmse:.3f}")
+
+            # PHASE 2: Calculate exercise-level metrics using the new 4-level architecture
+            exercise_metrics_results = {}  # task -> exercise-level metrics
+            for task_name, data in exercise_data.items():
+                if not data['all_predictions']:
+                    continue
+                
+                try:
+                    # Calculate exercise-level metrics (Level 2)
+                    exercise_metrics = self.metrics_calculator.calculate_exercise_metrics(
+                        data['all_predictions'],
+                        data['all_ground_truth'], 
+                        data['all_rubric_ranges']
+                    )
+                    exercise_metrics_results[task_name] = exercise_metrics
+                    
+                    if self.config.verbose:
+                        print(f"\n📊 Exercise {task_name} Metrics:")
+                        for metric_name, value in exercise_metrics.items():
+                            print(f"  {metric_name}: {value:.3f}")
+                            
+                except Exception as e:
+                    if self.config.verbose:
+                        print(f"Warning: Could not calculate exercise metrics for {task_name}: {e}")
+                    exercise_metrics_results[task_name] = {}
+            
+            # PHASE 3: Calculate dataset-level metrics (Level 3)
+            dataset_metrics_results = {}  # dataset -> dataset-level metrics
+            dataset_to_exercise_metrics = {}  # dataset -> [exercise_metrics]
+            
+            # Group exercise metrics by dataset
+            for task in self.tasks:
+                if task.value in exercise_metrics_results:
+                    dataset = task.dataset.value
+                    if dataset not in dataset_to_exercise_metrics:
+                        dataset_to_exercise_metrics[dataset] = []
+                    dataset_to_exercise_metrics[dataset].append(exercise_metrics_results[task.value])
+            
+            # Calculate dataset-level metrics by averaging exercise-level metrics
+            for dataset, exercise_metrics_list in dataset_to_exercise_metrics.items():
+                try:
+                    dataset_metrics = self.metrics_calculator.calculate_dataset_metrics(exercise_metrics_list)
+                    dataset_metrics_results[dataset] = dataset_metrics
+                    
+                    if self.config.verbose:
+                        print(f"\n📊 Dataset {dataset} Metrics:")
+                        for metric_name, value in dataset_metrics.items():
+                            print(f"  {metric_name}: {value:.3f}")
+                            
+                except Exception as e:
+                    if self.config.verbose:
+                        print(f"Warning: Could not calculate dataset metrics for {dataset}: {e}")
+                    dataset_metrics_results[dataset] = {}
+            
+            # PHASE 4: Calculate overall metrics (Level 4)
+            if dataset_metrics_results:
+                try:
+                    overall_metrics = self.metrics_calculator.calculate_overall_metrics(
+                        list(dataset_metrics_results.values())
+                    )
+                    self.overall_metrics = overall_metrics
+                    
+                    if self.config.verbose:
+                        print(f"\n🎯 Overall Metrics:")
+                        for metric_name, value in overall_metrics.items():
+                            print(f"  {metric_name}: {value:.3f}")
+                            
+                except Exception as e:
+                    if self.config.verbose:
+                        print(f"Warning: Could not calculate overall metrics: {e}")
+                    self.overall_metrics = {}
+            
+            # Store results for backward compatibility and reporting
+            scores_row = []
+            for task in self.tasks:
+                if task.value in exercise_metrics_results:
+                    # Use NMAE for the scores_row (backward compatibility)
+                    avg_nmae = exercise_metrics_results[task.value].get('nmae', 0.0)
+                    scores_row.append((task.dataset.value, task.exercise_set, task.value, avg_nmae))
+                    
+                    # Store task metrics (exercise-level metrics)
+                    self.task_scores[task.value] = exercise_metrics_results[task.value]
+                    
+                    print(f"MentorEval Task NMAE (task={task.value}): {avg_nmae:.3f}")
+            
+            # Store dataset scores
+            self.dataset_scores = dataset_metrics_results
+            for dataset, metrics in dataset_metrics_results.items():
+                print(f"MentorEval Dataset NMAE (dataset={dataset}): {metrics.get('nmae', 0.0):.3f}")
+  
+            # Calculate overall NMAE and NRMSE by averaging per-sample values
+            all_sample_nmaes = [row['Overall_NMAE'] for row in predictions_row]
+            all_sample_nrmses = [row['Overall_NRMSE'] for row in predictions_row]
+            overall_nmae = sum(all_sample_nmaes) / len(all_sample_nmaes) if all_sample_nmaes else 0.0
+            overall_nrmse = sum(all_sample_nrmses) / len(all_sample_nrmses) if all_sample_nrmses else 0.0
+            
+            # Global evaluation metrics (for correlations, use individual metrics)
+            eval_results = self.calculate_evaluation_metrics(all_predictions, all_ground_truth)  
+            
+            # Store the results
+            eval_results['nmae'] = {'normalized_value': overall_nmae}
+            eval_results['nrmse'] = {'normalized_value': overall_nrmse}
+            
+            # Print NMAE and NRMSE instead of MAE
+            if 'nmae' in eval_results:
+                print(f"Overall MentorEval NMAE: {eval_results['nmae']['normalized_value']:.3f}")
+            if 'nrmse' in eval_results:
+                print(f"Overall MentorEval NRMSE: {eval_results['nrmse']['normalized_value']:.3f}")
+            if 'pearson_correlation' in eval_results:  
+                print(f"Pearson Correlation: {eval_results['pearson_correlation']:.3f}")  
+            if 'spearman_correlation' in eval_results:  
+                print(f"Spearman Correlation: {eval_results['spearman_correlation']:.3f}")  
+
+            # Create DataFrames for results
+            self.predictions = pd.DataFrame(predictions_row)
+            # self.task_scores is already set as a dictionary in the loop above
+            self.overall_score = overall_nmae  # Use NMAE as the overall score
+            self.overall_metrics = eval_results
+
+            # Save results to files
+            self._save_results()
+
+            # Update run status to completed
+            self.run_manager.update_run_status(self.current_run.run_id, 'completed')
+
+            return eval_results
+        
+        except Exception as e:
+            # Update run status to failed
+            self.run_manager.update_run_status(self.current_run.run_id, 'failed')
+            
+            if self.config.verbose:
+                print(f"\n❌ Run {self.current_run.run_id} failed: {e}")
+            
+            raise
+    
+    def evaluate_with_config(self, model: DeepEvalBaseLLM, run_id: Optional[int] = None):
+        """Evaluate using sync or async based on configuration."""
+        if self.config.async_config.run_async:
+            # Run async evaluation
+            loop = asyncio.get_event_loop()
+            return loop.run_until_complete(self.a_evaluate(model, run_id))
+        else:
+            # Run sync evaluation
+            return self.evaluate(model, run_id)
+    
+    async def a_evaluate(self, model: DeepEvalBaseLLM, run_id: Optional[int] = None):
+        """Async version of evaluate method with concurrent processing."""
+        # Use existing run or create a new one
+        if run_id is not None:
+            self.current_run = self.run_manager.get_run_info(run_id)
+            if self.current_run is None:
+                raise ValueError(f"Run {run_id} not found")
+            # Update config to use the configuration from the existing run
+            self.config = self._create_config_from_run_data(self.current_run.configuration)
+        else:
+            self.current_run = self.run_manager.create_run(self.config)
+        self.run_manager.update_run_status(self.current_run.run_id, 'running')
+        
+        # Initialize interactions file for incremental saving
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self._initialize_interactions_file(timestamp, self.current_run.run_id)
+        
+        if self.config.verbose:
+            print(f"\n🚀 Starting MentorEval Run ID: {self.current_run.run_id} (Async)")
+            print(f"   Model: {self.config.model_name}")
+            print(f"   Mode: {self.config.mode.value}")
+            print(f"   Configuration: {self.config.get_description()}")
+            print(f"   Debug - test_percentage: {self.config.test_percentage}, n_test_samples: {self.config.n_test_samples}")
+        
+        try:
+            # Use deepeval's benchmark tracking
+            with capture_benchmark_run("MentorEval", len(self.tasks)):  
                 all_predictions: List[float] = []  
                 all_ground_truth: List[float] = []  
                 predictions_row = []  
-  
+
             # For reporting per-task and per-dataset metrics
             task_metrics: Dict[str, Dict[str, List[float]]] = {}  # task -> metric -> values
             task_counts: Dict[str, int] = {}  
             dataset_to_task_metrics: Dict[str, Dict[str, List[float]]] = {}  # dataset -> metric -> values  
-  
+
+            # Create semaphore for concurrency control
+            semaphore = asyncio.Semaphore(self.config.async_config.max_concurrent)
+            
+            async def process_golden_with_semaphore(golden, task, idx):
+                """Process a single golden with semaphore control."""
+                async with semaphore:
+                    return await self._process_single_golden_async(model, golden, task, idx, task_metrics, task_counts, all_predictions, all_ground_truth)
+            
+            # Collect all tasks to process
+            all_tasks = []
+            global_idx = 0  # Global index across all exercise sets
             for task in self.tasks:  
                 goldens = self.load_benchmark_dataset(task)  
+                
+                # Apply sample limiting based on configuration
                 if self.config.n_test_samples and self.config.n_test_samples < len(goldens):  
-                    goldens = goldens[:self.config.n_test_samples]  
-  
+                    goldens = goldens[:self.config.n_test_samples]
+                elif self.config.test_percentage:
+                    # Calculate number of samples based on percentage
+                    n_samples = max(1, int(len(goldens) * self.config.test_percentage))
+                    if self.config.verbose:
+                        print(f"  Exercise {task.exercise_set}: Limiting to {n_samples} samples ({self.config.test_percentage*100:.1f}% of {len(goldens)})")
+                    goldens = goldens[:n_samples]
+
                 if not goldens:  
                     continue  
-  
-                for idx, golden in enumerate(tqdm(goldens, desc=f"Processing {task.value}")):  
-                    exercise_metrics = self.extract_metrics_from_data(golden)  
-                    prediction_result = self.predict(model, golden, task, exercise_metrics)  
-  
-                    # Per-sample NMAE and NRMSE across metrics  
-                    nmae_scores, nrmse_scores = self.calculate_mae(golden, prediction_result)  
-                    sample_overall_nmae = (sum(nmae_scores.values()) / len(nmae_scores)) if nmae_scores else 0.0
-                    sample_overall_nrmse = (sum(nrmse_scores.values()) / len(nrmse_scores)) if nrmse_scores else 0.0  
-  
-                    # Collect for global correlation metrics  
-                    metadata = getattr(golden, 'additional_metadata', None) or {}  
-                    for metric in exercise_metrics:  
-                        pred_score = prediction_result.get('individual_scores', {}).get(metric.title(), None)  
-                        gt_key = f"ideal_{metric.lower()}_score"  
-                        gt_score = metadata.get(gt_key, None)  
-                        if pred_score is not None and gt_score is not None:  
-                            try:  
-                                all_predictions.append(float(pred_score))  
-                                all_ground_truth.append(float(gt_score))  
-                            except Exception:  
-                                pass  
-  
-                    # Handle expected scores - use individual scores if available, otherwise use overall
-                    expected_scores = {}  
-                    
-                    # Check if we have individual metric scores (not None)
-                    individual_scores_available = any(
-                        metadata.get(f"ideal_{metric.lower()}_score") is not None 
-                        for metric in exercise_metrics
-                    )
-                    
-                    if individual_scores_available:
-                        # Use individual scores if available
-                        for metric in exercise_metrics:  
-                            individual_score = metadata.get(f"ideal_{metric.lower()}_score")  
-                            if individual_score is not None:  
-                                expected_scores[metric.title()] = individual_score  
-                            else:  
-                                expected_scores[metric.title()] = None
-                    else:
-                        # If no individual scores, check if we have an overall score
-                        overall_score = metadata.get('ideal_overall_score') or metadata.get('ideal')
-                        if overall_score is not None:
-                            # For single metric datasets, use the overall score directly
-                            if len(exercise_metrics) == 1:
-                                expected_scores[exercise_metrics[0].title()] = overall_score
-                            else:
-                                # For multi-metric datasets, divide by number of metrics
-                                for metric in exercise_metrics:
-                                    expected_scores[metric.title()] = float(overall_score) / len(exercise_metrics)
-                        else:
-                            # No scores available
-                            for metric in exercise_metrics:
-                                expected_scores[metric.title()] = None  
-  
-                    predictions_row.append({  
-                        'Dataset': task.dataset.value,  
-                        'Exercise_Set': task.exercise_set,  
-                        'Task': task.value,  
-                        'Input': getattr(golden, 'input', ''),  
-                        'Prediction': prediction_result,  
-                        'Expected_Scores': expected_scores,  
-                        'NMAE_Scores': nmae_scores,  
-                        'NRMSE_Scores': nrmse_scores,
-                        'Overall_NMAE': sample_overall_nmae,
-                        'Overall_NRMSE': sample_overall_nrmse
-                    })  
-
-                    # Aggregate by task for reporting
-                    if task.value not in task_metrics:
-                        task_metrics[task.value] = {
-                            'nmae': [], 'nrmse': [], 'pearson_correlation': [], 
-                            'spearman_correlation': [], 'jensen_shannon_divergence': [],
-                            'wasserstein_distance': [], 'kolmogorov_smirnov_test': [],
-                            'cohens_kappa': []
-                        }
-                    
-                    # Collect sample-level metrics
-                    task_metrics[task.value]['nmae'].append(sample_overall_nmae)
-                    task_metrics[task.value]['nrmse'].append(sample_overall_nrmse)
-                    task_counts[task.value] = task_counts.get(task.value, 0) + 1
-                    
-                    # Collect per-rubric NMAE and NRMSE
-                    if 'per_rubric_metrics' not in task_metrics[task.value]:
-                        task_metrics[task.value]['per_rubric_metrics'] = {}
-                    
-                    for metric_name in nmae_scores.keys():
-                        if metric_name not in task_metrics[task.value]['per_rubric_metrics']:
-                            task_metrics[task.value]['per_rubric_metrics'][metric_name] = {
-                                'nmae': [], 'nrmse': []
-                            }
-                        task_metrics[task.value]['per_rubric_metrics'][metric_name]['nmae'].append(nmae_scores[metric_name])
-                        task_metrics[task.value]['per_rubric_metrics'][metric_name]['nrmse'].append(nrmse_scores[metric_name])  
-
-                    if self.config.verbose:  
-                        print(f"Sample {idx}: NMAE = {sample_overall_nmae:.3f}, NRMSE = {sample_overall_nrmse:.3f}")
-  
+                
+                for golden in goldens:
+                    all_tasks.append(process_golden_with_semaphore(golden, task, global_idx))
+                    global_idx += 1
+            
+            # Process all tasks concurrently
+            if self.config.verbose:
+                print(f"Processing {len(all_tasks)} samples with max {self.config.async_config.max_concurrent} concurrent operations...")
+            
+            # Use asyncio.gather to run all tasks concurrently
+            results = await asyncio.gather(*all_tasks, return_exceptions=True)
+            
+            # Process results
+            for result in results:
+                if isinstance(result, Exception):
+                    if self.config.verbose:
+                        print(f"Error processing sample: {result}")
+                    continue
+                
+                if result:
+                    predictions_row.append(result)
+            
             # Calculate per-task metrics (correlations and distribution metrics)
             self._calculate_per_task_metrics(task_metrics, predictions_row)
             
@@ -473,7 +780,7 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
                 
                 self.dataset_scores[dataset] = dataset_avg_metrics
                 print(f"MentorEval Dataset NMAE (dataset={dataset}): {dataset_avg_metrics.get('nmae', 0.0):.3f}")
-  
+
             # Calculate overall NMAE and NRMSE by averaging per-sample values
             all_sample_nmaes = [row['Overall_NMAE'] for row in predictions_row]
             all_sample_nrmses = [row['Overall_NRMSE'] for row in predictions_row]
@@ -520,147 +827,205 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
             
             raise
     
-    def _calculate_per_task_metrics(self, task_metrics: Dict[str, Dict[str, List[float]]], predictions_row: List[Dict]):
-        """Calculate correlation and distribution metrics for each task and per-rubric metrics."""
-        # Group predictions by task
-        task_predictions = {}
-        task_rubric_predictions = {}  # For per-rubric metrics
-        
-        for row in predictions_row:
-            task = row['Task']
-            if task not in task_predictions:
-                task_predictions[task] = {'predictions': [], 'ground_truth': []}
-                task_rubric_predictions[task] = {}
+    async def _process_single_golden_async(self, model: DeepEvalBaseLLM, golden: Golden, task: MentorEvalTask, idx: int, 
+                                         task_metrics: Dict, task_counts: Dict, all_predictions: List[float], 
+                                         all_ground_truth: List[float]) -> Optional[Dict]:
+        """Process a single golden sample asynchronously."""
+        try:
+            exercise_metrics = self.extract_metrics_from_data(golden)  
+            prediction_result = await self.a_predict(model, golden, task, exercise_metrics)  
+
+            # Per-sample NMAE and NRMSE across metrics  
+            nmae_scores, nrmse_scores = self.calculate_mae(golden, prediction_result)  
+            sample_overall_nmae = (sum(nmae_scores.values()) / len(nmae_scores)) if nmae_scores else 0.0
+            sample_overall_nrmse = (sum(nrmse_scores.values()) / len(nrmse_scores)) if nrmse_scores else 0.0  
+
+            # Collect for global correlation metrics  
+            metadata = getattr(golden, 'additional_metadata', None) or {}  
+            for metric in exercise_metrics:  
+                pred_score = prediction_result.get('individual_scores', {}).get(metric.title(), None)  
+                gt_key = f"ideal_{metric.lower()}_score"  
+                gt_score = metadata.get(gt_key, None)  
+                if pred_score is not None and gt_score is not None:  
+                    try:  
+                        all_predictions.append(float(pred_score))  
+                        all_ground_truth.append(float(gt_score))  
+                    except Exception:  
+                        pass  
+
+            # Handle expected scores - use individual scores if available, otherwise use overall
+            expected_scores = {}  
             
-            # Extract individual metric predictions and ground truth
-            pred_scores = row.get('Prediction_Scores', {})
-            exp_scores = row.get('Expected_Scores', {})
+            # Check if we have individual metric scores (not None)
+            individual_scores_available = any(
+                metadata.get(f"ideal_{metric.lower()}_score") is not None 
+                for metric in exercise_metrics
+            )
             
-            for metric_name in pred_scores.keys():
-                if metric_name in exp_scores:
-                    try:
-                        pred_val = float(pred_scores[metric_name])
-                        gt_val = float(exp_scores[metric_name])
-                        
-                        # Add to overall task predictions
-                        task_predictions[task]['predictions'].append(pred_val)
-                        task_predictions[task]['ground_truth'].append(gt_val)
-                        
-                        # Add to per-rubric predictions
-                        if metric_name not in task_rubric_predictions[task]:
-                            task_rubric_predictions[task][metric_name] = {'predictions': [], 'ground_truth': []}
-                        task_rubric_predictions[task][metric_name]['predictions'].append(pred_val)
-                        task_rubric_predictions[task][metric_name]['ground_truth'].append(gt_val)
-                        
-                    except (ValueError, TypeError):
-                        continue
-        
-        # Calculate metrics for each task (overall)
-        for task, data in task_predictions.items():
-            if len(data['predictions']) < 2:
-                continue
-                
-            pred_values = data['predictions']
-            gt_values = data['ground_truth']
+            if individual_scores_available:
+                # Use individual scores if available
+                for metric in exercise_metrics:  
+                    individual_score = metadata.get(f"ideal_{metric.lower()}_score")  
+                    if individual_score is not None:  
+                        expected_scores[metric.title()] = individual_score  
+                    else:  
+                        expected_scores[metric.title()] = None
+            else:
+                # If no individual scores, check if we have an overall score
+                overall_score = metadata.get('ideal_overall_score') or metadata.get('ideal')
+                if overall_score is not None:
+                    # For single metric datasets, use the overall score directly
+                    if len(exercise_metrics) == 1:
+                        expected_scores[exercise_metrics[0].title()] = overall_score
+                    else:
+                        # For multi-metric datasets, divide by number of metrics
+                        for metric in exercise_metrics:
+                            expected_scores[metric.title()] = float(overall_score) / len(exercise_metrics)
+                else:
+                    # No scores available
+                    for metric in exercise_metrics:
+                        expected_scores[metric.title()] = None  
+
+            result = {  
+                'Dataset': task.dataset.value,  
+                'Exercise_Set': task.exercise_set,  
+                'Task': task.value,  
+                'Input': getattr(golden, 'input', ''),  
+                'Prediction': prediction_result,  
+                'Expected_Scores': expected_scores,  
+                'NMAE_Scores': nmae_scores,  
+                'NRMSE_Scores': nrmse_scores,
+                'Overall_NMAE': sample_overall_nmae,
+                'Overall_NRMSE': sample_overall_nrmse
+            }
             
-            # Calculate correlations
-            try:
-                from scipy.stats import pearsonr, spearmanr
-                from sklearn.metrics import cohen_kappa_score
-                pearson_corr, _ = pearsonr(pred_values, gt_values)
-                spearman_corr, _ = spearmanr(pred_values, gt_values)
-                task_metrics[task]['pearson_correlation'].append(pearson_corr)
-                task_metrics[task]['spearman_correlation'].append(spearman_corr)
-                
-                # Calculate Cohen's Kappa
-                pred_categories = [int(round(val)) for val in pred_values]
-                gt_categories = [int(round(val)) for val in gt_values]
-                kappa = cohen_kappa_score(gt_categories, pred_categories)
-                task_metrics[task]['cohens_kappa'].append(kappa)
-            except Exception:
-                pass
-            
-            # Calculate distribution metrics
-            try:
-                from scipy.spatial.distance import jensenshannon
-                from scipy.stats import wasserstein_distance, ks_2samp
-                import numpy as np
-                
-                # Jensen-Shannon divergence
-                pred_dist = np.array(pred_values) / sum(pred_values) if sum(pred_values) > 0 else np.array(pred_values)
-                gt_dist = np.array(gt_values) / sum(gt_values) if sum(gt_values) > 0 else np.array(gt_values)
-                js_div = jensenshannon(pred_dist, gt_dist, base=2)
-                task_metrics[task]['jensen_shannon_divergence'].append(js_div)
-                
-                # Wasserstein distance
-                w_distance = wasserstein_distance(pred_values, gt_values)
-                task_metrics[task]['wasserstein_distance'].append(w_distance)
-                
-                # Kolmogorov-Smirnov test
-                ks_stat, _ = ks_2samp(pred_values, gt_values)
-                task_metrics[task]['kolmogorov_smirnov_test'].append(ks_stat)
-                
-            except Exception:
-                pass
-        
-        # Calculate per-rubric metrics
-        for task, rubric_data in task_rubric_predictions.items():
-            if task not in task_metrics:
-                continue
-                
-            # Initialize per-rubric metrics structure
-            if 'per_rubric_metrics' not in task_metrics[task]:
-                task_metrics[task]['per_rubric_metrics'] = {}
-            
-            for rubric_name, rubric_predictions in rubric_data.items():
-                if len(rubric_predictions['predictions']) < 2:
-                    continue
-                
-                pred_values = rubric_predictions['predictions']
-                gt_values = rubric_predictions['ground_truth']
-                
-                # Initialize rubric metrics
-                task_metrics[task]['per_rubric_metrics'][rubric_name] = {
+            # Save interaction incrementally
+            self._save_interaction(result)  
+
+            # Aggregate by task for reporting
+            if task.value not in task_metrics:
+                task_metrics[task.value] = {
                     'nmae': [], 'nrmse': [], 'pearson_correlation': [], 
                     'spearman_correlation': [], 'jensen_shannon_divergence': [],
                     'wasserstein_distance': [], 'kolmogorov_smirnov_test': [],
                     'cohens_kappa': []
                 }
-                
-                # Calculate NMAE and NRMSE for this rubric
-                try:
-                    from scipy.stats import pearsonr, spearmanr
-                    from scipy.spatial.distance import jensenshannon
-                    from scipy.stats import wasserstein_distance, ks_2samp
-                    from sklearn.metrics import cohen_kappa_score
-                    import numpy as np
-                    
-                    # Calculate correlations
-                    pearson_corr, _ = pearsonr(pred_values, gt_values)
-                    spearman_corr, _ = spearmanr(pred_values, gt_values)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['pearson_correlation'].append(pearson_corr)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['spearman_correlation'].append(spearman_corr)
-                    
-                    # Calculate Cohen's Kappa for this rubric
-                    pred_categories = [int(round(val)) for val in pred_values]
-                    gt_categories = [int(round(val)) for val in gt_values]
-                    kappa = cohen_kappa_score(gt_categories, pred_categories)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['cohens_kappa'].append(kappa)
-                    
-                    # Calculate distribution metrics
-                    pred_dist = np.array(pred_values) / sum(pred_values) if sum(pred_values) > 0 else np.array(pred_values)
-                    gt_dist = np.array(gt_values) / sum(gt_values) if sum(gt_values) > 0 else np.array(gt_values)
-                    js_div = jensenshannon(pred_dist, gt_dist, base=2)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['jensen_shannon_divergence'].append(js_div)
-                    
-                    w_distance = wasserstein_distance(pred_values, gt_values)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['wasserstein_distance'].append(w_distance)
-                    
-                    ks_stat, _ = ks_2samp(pred_values, gt_values)
-                    task_metrics[task]['per_rubric_metrics'][rubric_name]['kolmogorov_smirnov_test'].append(ks_stat)
-                    
-                except Exception:
-                    pass
+            
+            # Collect sample-level metrics
+            task_metrics[task.value]['nmae'].append(sample_overall_nmae)
+            task_metrics[task.value]['nrmse'].append(sample_overall_nrmse)
+            task_counts[task.value] = task_counts.get(task.value, 0) + 1
+            
+            # Collect per-rubric NMAE and NRMSE
+            if 'per_rubric_metrics' not in task_metrics[task.value]:
+                task_metrics[task.value]['per_rubric_metrics'] = {}
+            
+            for metric_name in nmae_scores.keys():
+                if metric_name not in task_metrics[task.value]['per_rubric_metrics']:
+                    task_metrics[task.value]['per_rubric_metrics'][metric_name] = {
+                        'nmae': [], 'nrmse': []
+                    }
+                task_metrics[task.value]['per_rubric_metrics'][metric_name]['nmae'].append(nmae_scores[metric_name])
+                task_metrics[task.value]['per_rubric_metrics'][metric_name]['nrmse'].append(nrmse_scores[metric_name])  
+
+            if self.config.verbose:  
+                print(f"Sample {idx}: NMAE = {sample_overall_nmae:.3f}, NRMSE = {sample_overall_nrmse:.3f}")
+            
+            # Add throttle delay if configured
+            if self.config.async_config.throttle_value > 0:
+                await asyncio.sleep(self.config.async_config.throttle_value)
+            
+            return result
+            
+        except Exception as e:
+            if self.config.verbose:
+                print(f"Error processing sample {idx}: {e}")
+            return None
+    
+    
+    def _create_config_from_run_data(self, config_data):
+        """Create MentorEvalConfig from configuration data."""
+        from .config import BenchmarkMode, PromptType, AsyncConfig
+        
+        # Handle mode
+        mode_str = config_data.get('mode', 'mentoreval-test')
+        if mode_str == 'mentoreval':
+            mode = BenchmarkMode.MENTOREVAL
+        else:
+            mode = BenchmarkMode.MENTOREVAL_TEST
+        
+        # Handle prompt type
+        prompt_type_str = config_data.get('prompt_type', 'with_explanation')
+        if prompt_type_str == 'grade_only':
+            prompt_type = PromptType.GRADE_ONLY
+        else:
+            prompt_type = PromptType.WITH_EXPLANATION
+        
+        # Handle async configuration
+        async_config_data = config_data.get('async_config', {})
+        async_config = AsyncConfig(
+            run_async=async_config_data.get('run_async', True),
+            max_concurrent=async_config_data.get('max_concurrent', 20),
+            throttle_value=async_config_data.get('throttle_value', 0.0)
+        )
+        
+        # Create config
+        config = MentorEvalConfig(
+            mode=mode,
+            use_few_shot=config_data.get('use_few_shot', True),
+            include_rubric=config_data.get('include_rubric', True),
+            prompt_type=prompt_type,
+            n_test_samples=config_data.get('n_test_samples'),
+            test_percentage=config_data.get('test_percentage'),
+            model_name=config_data.get('model_name', 'gpt-4o-mini'),
+            model_provider=config_data.get('model_provider', 'openai'),
+            async_config=async_config
+        )
+        
+        # Set verbose if specified
+        if config_data.get('verbose', False):
+            config.verbose = True
+            
+        return config
+    
+    def _initialize_interactions_file(self, timestamp: str, run_id: int):
+        """Initialize the interactions file for incremental saving."""
+        # Create detailed results directory (ignored by git)
+        detailed_dir = "results_detailed"
+        os.makedirs(detailed_dir, exist_ok=True)
+        
+        run_dir = os.path.join(detailed_dir, f"{run_id}_{timestamp}")
+        os.makedirs(run_dir, exist_ok=True)
+        
+        # Initialize interactions file
+        self.interactions_file = os.path.join(run_dir, "llm_interactions.jsonl")
+        
+        # Save configuration for reproducibility
+        config_file = os.path.join(run_dir, "config.json")
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump({
+                'run_id': run_id,
+                'timestamp': timestamp,
+                'model_name': self.config.model_name,
+                'model_provider': self.config.model_provider,
+                'mode': self.config.mode.value,
+                'use_few_shot': self.config.use_few_shot,
+                'include_rubric': self.config.include_rubric,
+                'prompt_type': self.config.prompt_type.value,
+                'n_test_samples': self.config.n_test_samples,
+                'test_percentage': self.config.test_percentage,
+                'async_config': {
+                    'run_async': self.config.async_config.run_async,
+                    'max_concurrent': self.config.async_config.max_concurrent,
+                    'throttle_value': self.config.async_config.throttle_value
+                }
+            }, f, indent=2)
+    
+    def _save_interaction(self, interaction_data: dict):
+        """Save a single LLM interaction to the JSONL file."""
+        if self.interactions_file:
+            with open(self.interactions_file, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(interaction_data) + '\n')
     
     def _save_results(self):
         """Save results in two formats: detailed (ignored by git) and aggregated (tracked by git)."""
@@ -670,9 +1035,6 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
         # Automatically calculate timestamp when saving
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         run_id = self.current_run.run_id
-        
-        # Save detailed results (ignored by git)
-        self._save_detailed_results(timestamp, run_id)
         
         # Save aggregated results (tracked by git)
         self._save_aggregated_results(timestamp, run_id)
@@ -685,10 +1047,6 @@ class MentorEvalBenchmark(DeepEvalBaseBenchmark):
         
         run_dir = os.path.join(detailed_dir, f"{run_id}_{timestamp}")
         os.makedirs(run_dir, exist_ok=True)
-        
-        # Save detailed predictions with full LLM input/output
-        predictions_file = os.path.join(run_dir, "detailed_predictions.csv")
-        self.predictions.to_csv(predictions_file, index=False)
         
         # Save individual LLM interactions as JSONL for analysis
         interactions_file = os.path.join(run_dir, "llm_interactions.jsonl")

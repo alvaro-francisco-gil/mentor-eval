@@ -20,7 +20,7 @@ class RunInfo:
     model_name: str
     benchmark_mode: str
     configuration: Dict[str, Any]
-    status: str  # 'created', 'running', 'completed', 'failed'
+    status: str = 'created'  # 'created', 'running', 'completed', 'failed'
 
 
 class RunManager:
@@ -69,33 +69,55 @@ class RunManager:
     
     def update_run_status(self, run_id: int, status: str):
         """Update the status of a run."""
-        run_file = os.path.join(self.runs_dir, f"{run_id}_run.json")
+        # Find the run file by looking through all JSON files
+        run_files = glob.glob(os.path.join(self.runs_dir, "*.json"))
         
-        if not os.path.exists(run_file):
-            raise FileNotFoundError(f"Run file not found: {run_file}")
+        for run_file in run_files:
+            # Skip template file
+            if "template" in run_file.lower():
+                continue
+                
+            try:
+                with open(run_file, 'r', encoding='utf-8') as f:
+                    run_data = json.load(f)
+                
+                # Check if this file contains the run_id we're looking for
+                if run_data.get('run_id') == run_id:
+                    # Update status
+                    run_data['status'] = status
+                    
+                    # Save updated run info
+                    with open(run_file, 'w', encoding='utf-8') as f:
+                        json.dump(run_data, f, indent=2)
+                    return
+                    
+            except (json.JSONDecodeError, TypeError):
+                continue
         
-        # Load existing run info
-        with open(run_file, 'r', encoding='utf-8') as f:
-            run_data = json.load(f)
-        
-        # Update status
-        run_data['status'] = status
-        
-        # Save updated run info
-        with open(run_file, 'w', encoding='utf-8') as f:
-            json.dump(run_data, f, indent=2)
+        raise FileNotFoundError(f"Run {run_id} not found in any JSON file")
     
     def get_run_info(self, run_id: int) -> Optional[RunInfo]:
         """Get run information by ID."""
-        run_file = os.path.join(self.runs_dir, f"{run_id}_run.json")
+        # Look through all JSON files to find the one with matching run_id
+        run_files = glob.glob(os.path.join(self.runs_dir, "*.json"))
         
-        if not os.path.exists(run_file):
-            return None
+        for run_file in run_files:
+            # Skip template file
+            if "template" in run_file.lower():
+                continue
+                
+            try:
+                with open(run_file, 'r', encoding='utf-8') as f:
+                    run_data = json.load(f)
+                
+                # Check if this file contains the run_id we're looking for
+                if run_data.get('run_id') == run_id:
+                    return RunInfo(**run_data)
+                    
+            except (json.JSONDecodeError, TypeError):
+                continue
         
-        with open(run_file, 'r', encoding='utf-8') as f:
-            run_data = json.load(f)
-        
-        return RunInfo(**run_data)
+        return None
     
     def list_runs(self) -> List[RunInfo]:
         """List all runs in chronological order."""
