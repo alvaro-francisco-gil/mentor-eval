@@ -8,8 +8,14 @@
     "include_rubric": true,
     "prompt_type": "with_explanation",
     "n_test_samples": 1,
+    "test_percentage": null,
     "model_name": "gpt-4o-mini",
     "model_provider": "openai",
+    "async_config": {
+      "run_async": true,
+      "max_concurrent": 20,
+      "throttle_value": 0.0
+    },
     "verbose": true
   },
   "status": "template",
@@ -20,8 +26,14 @@
     "include_rubric": [true, false],
     "prompt_type": ["with_explanation", "grade_only"],
     "n_test_samples": ["null (all samples)", "1", "5", "10", "etc."],
+    "test_percentage": ["null (all samples)", "0.05 (5%)", "0.1 (10%)", "0.2 (20%)", "etc."],
     "model_name": ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo", "claude-3-haiku", "claude-3-sonnet", "claude-3-opus", "grok-3-mini-latest", "etc."],
     "model_provider": ["openai", "anthropic", "xai", "etc."],
+    "async_config": {
+      "run_async": [true, false],
+      "max_concurrent": ["1", "5", "10", "20", "50", "etc."],
+      "throttle_value": ["0.0", "0.1", "0.5", "1.0", "etc."]
+    },
     "verbose": [true, false]
   },
   "_benchmark_modes": {
@@ -31,5 +43,10 @@
   "_prompt_types": {
     "with_explanation": "Forces LLM to provide brief explanations for each grade",
     "grade_only": "Expects only the actual grade without explanations"
+  },
+  "_async_config": {
+    "run_async": "Enable/disable async processing (default: true)",
+    "max_concurrent": "Maximum number of concurrent operations (default: 20)",
+    "throttle_value": "Delay between operations in seconds (default: 0.0)"
   }
 }

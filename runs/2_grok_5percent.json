@@ -1,0 +1,22 @@
+{
+  "run_id": 2,
+  "model_name": "grok-3-mini",
+  "benchmark_mode": "mentoreval-test",
+  "configuration": {
+    "mode": "mentoreval-test",
+    "use_few_shot": true,
+    "include_rubric": true,
+    "prompt_type": "with_explanation",
+    "n_test_samples": null,
+    "test_percentage": 0.01,
+    "model_name": "grok-3-mini",
+    "model_provider": "xai",
+    "async_config": {
+      "run_async": true,
+      "max_concurrent": 3,
+      "throttle_value": 0.2
+    },
+    "verbose": true
+  },
+  "status": "completed"
+}

@@ -1,0 +1,22 @@
+{
+  "run_id": 1,
+  "model_name": "gpt-4o-mini",
+  "benchmark_mode": "mentoreval-test",
+  "configuration": {
+    "mode": "mentoreval-test",
+    "use_few_shot": true,
+    "include_rubric": true,
+    "prompt_type": "with_explanation",
+    "n_test_samples": null,
+    "test_percentage": 0.01,
+    "model_name": "gpt-4o-mini",
+    "model_provider": "openai",
+    "async_config": {
+      "run_async": true,
+      "max_concurrent": 5,
+      "throttle_value": 0.1
+    },
+    "verbose": true
+  },
+  "status": "completed"
+}
