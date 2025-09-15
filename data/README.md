@@ -9,6 +9,17 @@ language:
 - ar
 tags:
 - education
+- automatic-essay-scoring
+- short-answer-grading
+- educational-assessment
+- student-responses
+- automated-grading
+- rubric-based-evaluation
+- scoring
+- benchmark
+- text-evaluation
+- learning-analytics
+- intelligent-tutoring-systems
 pretty_name: Mentor Evaluation Benchmark (mentor-eval)
 size_categories:
 - 10K<n<100K
