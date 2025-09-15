@@ -1,64 +1,114 @@
-# Original Datasets
+---
+license: gpl
+task_categories:
+- text-classification
+- text-generation
+language:
+- en
+- pt
+tags:
+- education
+pretty_name: Mentor Evaluation Benchmark (mentor-eval)
+size_categories:
+- 10K<n<100K
+---
 
-This directory contains the original, unprocessed datasets used in the MentorEval benchmark. These datasets are used to create the train/test splits for LLM evaluation. Not all the original datasets are uploaded to this repository due to storage size limitations.
+# Dataset Card for MentorEval
+
+MentorEval is a multilingual benchmark dataset designed to evaluate automated systems on educational assessment tasks. It combines multiple existing datasets into a unified, standardized format for fair comparison of automated grading models.
+
+## Dataset Summary
+
+MentorEval contains **55,312 student responses** across **5 different datasets** from **2 languages** (English and Portuguese), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).
 
 ## Dataset Structure
 
-```
-original_datasets/
-├── asap/                           # ASAP dataset files
-├── asap2/                          # ASAP2 dataset files
-└── mohler/                         # Mohler dataset files
+The dataset is split into:
+- **Train set**: 11,062 samples (20%)
+- **Test set**: 44,250 samples (80%)
+
+The splits are stratified by dataset and grade ranges to ensure fair evaluation across different educational contexts.
+
+## Source Datasets
+
+| Dataset | Language | ISCED Level | Graders | License | Exercises | Samples | Description |
+|---------|----------|-------------|---------|---------|-----------|---------|-------------|
+| **ASAP** | English | 3 | 2 | GPL | 8 | 12,977 | Student essays from grades 7–10 on 8 distinct essay prompts, scored for overall and attribute-specific writing quality |
+| **ASAP 2.0** | English | 3 | 1 | CC BY 4.0 | 7 | 24,728 | Enhanced automated essay scoring dataset with essays from diverse student populations and multiple essay attributes |
+| **ELLIPSE** | English | 3 | 2 | CC BY 4.0 | 44 | 6,482 | English learner essays graded on six linguistic and writing quality dimensions (only data where both raters agreed) |
+| **Mohler** | English | 6 | 2 | GPL | 81 | 1,263 | Short answers from computer science students at a Texas university, graded on a 0–5 scale (only data where both raters agreed) |
+| **PT-ASAG 2018** | Portuguese | 3 | 1 | CC BY 4.0 | 15 | 9,862 | Real student and teacher answers from Brazil for Portuguese Automatic Short Answer Grading research |
+
+## Dataset Features
+
+- **Multilingual**: English and Portuguese
+- **Multi-level**: Covers ISCED levels 3 (lower secondary) and 6 (tertiary)
+- **Diverse assessment types**: Essay writing and short answer grading
+- **Quality control**: Includes only data where multiple raters agreed (where applicable)
+- **Standardized format**: All datasets converted to unified schema
+
+## Data Schema
+
+Each sample contains the following fields:
+- `dataset`: Source dataset identifier
+- `exercise_set`: Exercise/prompt identifier
+- `question`: The question or prompt text
+- `answer`: Student's response
+- `grade`: Assigned grade/score
+- `min_grade`: Minimum possible grade for the exercise
+- `max_grade`: Maximum possible grade for the exercise
+- `subject`: Subject area (e.g., english, math)
+- `exercise_type`: Type of exercise (e.g., essay_writing)
+- `isced_level`: Education level (ISCED classification)
+- `language`: Language of the content
+- `rubric`: Grading rubric/guidelines
+- `desired_answer`: Reference answer (when available)
+- `metadata`: Additional metadata
+
+## Usage
+
+This dataset is designed for:
+- Automated essay scoring (AES) research
+- Automatic short answer grading (ASAG) research
+- Cross-dataset evaluation of grading models
+- Multilingual educational assessment research
+- Fair comparison of automated grading systems
+
+## References
+
+- **ASAP**: 
+  - Paper: [State-of-the-art automated essay scoring: Competition, results, and future directions from a United States demonstration](https://www.kaggle.com/competitions/asap-aes)
+  - Dataset: [ASAP AES Competition](https://www.kaggle.com/competitions/asap-aes)
+
+- **ASAP 2.0**: 
+  - Paper: [ASAP 2.0 Dataset](https://the-learning-agency-lab.com/learning-exchange/asap-2-0-dataset/)
+  - Dataset: [ASAP 2.0 on Kaggle](https://www.kaggle.com/datasets/lburleigh/asap-2-0)
+
+- **ELLIPSE**: 
+  - Paper: [ELLIPSE Corpus](https://benjamins.com/catalog/ijlcr.22026.cro?srsltid=AfmBOoqIEK6lzlQ2UUWOxWDlQ8msOmWAvA3Q_CjZvXSQ2G_mWZVnreJW)
+  - Dataset: [ELLIPSE on GitHub](https://github.com/scrosseye/ELLIPSE-Corpus)
+
+- **Mohler**: 
+  - Paper: [Mohler et al. (2011)](https://aclanthology.org/P11-1076/)
+  - Dataset: [Mohler Dataset on Kaggle](https://www.kaggle.com/datasets/abdokamr/mohler)
+
+- **PT-ASAG 2018**: 
+  - Paper: [Portuguese Automatic Short Answer Grading](https://www.researchgate.net/publication/328735284_Portuguese_Automatic_Short_Answer_Grading)
+  - Dataset: [PT-ASAG 2018 on Kaggle](https://www.kaggle.com/datasets/lucasbgalhardi/pt-asag-2018)
+
+## Citation
+
+If you use this dataset, please cite the original datasets and this unified version:
+
+```bibtex
+@dataset{mentoreval,
+  title={MentorEval: A Multilingual Benchmark for Educational Assessment},
+  author={Álvaro Francisco Gil},
+  year={2025},
+  url={https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval}
+}
 ```
 
-## Individual Dataset Details
+## License
 
-### ASAP Dataset
-**Source**: [Kaggle - ASAP-AES](https://www.kaggle.com/competitions/asap-aes/data)  
-**Description**: The Automated Student Assessment Prize (ASAP) dataset contains student essays and their corresponding scores from 8 different essay sets.  
-**Paper**: [Contrasting state-of-the-art automated scoring of essays](https://www.researchgate.net/publication/283923791_Contrasting_state-of-the-art_automated_scoring_of_essays)  
-**License**: CC BY-SA 3.0  
-**Download Size**: 114MB total
-
-**File Structure**:
-```
-original_datasets/asap/
-├── training_set_rel3.xlsx          # Main training data (6.4MB)
-├── training_set_rel3.xls           # Excel format (19MB)
-├── training_set_rel3.tsv           # Tab-separated format (16MB)
-├── valid_set.xlsx                  # Validation data (2.1MB)
-├── valid_set.xls                   # Excel format (6.1MB)
-├── valid_set.tsv                   # Tab-separated format (5.0MB)
-├── test_set.tsv                    # Test data (5.0MB)
-├── valid_sample_submission_*.csv   # Sample submission formats
-├── Training_Materials.zip          # Training materials (55MB)
-└── Essay_Set_Descriptions.zip      # Essay set descriptions (214KB)
-```
-
-##### add characteristics
-
-### ASAP2 Dataset
-**Source**: [Kaggle - ASAP2](https://www.kaggle.com/datasets/lburleigh/asap-2-0)  
-**Description**: ASAP 2.0 is a large-scale dataset of around 25,000 source-based argumentative essays by U.S. secondary students, designed to improve automated essay scoring with added demographic info and source texts for research on writing quality and fairness.  
-**Paper**: [A large-scale corpus for assessing source-based writing quality: ASAP 2.0](https://www.sciencedirect.com/science/article/pii/S1075293525000418)  
-**License**: CC BY-SA 3.0  
-**Download Size**: 199MB
-
-**File Structure**:
-```
-original_datasets/asap2/
-└── ASAP2_train_sourcetexts.csv    # Training data with source texts (199MB)
-```
-
-### Mohler Dataset
-**Source**: [Kaggle - Mohler](https://www.kaggle.com/datasets/abdokamr/mohler)  
-**Description**: The Mohler dataset consists of student short answers graded on a [0–5] scale, used for automated short answer grading research leveraging semantic similarity and syntactic alignments.  
-**Paper**: [Learning to Grade Short Answer Questions using Semantic Similarity Measures and Dependency Graph Alignments](https://aclanthology.org/volumes/P11-1/)  
-**License**: CC BY-SA 4.0  
-**Download Size**: 591KB
-
-**File Structure**:
-```
-original_datasets/mohler/
-└── mohler_dataset_edited.csv       # Computer science evaluations
-```
+GNU General Public License (GPL)
