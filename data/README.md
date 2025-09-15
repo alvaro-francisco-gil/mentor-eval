@@ -6,6 +6,7 @@ task_categories:
 language:
 - en
 - pt
+- ar
 tags:
 - education
 pretty_name: Mentor Evaluation Benchmark (mentor-eval)
@@ -19,7 +20,7 @@ MentorEval is a multilingual benchmark dataset designed to evaluate automated sy
 
 ## Dataset Summary
 
-MentorEval contains **55,312 student responses** across **5 different datasets** from **2 languages** (English and Portuguese), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).
+MentorEval contains **55,312 student responses** across **6 different datasets** from **3 languages** (English, Portuguese, and Arabic), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).
 
 ## Dataset Structure
 
@@ -38,10 +39,11 @@ The splits are stratified by dataset and grade ranges to ensure fair evaluation 
 | **ELLIPSE** | English | 3 | 2 | CC BY 4.0 | 44 | 6,482 | English learner essays graded on six linguistic and writing quality dimensions (only data where both raters agreed) |
 | **Mohler** | English | 6 | 2 | GPL | 81 | 1,263 | Short answers from computer science students at a Texas university, graded on a 0–5 scale (only data where both raters agreed) |
 | **PT-ASAG 2018** | Portuguese | 3 | 1 | CC BY 4.0 | 15 | 9,862 | Real student and teacher answers from Brazil for Portuguese Automatic Short Answer Grading research |
+| **AR-ASAG** | Arabic | 6 | 2 | CC BY-NC | 48 | 2,132 | Arabic dataset for automatic short answer grading containing pairs of model and student answers from three university exams |
 
 ## Dataset Features
 
-- **Multilingual**: English and Portuguese
+- **Multilingual**: English, Portuguese, and Arabic
 - **Multi-level**: Covers ISCED levels 3 (lower secondary) and 6 (tertiary)
 - **Diverse assessment types**: Essay writing and short answer grading
 - **Quality control**: Includes only data where multiple raters agreed (where applicable)
@@ -95,6 +97,10 @@ This dataset is designed for:
 - **PT-ASAG 2018**: 
   - Paper: [Portuguese Automatic Short Answer Grading](https://www.researchgate.net/publication/328735284_Portuguese_Automatic_Short_Answer_Grading)
   - Dataset: [PT-ASAG 2018 on Kaggle](https://www.kaggle.com/datasets/lucasbgalhardi/pt-asag-2018)
+
+- **AR-ASAG**: 
+  - Paper: [AR-ASAG Dataset](https://aclanthology.org/2020.lrec-1.321/)
+  - Dataset: [AR-ASAG on Kaggle](https://www.kaggle.com/datasets/mahmoudsammour/ar-asag-dataset/data)
 
 ## Citation
 

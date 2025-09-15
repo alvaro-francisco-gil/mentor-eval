@@ -520,6 +520,8 @@ class MohlerProcessor(DatasetProcessor):
             if not score.is_integer():
                 logger.warning(f"Non-integer score found: {score} for row {row.name}, rounding to nearest integer")
                 score = round(score)
+            # Convert to actual integer type
+            score = int(score)
             
             unified_sample = {
                 'dataset': 'mohler',
@@ -674,6 +676,96 @@ class PTASAG2018Processor(DatasetProcessor):
     def __init__(self, data_dir=None, output_dir=None):
         super().__init__(data_dir, output_dir)
         self.data_dir = self.data_dir / 'ptasag2018'
+
+
+class ARASAGProcessor(DatasetProcessor):
+    """ARASAG Dataset Processor"""
+    
+    def __init__(self, data_dir=None, output_dir=None):
+        super().__init__(data_dir, output_dir)
+        self.data_dir = self.data_dir / 'arasag'
+    
+    def load_dataset(self):
+        """Load the ARASAG dataset"""
+        data_file = self.data_dir / "AR-ASAG-Dataset.csv"
+        if not data_file.exists():
+            raise FileNotFoundError(f"Could not find ARASAG dataset file: {data_file}")
+        
+        self.data = pd.read_csv(data_file)
+        logger.info(f"Loaded ARASAG dataset with {len(self.data)} rows")
+        return self.data
+    
+    def clean_data(self):
+        """Clean the data"""
+        self.data = self.data.dropna(subset=['Question_Arabic', 'Answer_Arabic', 'Average_Mark'])
+        
+        self.data['Average_Mark'] = pd.to_numeric(self.data['Average_Mark'], errors='coerce')
+        self.data = self.data.dropna(subset=['Average_Mark'])
+        
+        # Ensure grades are within valid range (0-5)
+        self.data = self.data[(self.data['Average_Mark'] >= 0) & (self.data['Average_Mark'] <= 5)]
+        logger.info(f"After cleaning: {len(self.data)} rows")
+        return self.data
+    
+    def create_unified_dataset(self):
+        """Create a unified dataset in the same format as other datasets"""
+        unified_data = []
+        
+        # Create mapping from Question_Arabic to exercise_set (sequential integers)
+        unique_questions = sorted(self.data['Question_Arabic'].unique())
+        question_to_exercise_set = {question: idx + 1 for idx, question in enumerate(unique_questions)}
+        
+        for _, row in self.data.iterrows():
+            # Create metadata JSON from question type
+            metadata_dict = {
+                'question_type': row['Question_Type']
+            }
+            metadata_json = json.dumps(metadata_dict, ensure_ascii=False)
+            
+            # Ensure score is an integer (similar to Mohler processing)
+            score = float(row['Average_Mark'])
+            if not score.is_integer():
+                logger.warning(f"Non-integer score found: {score} for row {row.name}, rounding to nearest integer")
+                score = round(score)
+            # Convert to actual integer type
+            score = int(score)
+            
+            unified_sample = {
+                'dataset': 'arasag',
+                'exercise_set': question_to_exercise_set[row['Question_Arabic']],
+                'question': row['Question_Arabic'],
+                'answer': row['Answer_Arabic'],
+                'grade': score,
+                'min_grade': 0.0,
+                'max_grade': 5.0,
+                'subject': 'cybercrimes',
+                'exercise_type': 'short_answer',
+                'isced_level': 6,
+                'language': 'arabic',
+                'rubric': np.nan,
+                'desired_answer': row['Model_Arabic'],
+                'metadata': metadata_json
+            }
+            
+            unified_data.append(unified_sample)
+        
+        return pd.DataFrame(unified_data)
+    
+    def process(self):
+        logger.info("Starting ARASAG dataset processing...")
+        self.load_dataset()
+        self.clean_data()
+        unified_df = self.create_unified_dataset()
+        self.save_unified_dataset(unified_df, 'arasag')
+        logger.info("ARASAG dataset processing completed!")
+
+
+class PTASAG2018Processor(DatasetProcessor):
+    """PTASAG2018 Dataset Processor"""
+    
+    def __init__(self, data_dir=None, output_dir=None):
+        super().__init__(data_dir, output_dir)
+        self.data_dir = self.data_dir / 'ptasag2018'
     
     def load_dataset(self):
         """Load the main CSV file and questions file"""
@@ -769,6 +861,9 @@ def combine_all_datasets(successful_datasets):
     
     print(f"\n🔄 Combining {len(combined_data)} datasets...")
     combined_df = pd.concat(combined_data, ignore_index=True)
+    
+    # Ensure grade column is integer type
+    combined_df['grade'] = combined_df['grade'].astype('int64')
     
     # Create output directory
     output_dir = Path("data")
@@ -901,7 +996,7 @@ def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Process all datasets for MentorEval benchmark")
     parser.add_argument("--datasets", 
-                       default="asap,asap2,mohler,ellipse,ptasag2018",
+                       default="asap,asap2,mohler,ellipse,ptasag2018,arasag",
                        help="Comma-separated list of datasets to process (default: all)")
     parser.add_argument("--test-size", 
                        type=float, 
@@ -929,6 +1024,7 @@ def main():
         'mohler': MohlerProcessor,
         'ellipse': EllipseProcessor,
         'ptasag2018': PTASAG2018Processor,
+        'arasag': ARASAGProcessor,
     }
     
     if args.check_only:
