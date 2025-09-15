@@ -84,6 +84,7 @@ class PTASAG2018Processor:
                 'subject': 'biology',  # Based on the sample questions about cells, genetics, etc.
                 'exercise_type': 'short_answer',
                 'isced_level': 3,  # High school level
+                'language': 'portuguese',
                 'rubric': np.nan,  # No rubric information available
                 'desired_answer': np.nan,  # NaN as requested
                 'metadata': metadata_json

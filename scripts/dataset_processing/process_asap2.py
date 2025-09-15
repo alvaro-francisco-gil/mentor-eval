@@ -157,6 +157,7 @@ class ASAP2Processor:
                 'subject': 'english',
                 'exercise_type': 'essay_writing',
                 'isced_level': 3,
+                'language': 'english',
                 'rubric': sample.get('rubric', ''),
                 'desired_answer': np.nan,  # NaN as requested
                 'metadata': metadata_json

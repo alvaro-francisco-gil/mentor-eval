@@ -171,6 +171,7 @@ class ELLIPSEProcessor:
                 'subject': 'english',
                 'exercise_type': 'essay_writing',
                 'isced_level': 3,
+                'language': 'english',
                 'rubric': rubric_text,
                 'desired_answer': np.nan,  # NaN as requested
                 'metadata': metadata_json

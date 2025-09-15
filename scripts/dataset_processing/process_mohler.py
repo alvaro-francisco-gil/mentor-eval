@@ -77,6 +77,9 @@ def process_mohler_data():
     # Add isced_level
     processed_df['isced_level'] = [6] * len(filtered_df)
     
+    # Add language
+    processed_df['language'] = ['english'] * len(filtered_df)
+    
     # Add rubric (NaN as requested)
     processed_df['rubric'] = [np.nan] * len(filtered_df)
     
