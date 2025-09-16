@@ -20,5 +20,6 @@ Icon?
 .deepeval/
 .litellm_cache/
 results_extended/
+lighteval_cache/
 
 data/processed/asap2/asap2_processed.csv
