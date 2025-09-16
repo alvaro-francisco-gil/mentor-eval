@@ -1,7 +1,7 @@
 # Makefile for MentorEval project
 # Provides convenient commands for dataset processing and testing
 
-.PHONY: help datasets tests venv venv-clean
+.PHONY: help datasets tests venv venv-clean cli
 
 help:
 	@echo "MentorEval Project - Available Commands:"
@@ -18,6 +18,12 @@ help:
 	@echo ""
 	@echo "🧪 Testing:"
 	@echo "  make tests       - Run all validation tests"
+	@echo ""
+	@echo "🚀 CLI Commands:"
+	@echo "  make cli-list    - List all runs"
+	@echo "  make cli-summary - Show run summary"
+	@echo "  make cli-execute N - Execute run N"
+	@echo "  make cli-execute-all - Execute all unexecuted runs"
 
 # Dataset processing targets
 datasets: asap asap2 mohler
@@ -140,3 +146,21 @@ stats:
 	@echo "Mohler:"
 	@if [ -d "data/processed/mohler" ]; then echo "  Train total lines: $$(find data/processed/mohler -name train.jsonl -exec cat {} + | wc -l)"; else echo "  Train: Not found"; fi
 	@if [ -d "data/processed/mohler" ]; then echo "  Test  total lines: $$(find data/processed/mohler -name test.jsonl -exec cat {} + | wc -l)"; else echo "  Test:  Not found"; fi
+
+# CLI Commands
+cli-list:
+	@echo "📋 Listing all runs..."
+	@python -m mentoreval --list
+
+cli-summary:
+	@echo "📊 Showing run summary..."
+	@python -m mentoreval --summary
+
+cli-execute:
+	@if [ -z "$(N)" ]; then echo "❌ Usage: make cli-execute N=<run_id>"; exit 1; fi
+	@echo "🚀 Executing run $(N)..."
+	@python -m mentoreval --execute $(N)
+
+cli-execute-all:
+	@echo "🚀 Executing all unexecuted runs..."
+	@python -m mentoreval --execute-all

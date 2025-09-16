@@ -44,6 +44,11 @@ def main():
         type=int,
         help="Show status of a specific run"
     )
+    parser.add_argument(
+        "--reset",
+        type=int,
+        help="Reset a run status to pending (allows rerunning)"
+    )
     
     args = parser.parse_args()
     
@@ -61,6 +66,8 @@ def main():
         show_summary(run_manager)
     elif args.status:
         show_run_status(run_manager, args.status)
+    elif args.reset:
+        reset_run_status(run_manager, args.reset)
     else:
         parser.print_help()
 
