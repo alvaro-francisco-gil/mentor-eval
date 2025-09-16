@@ -18,6 +18,7 @@ Icon?
 *.log
 
 .deepeval/
-results_detailed/
+.litellm_cache/
+results_extended/
 
 data/processed/asap2/asap2_processed.csv
