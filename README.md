@@ -1,323 +1,198 @@
-# MentorEval Benchmark
+# MentorEval
 
-A comprehensive benchmark for evaluating LLMs on teaching evaluation tasks using multiple datasets with proper train/test splits.
+<div align="center">
+  <img src="webpage/assets/mentoreval_logo_nobg.png" alt="MentorEval Logo" width="300"/>
+</div>
+
+<div align="center">
+  <h3>A Multilingual Benchmark for Educational Assessment</h3>
+  <p>Evaluating Language Models on Student Response Grading Tasks</p>
+</div>
+
+<div align="center">
+  <a href="https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval">
+    <img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-blue" alt="Hugging Face Dataset">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL-green.svg" alt="License">
+  </a>
+</div>
+
+---
 
 ## Overview
 
-MentorEval is a collection of teaching evaluation datasets (ASAP, ASAP2, Mohler) structured for LLM evaluation with proper train/test splits. This enables:
+**MentorEval** is a comprehensive benchmark designed to evaluate language models on multilingual educational assessment tasks. This benchmark focuses on automated essay scoring (AES) and automatic short answer grading (ASAG) across multiple languages and educational levels.
 
-- **Few-shot prompting** using training examples
-- **Prompt engineering** on training data
-- **Meta-evaluation** of evaluation methodology
-- **Research reproducibility** through standard splits
+### Key Features
 
-## Project Structure
+- 🌍 **Multilingual**: Supports English, Portuguese, and Arabic
+- 🎓 **Multi-level**: Covers ISCED levels 3 (lower secondary) and 6 (tertiary)
+- 📊 **Comprehensive**: 55,312+ student responses across 6 datasets
+- 🔧 **LightEval Compatible**: Built on [LightEval](https://github.com/huggingface/lighteval) framework
+- 📈 **Extensible**: Collaborative collection of open datasets
+
+## Dataset
+
+The benchmark contains **55,312+ student responses** across **6 datasets** from **3 languages** (English, Portuguese, Arabic), covering ISCED levels 3 and 6. The dataset is publicly available on Hugging Face and includes automated essay scoring (AES) and automatic short answer grading (ASAG) tasks.
+
+| Dataset | Language | ISCED Level | Samples | Description |
+|---------|----------|-------------|---------|-------------|
+| **ASAP** | English | 3 | 12,977 | Student essays from grades 7–10 |
+| **ASAP 2.0** | English | 3 | 24,728 | Enhanced automated essay scoring |
+| **ELLIPSE** | English | 3 | 6,482 | English learner essays |
+| **Mohler** | English | 6 | 1,263 | Computer science short answers |
+| **PT-ASAG 2018** | Portuguese | 3 | 9,862 | Portuguese short answer grading |
+| **AR-ASAG** | Arabic | 6 | 2,132 | Arabic short answer grading |
+
+## Framework Integration
+
+MentorEval is built on top of **[LightEval](https://github.com/huggingface/lighteval)**, Hugging Face's evaluation framework. This ensures:
+
+- ✅ **Full Compatibility**: Seamless integration with LightEval's evaluation pipeline
+- ✅ **Standardized Metrics**: Consistent evaluation across different models
+- ✅ **Scalable Infrastructure**: Built-in support for distributed evaluation
+- ✅ **Model Agnostic**: Works with any model supported by LightEval
+
+## Repository Structure
 
 ```
 mentor-eval/
-├── datasets/                    # Original dataset files (unchanged)
-│   ├── asap/                   # ASAP dataset with exercise sets
-│   ├── asap2/                  # ASAP2 dataset with exercise sets
-│   ├── dress/                  # DREsS dataset
-│   └── mohler/                 # Mohler dataset
-├── registry/                    # Evaluation registry for Evals framework
-│   ├── evals/                  # Evaluation YAML configurations
-│   ├── data/                   # Data splits in JSONL format
-│   └── README.md               # Registry documentation
-└── README.md                   # This file
+├── src/mentoreval/          # Core package
+│   ├── benchmark.py         # LightEval integration
+│   ├── task.py             # Task definitions
+│   ├── metrics.py          # Evaluation metrics
+│   ├── prompts.py          # Prompt templates
+│   ├── models.py           # Model configurations
+│   ├── run_manager.py      # Run management
+│   └── cli.py              # Command-line interface
+├── data/                   # Dataset files
+│   ├── raw/               # Original datasets
+│   ├── processed/         # Processed datasets
+│   └── mentoreval.parquet # Unified dataset
+├── runs/                  # Run configurations
+├── results/               # Evaluation results
+├── tests/                 # Test suite
+└── scripts/               # Utility scripts
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
-1. **Clone the repository**
-2. **Download datasets** from the links above
-3. **Process datasets** (see Processing Datasets section below)
-4. **Run evaluations** using OpenAI Evals framework
+### Installation
 
-## 📊 Processing Datasets
-
-This section explains how to process the original datasets into standardized JSONL format for the MentorEval benchmark.
-
-### Prerequisites
-
-1. **Install Python dependencies:**
-   ```bash
-   cd original_datasets
-   pip install -r requirements.txt
-   ```
-
-2. **Download the original datasets** using the links in the "Datasets" section above
-
-3. **Place datasets in their respective directories:**
-   ```
-   original_datasets/
-   ├── asap/
-   │   ├── asap_student_responses_and_evaluations.xlsx
-   │   └── exercise_set_1/ ... exercise_set_8/
-   ├── asap2/
-   │   └── asap2_student_responses_and_evaluations.csv
-   └── mohler/
-       └── mohler_dataset_edited.csv
-   ```
-
-### Usage
-
-#### Process All Datasets
 ```bash
-cd original_datasets
-python standardize_datasets.py
+# Clone the repository
+git clone https://github.com/alvaro-francisco-gil/mentor-eval.git
+cd mentor-eval
+
+# Install the package
+pip install -e .
+
+# Or install from requirements
+pip install -r requirements.txt
 ```
 
-#### Process Specific Datasets
-```bash
-# Process only ASAP and ASAP2
-python standardize_datasets.py --datasets asap,asap2
+### Running Evaluations
 
-# Process only Mohler
-python standardize_datasets.py --datasets mohler
-```
-
-#### Custom Test Split Size
-```bash
-# Use 20% for test set (default is 30%)
-python standardize_datasets.py --test-size 0.2
-```
-
-#### Check Existing Output Files
-```bash
-# Only check what's already been processed
-python standardize_datasets.py --check-only
-```
-
-### Output Structure
-
-The scripts create standardized JSONL files in the registry:
-
-```
-registry/data/mentoreval/
-├── asap/
-│   ├── train.jsonl
-│   └── test.jsonl
-├── asap2/
-│   ├── train.jsonl
-│   └── test.jsonl
-└── mohler/
-    ├── train.jsonl
-    └── test.jsonl
-```
-
-### JSONL Format
-
-Each sample follows this standardized format with dynamic field substitution:
+1. **Create a run configuration** in the `runs/` directory:
 
 ```json
 {
-  "input": [{"role": "user", "content": "Question: {question}\n\nStudent Answer: {student_answer}\n\nRubric: {rubric}\n\nEvaluate this response."}],
-  "question": "The essay question/prompt",
-  "student_answer": "The student's response",
-  "rubric": "Detailed grading rubric",
-  "academic_level": "8",
-  "rubric_range": "1-6 | Ideas: 0-3 | Organization: 0-3 | Style: 0-3 | Conventions: 0-3",
-  "essay_type": "Persuasive/Narrative/Expository",
-  "essay_set": 1,
-  "ideal": "6"
+  "run_id": 1,
+  "model_name": "gpt-4o-mini",
+  "benchmark_mode": "mentoreval-test",
+  "description": "Test run with GPT-4o-mini",
+  "status": "pending",
+  "parameters": {
+    "model_name": "gpt-4o-mini",
+    "training_examples": 5,
+    "test_samples": 100,
+    "task_name": "mentoreval_asap2"
+  }
 }
 ```
 
-**Benefits of Dynamic Field Substitution:**
-- **Storage Efficiency**: No duplication of potentially long text content
-- **Experimental Control**: Easy to create variations that include/exclude certain fields
-- **Clean Data Management**: Separate fields make analysis and filtering easier
-- **Framework Compatibility**: Aligns with OpenAI Evals' dynamic prompting capabilities
+2. **Execute the evaluation**:
 
-### Processing Details
+```bash
+# Run a specific evaluation
+mentoreval --execute 1
 
-#### ASAP Dataset
-- **Source**: Excel/TSV files with essay data
-- **Metadata**: Extracted from exercise set directories
-- **Splitting**: Stratified by essay set and score (70/30 split)
-- **Output**: 8 essay sets with full rubric information
-- **Stratification**: Maintains score distribution proportions across train/test sets
+# Run all pending evaluations
+mentoreval --execute-all
 
-#### ASAP2 Dataset
-- **Source**: CSV with source texts and essays
-- **Metadata**: Includes demographic information
-- **Splitting**: Stratified by score and prompt
-- **Output**: Source-based argumentative essays
+# List all runs
+mentoreval --list
 
-#### Mohler Dataset
-- **Source**: CSV with short answer questions
-- **Metadata**: Computer science concept questions
-- **Splitting**: Stratified by score
-- **Output**: Technical knowledge assessments
-
-### Stratification Strategy
-
-The processing scripts use **intelligent stratification** to ensure fair train/test splits:
-
-1. **Primary stratification**: By essay set to ensure representation of all prompt types
-2. **Secondary stratification**: By score within each essay set when possible
-3. **Fallback strategy**: Random split when stratification isn't feasible (e.g., sparse score distributions)
-
-**Benefits**:
-- Maintains score distribution proportions
-- Ensures all essay types are represented in both sets
-- Prevents bias in evaluation results
-- Enables reproducible splits with fixed random seeds
-
-### Error Handling
-
-The scripts include comprehensive error handling:
-- **File validation**: Checks for required input files
-- **Data validation**: Ensures data quality and completeness
-- **Output verification**: Confirms successful file creation
-- **Progress reporting**: Shows processing status and timing
-
-### Troubleshooting
-
-#### Common Issues
-
-1. **Missing dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **File not found errors:**
-   - Ensure datasets are downloaded and placed in correct directories
-   - Check file names match expected patterns
-
-3. **Memory errors:**
-   - ASAP2 dataset is large (~200MB), ensure sufficient RAM
-   - Consider processing datasets individually if needed
-
-4. **Permission errors:**
-   - Ensure write permissions for output directory
-   - Check if registry directory exists and is writable
-
-#### Getting Help
-
-- Check the console output for detailed error messages
-- Verify dataset files are in the expected format
-- Ensure all required dependencies are installed
-
-### Customization
-
-#### Modifying Processing Logic
-Each dataset script can be customized:
-- **Score normalization**: Modify scoring logic in `create_samples()`
-- **Splitting strategy**: Change train/test split methodology
-- **Output format**: Add or remove fields from JSONL output
-
-#### Experimental Variations
-The dynamic field substitution enables easy creation of different evaluation configurations:
-
-```yaml
-# With full context (question + answer + rubric)
-mentoreval-full:
-  args:
-    samples_jsonl: mentoreval/asap/samples.jsonl
-
-# Without rubric (question + answer only)
-mentoreval-no-rubric:
-  args:
-    samples_jsonl: mentoreval/asap/samples.jsonl
-
-# With specific rubric dimensions only
-mentoreval-ideas-only:
-  args:
-    samples_jsonl: mentoreval/asap/samples.jsonl
+# Show run summary
+mentoreval --summary
 ```
 
-This approach allows you to measure the impact of including/excluding rubric information on grading accuracy.
-
-#### Adding New Datasets
-To add a new dataset:
-1. Create a new directory with the dataset files
-2. Create a `process_[dataset_name].py` script
-3. Add the dataset to `standardize_datasets.py`
-4. Update this README
-
-### Performance Notes
-
-- **ASAP**: ~8,700 samples, processes in ~2-3 seconds
-- **ASAP2**: ~25,000 samples, processes in ~60 seconds  
-- **Mohler**: ~2,000 samples, processes in ~10 seconds
-
-Processing times may vary based on system specifications and dataset sizes.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Datasets
-
-### ASAP (Automated Student Assessment Prize)
-- **Task**: Essay evaluation
-- **Scale**: 1-6 (undeveloped to well-developed)
-- **Format**: Argumentative writing prompts
-- **Use Case**: Training LLMs to evaluate student essays
-
-### ASAP2
-- **Task**: Essay evaluation with source texts
-- **Scale**: 1-6 (very little mastery to clear mastery)
-- **Format**: Argumentative essays based on articles
-- **Use Case**: Evaluating LLMs on source-based writing assessment
-
-### Mohler
-- **Task**: Short answer evaluation
-- **Scale**: 1-5 (very poor to excellent)
-- **Format**: Computer science concept questions
-- **Use Case**: Testing LLMs on technical knowledge assessment
-
-## Evaluation Methodology
-
-The benchmark uses the Evals framework's `Match` class to compare LLM-generated scores with human expert scores. Each evaluation:
-
-1. Presents a question and student response to the LLM
-2. Asks the LLM to assign a score based on the rubric
-3. Compares the LLM's score with the human expert score
-4. Calculates accuracy metrics
-
-## Customization
-
-### Adding New Datasets
-
-1. Create evaluation YAML files in `registry/evals/`
-2. Add data directories in `registry/data/mentoreval/`
-3. Create `train.jsonl` and `test.jsonl` files
-4. Update evaluation sets as needed
-
-### Modifying Evaluation Metrics
-
-Edit the YAML files to use different evaluation classes or metrics beyond the default `accuracy` metric.
-
-## Research Applications
-
-- **Few-shot Learning**: Use training examples to improve LLM performance
-- **Prompt Engineering**: Develop optimal evaluation prompts
-- **Model Comparison**: Evaluate different LLMs on teaching tasks
-- **Bias Analysis**: Study evaluation consistency across different response types
-- **Educational AI**: Improve automated assessment systems
+3. **View results** in the `results/` directory.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Add your dataset or evaluation method
-4. Submit a pull request
+MentorEval is a **collaborative collection of open datasets**. We welcome contributions to expand the benchmark:
 
-## License
+### Adding New Datasets
 
-[Add your license information here]
+We welcome both **raw datasets** and **standardized datasets**:
+
+1. **Add dataset** to `data/raw/[dataset_name]/` (raw) or `data/processed/[dataset_name]/` (standardized)
+2. **Create processing script** in `scripts/process_datasets.py` (if needed)
+3. **Update dataset registry** in the codebase
+4. **Submit a pull request** with your contribution
+
+### Guidelines
+
+- Ensure datasets are properly licensed for research use
+- Follow the standardized data schema
+- Include proper documentation and metadata
+- Test your contributions with the existing framework
+
+## Evaluation Metrics
+
+MentorEval includes comprehensive evaluation metrics:
+
+- **Exact Grade Match**: Percentage of exact score matches
+- **Mean Absolute Error (MAE)**: Average absolute difference
+- **Root Mean Square Error (RMSE)**: Standard deviation of errors
+- **Pearson Correlation**: Linear correlation with human scores
+- **Spearman Correlation**: Rank correlation with human scores
+- **Kolmogorov-Smirnov Statistic**: Distribution comparison
+- **Wasserstein Distance**: Distribution distance metric
 
 ## Citation
 
-If you use this benchmark in your research, please cite:
+If you use MentorEval in your research, please cite:
 
+```bibtex
+@dataset{mentoreval,
+  title={MentorEval: A Multilingual Benchmark for Educational Assessment},
+  author={Álvaro Francisco Gil},
+  year={2025},
+  url={https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval}
+}
 ```
-[Add citation information here]
-```
 
-## Contact
+## License
 
-[Add contact information here]
+This project is licensed under the GNU General Public License (GPL) - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+MentorEval builds upon several existing datasets and frameworks:
+
+- **[LightEval](https://github.com/huggingface/lighteval)** - Evaluation framework
+- **ASAP, ASAP 2.0, ELLIPSE, Mohler, PT-ASAG 2018, AR-ASAG** - Source datasets
+- **Hugging Face** - Dataset hosting and community support
+
+---
+
+<div align="center">
+  <p><strong>MentorEval</strong> - Advancing Educational AI through Comprehensive Benchmarking</p>
+  <p>Made with ❤️ for the educational AI community</p>
+</div>
