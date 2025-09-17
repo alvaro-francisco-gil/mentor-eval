@@ -115,10 +115,12 @@ def exact_grade_match(model_response, doc, **kwargs) -> float:
         if pred_grade is None:
             return 0.0
             
+        # Convert both to float for proper comparison
         expected_grade = float(doc.choices[0])
+        pred_grade = float(pred_grade)
         
-        # Check for exact match in raw grade space (tolerance of 0.1)
-        return 1.0 if abs(pred_grade - expected_grade) < 0.1 else 0.0
+        # Check for exact match (no tolerance)
+        return 1.0 if pred_grade == expected_grade else 0.0
     except (ValueError, IndexError, TypeError, AttributeError):
         return 0.0
 
@@ -266,7 +268,7 @@ def grade_rmse(model_response, doc, **kwargs) -> float:
 class ExactGradeMatchComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
         try:
-            return exact_grade_match(model_response.text, doc, **kwargs)
+            return exact_grade_match(model_response, doc, **kwargs)
         except Exception as e:
             print(f"Error in ExactGradeMatchComputation: {e}")
             return 0.0
@@ -274,7 +276,7 @@ class ExactGradeMatchComputation(SampleLevelComputation):
 class GradeMAEComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
         try:
-            return grade_mae(model_response.text, doc, **kwargs)
+            return grade_mae(model_response, doc, **kwargs)
         except Exception as e:
             print(f"Error in GradeMAEComputation: {e}")
             return 1.0
@@ -282,7 +284,7 @@ class GradeMAEComputation(SampleLevelComputation):
 class GradeRMSEComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
         try:
-            return grade_rmse(model_response.text, doc, **kwargs)
+            return grade_rmse(model_response, doc, **kwargs)
         except Exception as e:
             print(f"Error in GradeRMSEComputation: {e}")
             return 1.0

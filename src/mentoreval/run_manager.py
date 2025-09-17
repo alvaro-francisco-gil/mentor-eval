@@ -84,7 +84,7 @@ class RunManager:
         run_files = glob.glob(os.path.join(self.runs_dir, "*.json"))
         for run_file in run_files:
             filename = os.path.basename(run_file)
-            # Extract ID from filename like "0_run.json", "1_run.json", etc.
+            # Extract ID from filename like "0_run.json", "1_test.json", "24_test.json", etc.
             match = filename.split('_')[0]
             try:
                 existing_ids.add(int(match))
@@ -237,10 +237,12 @@ class RunManager:
     
     def delete_run(self, run_id: int) -> bool:
         """Delete a run file."""
-        run_file = os.path.join(self.runs_dir, f"{run_id}_run.json")
+        # Look for any file with the pattern {run_id}_*
+        run_files = glob.glob(os.path.join(self.runs_dir, f"{run_id}_*.json"))
         
-        if os.path.exists(run_file):
-            os.remove(run_file)
+        if run_files:
+            for run_file in run_files:
+                os.remove(run_file)
             return True
         return False
     

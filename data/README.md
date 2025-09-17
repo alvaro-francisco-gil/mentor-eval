@@ -29,6 +29,8 @@ size_categories:
 
 MentorEval is a multilingual benchmark dataset designed to evaluate automated systems on educational assessment tasks. It combines multiple existing datasets into a unified, standardized format for fair comparison of automated grading models.
 
+**GitHub Repository**: [https://github.com/alvaro-francisco-gil/mentor-eval](https://github.com/alvaro-francisco-gil/mentor-eval)
+
 ## Dataset Summary
 
 MentorEval contains **55,312 student responses** across **6 different datasets** from **3 languages** (English, Portuguese, and Arabic), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).

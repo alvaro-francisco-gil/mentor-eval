@@ -172,9 +172,21 @@ class LightEvalBenchmark:
         task_args = run_info.configuration.get("task_args", {})
         model_args = run_info.configuration.get("model_args", {})
         
-        # Handle the unified "mentoreval" task name
+        # Handle task name mapping
+        from mentoreval.task import TASKS_GROUPS
+        
+        print(f"🔍 DEBUG: Original task_name from run config: '{task_name}'")
+        
         if task_name == "mentoreval":
             task_name = "custom|mentor_eval:asap_exercise_set_1|0"  # Map to a working specific task
+            print(f"🔍 DEBUG: Mapped 'mentoreval' to: '{task_name}'")
+        elif task_name in TASKS_GROUPS:
+            original_task_name = task_name
+            task_name = TASKS_GROUPS[task_name]  # Map to task group
+            print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group: '{task_name}'")
+            print(f"🔍 DEBUG: This will run {len(task_name.split(','))} individual tasks!")
+        else:
+            print(f"🔍 DEBUG: No mapping found, using original task_name: '{task_name}'")
 
         # Create custom evaluation tracker that captures interactions
         evaluation_tracker = CustomEvaluationTracker(
@@ -213,6 +225,7 @@ class LightEvalBenchmark:
             print(f"Running LightEval evaluation with LiteLLM backend for {model_name}...")
         
         # Create and run pipeline
+        print(f"🔍 DEBUG: Creating pipeline with tasks: '{task_name}'")
         pipeline = Pipeline(
             tasks=task_name,
             pipeline_parameters=pipeline_params,

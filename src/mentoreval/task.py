@@ -42,7 +42,7 @@ from mentoreval.prompts import mentor_eval_prompt_fn
 # Note: mentoreval_metrics is already registered when mentoreval package is imported
 # No need to create or extend the enum again
 
-def create_mentoreval_task(dataset_name: str, generation_size: int = 500) -> LightevalTaskConfig:
+def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fewshots: int = 1) -> LightevalTaskConfig:
     """
     Create a MentorEval task for a specific dataset following LightEval patterns.
     
@@ -52,6 +52,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500) -> Lig
     Args:
         dataset_name: Name of the dataset (e.g., 'asap', 'asap2')
         generation_size: Maximum number of tokens to generate (default: 500)
+        num_fewshots: Number of few-shot examples to include (default: 1)
     """
     return LightevalTaskConfig(
         name=f"mentoreval_{dataset_name}",
@@ -64,6 +65,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500) -> Lig
         evaluation_splits=["test"],
         few_shots_split="train",
         few_shots_select="random",  # Use random for now, but filter at dataset level
+        num_fewshots=num_fewshots,  # This was missing!
         generation_size=generation_size,
         stop_sequence=["\n", ".", " "],
         metrics=[
@@ -78,7 +80,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500) -> Lig
         version=0,
     )
 
-def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, generation_size: int = 500) -> LightevalTaskConfig:
+def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, generation_size: int = 500, num_fewshots: int = 1) -> LightevalTaskConfig:
     """
     Create a MentorEval task for a specific dataset and exercise set.
     This ensures that few-shot examples come from the same exercise set.
@@ -87,6 +89,7 @@ def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, genera
         dataset_name: Name of the dataset (e.g., 'asap', 'asap2')
         exercise_set: Exercise set number (e.g., 1, 2, 3)
         generation_size: Maximum number of tokens to generate (default: 500)
+        num_fewshots: Number of few-shot examples to include (default: 1)
     """
     return LightevalTaskConfig(
         name=f"mentoreval_{dataset_name}_ex{exercise_set}",  # Base task name - LightEval adds custom| and |0
@@ -101,6 +104,7 @@ def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, genera
         evaluation_splits=["test"],
         few_shots_split="train",
         few_shots_select="random",  # Now random selection will be exercise-aware due to filtering
+        num_fewshots=num_fewshots,  # This was missing!
         generation_size=generation_size,
         stop_sequence=["\n", ".", " "],
         metrics=[
