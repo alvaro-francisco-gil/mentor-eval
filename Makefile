@@ -1,7 +1,7 @@
 # Makefile for MentorEval project
 # Provides convenient commands for dataset processing and testing
 
-.PHONY: help datasets tests venv venv-clean cli
+.PHONY: help dataset upload-hf tests venv venv-clean cli
 
 help:
 	@echo "MentorEval Project - Available Commands:"
@@ -11,10 +11,9 @@ help:
 	@echo "  make venv-clean   - Remove the venv folder"
 	@echo ""
 	@echo "📊 Dataset Processing:"
-	@echo "  make datasets     - Process all datasets (ASAP, ASAP2, Mohler)"
-	@echo "  make asap        - Process ASAP dataset only"
-	@echo "  make asap2       - Process ASAP2 dataset only"
-	@echo "  make mohler      - Process Mohler dataset only"
+	@echo "  make dataset      - Process all datasets using unified script"
+	@echo "  make upload-hf    - Upload processed dataset to Hugging Face Hub"
+	@echo "  make dataset-workflow - Process datasets and upload to HF in one command"
 	@echo ""
 	@echo "🧪 Testing:"
 	@echo "  make tests       - Run all validation tests"
@@ -25,43 +24,27 @@ help:
 	@echo "  make cli-execute N - Execute run N"
 	@echo "  make cli-execute-all - Execute all unexecuted runs"
 
-# Dataset processing targets
-datasets: asap asap2 mohler
+# Dataset processing target
+dataset:
+	@echo "🔄 Processing all datasets using unified script..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py
 	@echo "✅ All datasets processed successfully!"
 
-asap:
-	@echo "🔄 Processing ASAP dataset..."
+# Upload dataset to Hugging Face Hub
+upload-hf:
+	@echo "🚀 Uploading dataset to Hugging Face Hub..."
 	@ROOT=$$(pwd); PY="python3"; \
 	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
 	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
-	"$$PY" -c "import sys; sys.path.insert(0, 'scripts/dataset_processing'); from process_asap import ASAPProcessor; ASAPProcessor(data_dir='data/raw/asap', output_dir='data/processed/asap').process()"
-	@echo "✅ ASAP dataset processed!"
-
-asap2:
-	@echo "🔄 Processing ASAP2 dataset..."
-	@ROOT=$$(pwd); PY="python3"; \
-	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
-	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
-	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
-	fi; \
-	"$$PY" -c "import sys; sys.path.insert(0, 'scripts/dataset_processing'); from process_asap2 import ASAP2Processor; ASAP2Processor(data_dir='data/raw/asap2', output_dir='data/processed/asap2').process()"
-	@echo "✅ ASAP2 dataset processed!"
-
-mohler:
-	@echo "🔄 Processing Mohler dataset..."
-	@ROOT=$$(pwd); PY="python3"; \
-	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
-	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
-	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
-	fi; \
-	if [ -f scripts/dataset_processing/process_mohler.py ]; then \
-		"$$PY" scripts/dataset_processing/process_mohler.py; \
-	else \
-		echo "⚠️  Mohler processing script not found. Skipping."; \
-	fi
-	@echo "✅ Mohler dataset processed!"
+	"$$PY" scripts/data_upload_hf.py
+	@echo "✅ Dataset uploaded to Hugging Face Hub successfully!"
 
 tests:
 	@echo "🧪 Running All JSONL Validation Tests..."
@@ -72,8 +55,9 @@ quick-test: test-basic
 	@echo "🚀 Quick test completed!"
 
 clean:
-	@echo "🧹 Cleaning up processed JSONL files..."
-	@rm -rf data/processed/asap data/processed/asap2 data/processed/mohler
+	@echo "🧹 Cleaning up processed dataset files..."
+	@rm -rf data/processed/
+	@rm -f data/mentoreval.parquet
 	@echo "✅ Cleanup completed!"
 
 # Create venv and install deps (works on Linux/WSL and Windows)
@@ -122,13 +106,21 @@ venv-shell:
 # Check if dataset files exist
 check-datasets:
 	@echo "🔍 Checking dataset files..."
-	@if [ -d "data/processed/asap" ] && find data/processed/asap -name train.jsonl -print -quit | grep -q .; then echo "✅ ASAP processed files found"; else echo "❌ ASAP processed files missing"; fi
-	@if [ -d "data/processed/asap2" ] && find data/processed/asap2 -name train.jsonl -print -quit | grep -q .; then echo "✅ ASAP2 processed files found"; else echo "❌ ASAP2 processed files missing"; fi
-	@if [ -d "data/processed/mohler" ] && find data/processed/mohler -name train.jsonl -print -quit | grep -q .; then echo "✅ Mohler processed files found"; else echo "❌ Mohler processed files missing"; fi
+	@if [ -f "data/mentoreval.parquet" ]; then echo "✅ Combined dataset found"; else echo "❌ Combined dataset missing"; fi
+	@if [ -d "data/processed/asap" ] && [ -f "data/processed/asap/asap_processed.parquet" ]; then echo "✅ ASAP processed files found"; else echo "❌ ASAP processed files missing"; fi
+	@if [ -d "data/processed/asap2" ] && [ -f "data/processed/asap2/asap2_processed.parquet" ]; then echo "✅ ASAP2 processed files found"; else echo "❌ ASAP2 processed files missing"; fi
+	@if [ -d "data/processed/mohler" ] && [ -f "data/processed/mohler/mohler_processed.parquet" ]; then echo "✅ Mohler processed files found"; else echo "❌ Mohler processed files missing"; fi
+	@if [ -d "data/processed/ellipse" ] && [ -f "data/processed/ellipse/ellipse_processed.parquet" ]; then echo "✅ ELLIPSE processed files found"; else echo "❌ ELLIPSE processed files missing"; fi
+	@if [ -d "data/processed/arasag" ] && [ -f "data/processed/arasag/arasag_processed.parquet" ]; then echo "✅ ARASAG processed files found"; else echo "❌ ARASAG processed files missing"; fi
+	@if [ -d "data/processed/ptasag2018" ] && [ -f "data/processed/ptasag2018/ptasag2018_processed.parquet" ]; then echo "✅ PTASAG2018 processed files found"; else echo "❌ PTASAG2018 processed files missing"; fi
 
 # Complete workflow: process datasets then test
-workflow: datasets tests
+workflow: dataset tests
 	@echo "🎉 Complete workflow finished!"
+
+# Complete dataset workflow: process and upload to HF
+dataset-workflow: dataset upload-hf
+	@echo "🎉 Dataset processing and upload workflow finished!"
 
 # Development setup: install dependencies and run tests
 dev: install tests
@@ -137,15 +129,17 @@ dev: install tests
 # Show dataset statistics
 stats:
 	@echo "📊 Dataset Statistics:"
-	@echo "ASAP:"
-	@if [ -d "data/processed/asap" ]; then echo "  Train total lines: $$(find data/processed/asap -name train.jsonl -exec cat {} + | wc -l)"; else echo "  Train: Not found"; fi
-	@if [ -d "data/processed/asap" ]; then echo "  Test  total lines: $$(find data/processed/asap -name test.jsonl -exec cat {} + | wc -l)"; else echo "  Test:  Not found"; fi
-	@echo "ASAP2:"
-	@if [ -d "data/processed/asap2" ]; then echo "  Train total lines: $$(find data/processed/asap2 -name train.jsonl -exec cat {} + | wc -l)"; else echo "  Train: Not found"; fi
-	@if [ -d "data/processed/asap2" ]; then echo "  Test  total lines: $$(find data/processed/asap2 -name test.jsonl -exec cat {} + | wc -l)"; else echo "  Test:  Not found"; fi
-	@echo "Mohler:"
-	@if [ -d "data/processed/mohler" ]; then echo "  Train total lines: $$(find data/processed/mohler -name train.jsonl -exec cat {} + | wc -l)"; else echo "  Train: Not found"; fi
-	@if [ -d "data/processed/mohler" ]; then echo "  Test  total lines: $$(find data/processed/mohler -name test.jsonl -exec cat {} + | wc -l)"; else echo "  Test:  Not found"; fi
+	@if [ -f "data/mentoreval.parquet" ]; then \
+		echo "Combined Dataset:"; \
+		ROOT=$$(pwd); PY="python3"; \
+		if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+		elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+		elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+		fi; \
+		"$$PY" -c "import pandas as pd; df=pd.read_parquet('data/mentoreval.parquet'); print(f'  Total samples: {len(df):,}'); print(f'  Datasets: {df[\"dataset\"].nunique()}'); print(f'  Exercise sets: {df[\"exercise_set\"].nunique()}'); print('  By dataset:'); print(df['dataset'].value_counts().to_string())"; \
+	else \
+		echo "❌ Combined dataset not found. Run 'make dataset' first."; \
+	fi
 
 # CLI Commands
 cli-list:

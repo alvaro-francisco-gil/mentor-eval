@@ -85,6 +85,21 @@ class DatasetProcessor:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
     
+    def create_sequential_exercise_set_mapping(self, data, id_column, start_from=1):
+        """
+        Create a mapping from original IDs to sequential exercise set numbers.
+        
+        Args:
+            data (pd.DataFrame): The dataset
+            id_column (str): Column name containing the original IDs
+            start_from (int): Starting number for sequential mapping (default: 1)
+        
+        Returns:
+            dict: Mapping from original IDs to sequential exercise set numbers
+        """
+        unique_ids = data[id_column].dropna().unique()
+        return {orig_id: idx + start_from for idx, orig_id in enumerate(sorted(unique_ids))}
+    
     def save_unified_dataset(self, unified_df, dataset_name):
         """Save the unified dataset as both CSV and parquet files"""
         dataset_output_dir = self.output_dir / dataset_name
@@ -261,12 +276,16 @@ class ASAPProcessor(DatasetProcessor):
         """Create a unified dataset in the same format as other datasets"""
         unified_data = []
         
+        # Create sequential exercise set mapping
+        essay_set_to_exercise_set = self.create_sequential_exercise_set_mapping(self.data, 'essay_set')
+        
         for _, row in self.data.iterrows():
             essay_set = row['essay_set']
             if essay_set not in self.exercise_sets:
                 continue
             
             metadata = self.exercise_sets[essay_set]
+            exercise_set = essay_set_to_exercise_set[essay_set]
             
             question_text = metadata['question']
             if metadata.get('complementary_texts'):
@@ -328,7 +347,7 @@ class ASAPProcessor(DatasetProcessor):
             
             unified_sample = {
                 'dataset': 'asap',
-                'exercise_set': essay_set,
+                'exercise_set': exercise_set,
                 'question': question_text,
                 'answer': row['essay'],
                 'grade': grade,
@@ -427,12 +446,16 @@ class ASAP2Processor(DatasetProcessor):
         """Create a unified dataset in the same format as other datasets"""
         unified_data = []
         
+        # Create sequential exercise set mapping
+        original_to_sequential = self.create_sequential_exercise_set_mapping(self.data, 'exercise_set')
+        
         for _, row in self.data.iterrows():
-            exercise_set = row['exercise_set']
-            if exercise_set not in self.exercise_sets:
+            original_exercise_set = row['exercise_set']
+            if original_exercise_set not in self.exercise_sets:
                 continue
             
-            metadata = self.exercise_sets[exercise_set]
+            metadata = self.exercise_sets[original_exercise_set]
+            exercise_set = original_to_sequential[original_exercise_set]
             
             question_text = metadata['question']
             if metadata.get('complementary_texts'):
@@ -508,12 +531,11 @@ class MohlerProcessor(DatasetProcessor):
         """Create a unified dataset in the same format as other datasets"""
         unified_data = []
         
-        # Process exercise_set: map unique ID values to sequential integers starting from 1
-        unique_ids = self.data['id'].dropna().unique()
-        id_to_exercise_set = {id_val: idx + 1 for idx, id_val in enumerate(sorted(unique_ids))}
+        # Create sequential exercise set mapping
+        id_to_exercise_set = self.create_sequential_exercise_set_mapping(self.data, 'id')
         
         for _, row in self.data.iterrows():
-            exercise_set = id_to_exercise_set.get(row['id'], 1)
+            exercise_set = id_to_exercise_set[row['id']]
             
             # Ensure score is an integer
             score = float(row['score_me'])
@@ -619,9 +641,8 @@ class EllipseProcessor(DatasetProcessor):
         unified_data = []
         rubric_text = self.load_rubric()
         
-        # Create mapping from prompt to exercise_set (sequential integers)
-        unique_prompts = sorted(self.data['prompt'].unique())
-        prompt_to_exercise_set = {prompt: idx + 1 for idx, prompt in enumerate(unique_prompts)}
+        # Create sequential exercise set mapping
+        prompt_to_exercise_set = self.create_sequential_exercise_set_mapping(self.data, 'prompt')
         
         for _, row in self.data.iterrows():
             # Create metadata JSON from demographic fields
@@ -711,9 +732,8 @@ class ARASAGProcessor(DatasetProcessor):
         """Create a unified dataset in the same format as other datasets"""
         unified_data = []
         
-        # Create mapping from Question_Arabic to exercise_set (sequential integers)
-        unique_questions = sorted(self.data['Question_Arabic'].unique())
-        question_to_exercise_set = {question: idx + 1 for idx, question in enumerate(unique_questions)}
+        # Create sequential exercise set mapping
+        question_to_exercise_set = self.create_sequential_exercise_set_mapping(self.data, 'Question_Arabic')
         
         for _, row in self.data.iterrows():
             # Create metadata JSON from question type
@@ -803,10 +823,13 @@ class PTASAG2018Processor(DatasetProcessor):
         """Create a unified dataset in the same format as other datasets"""
         unified_data = []
         
+        # Create sequential exercise set mapping
+        question_id_to_exercise_set = self.create_sequential_exercise_set_mapping(self.data, 'question_id')
+        
         for _, row in self.data.iterrows():
             unified_sample = {
                 'dataset': 'ptasag2018',
-                'exercise_set': int(row['question_id']),
+                'exercise_set': question_id_to_exercise_set[row['question_id']],
                 'question': row['question_text'],
                 'answer': row['answer_text'],
                 'grade': float(row['grade']),
