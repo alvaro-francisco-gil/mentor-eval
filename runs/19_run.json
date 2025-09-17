@@ -1,0 +1,30 @@
+{
+  "run_id": 19,
+  "model_name": "gpt-4o-mini",
+  "benchmark_mode": "mentoreval-test",
+  "description": "Test with fixed generation_size=500 in task config",
+  "status": "completed",
+  "parameters": {
+    "model_name": "gpt-4o-mini",
+    "training_examples": 1,
+    "test_samples": 1,
+    "task_name": "mentoreval_asap2",
+    "show_guidance": true,
+    "prompt_type": "with_explanation"
+  },
+  "configuration": {
+    "use_local_backend": false,
+    "task_args": {
+      "max_samples": 1,
+      "num_fewshot_seeds": 1
+    },
+    "model_args": {
+      "use_chat_template": true
+    },
+    "generation_args": {
+      "max_new_tokens": 500,
+      "temperature": 0.0,
+      "do_sample": false
+    }
+  }
+}

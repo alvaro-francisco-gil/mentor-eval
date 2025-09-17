@@ -24,7 +24,7 @@ from scipy.stats import pearsonr, spearmanr, ks_2samp, wasserstein_distance
 # LightEval imports for compatibility
 from lighteval.metrics.metrics import SampleLevelMetric, CorpusLevelMetric, Metrics
 from lighteval.metrics.metrics_sample import SampleLevelComputation
-from lighteval.metrics.utils.metric_utils import CorpusLevelMetricGrouping
+from lighteval.metrics.utils.metric_utils import SampleLevelMetricGrouping, MetricGrouping
 from lighteval.tasks.requests import SamplingMethod
 
 
@@ -98,24 +98,24 @@ def denormalize_grade(normalized_grade: float, min_grade: float, max_grade: floa
 # SAMPLE-LEVEL METRIC FUNCTIONS
 # =============================================================================
 
-def exact_grade_match(predictions: List[str], formatted_doc, **kwargs) -> float:
+def exact_grade_match(model_response, doc, **kwargs) -> float:
     """
     Check for exact grade match (no normalization needed).
     
     Args:
-        predictions: List of model predictions (strings)
-        formatted_doc: Doc object with expected grade
+        model_response: ModelResponse object with generated text
+        doc: Doc object with expected grade
         **kwargs: Additional keyword arguments
         
     Returns:
         float: 1.0 if exact match, 0.0 otherwise
     """
     try:
-        pred_grade = parse_grade(predictions[0])
+        pred_grade = parse_grade(model_response.text[0])
         if pred_grade is None:
             return 0.0
             
-        expected_grade = float(formatted_doc.choices[0])
+        expected_grade = float(doc.choices[0])
         
         # Check for exact match in raw grade space (tolerance of 0.1)
         return 1.0 if abs(pred_grade - expected_grade) < 0.1 else 0.0
@@ -123,33 +123,94 @@ def exact_grade_match(predictions: List[str], formatted_doc, **kwargs) -> float:
         return 0.0
 
 
+def grade_evaluation_metrics(model_response, doc, **kwargs) -> dict:
+    """
+    Evaluate grade prediction metrics at the sample level.
+    
+    Args:
+        model_response: ModelResponse object with generated text
+        doc: Doc object with expected grade and metadata
+        **kwargs: Additional keyword arguments
+        
+    Returns:
+        dict: Dictionary with multiple grade evaluation metrics
+    """
+    try:
+        # Parse the model's prediction from the response text
+        prediction_text = model_response.text[0]
+        pred_grade = parse_grade(prediction_text)
+        
+        # Get expected grade from doc.choices (should be populated by prompt function)
+        expected_grade = float(doc.choices[0])
+        
+        # Get rubric range for normalization from doc.specific
+        min_grade = doc.specific.get("min_grade", 0.0)
+        max_grade = doc.specific.get("max_grade", 10.0)
+        
+        # Handle parsing failures
+        if pred_grade is None:
+            return {
+                "exact_grade_match": 0.0,
+                "grade_mae": 1.0,  # Maximum error in normalized space
+                "grade_rmse": 1.0,  # Maximum error in normalized space
+                "parsing_failure": 1.0,  # Track parsing failures
+            }
+        
+        # Calculate exact match (with tolerance)
+        exact_match = 1.0 if abs(pred_grade - expected_grade) < 0.1 else 0.0
+        
+        # Normalize grades for error calculations
+        pred_normalized = normalize_grade(pred_grade, min_grade, max_grade)
+        expected_normalized = normalize_grade(expected_grade, min_grade, max_grade)
+        
+        # Calculate normalized errors
+        mae = abs(pred_normalized - expected_normalized)
+        rmse = (pred_normalized - expected_normalized) ** 2
+        
+        return {
+            "exact_grade_match": exact_match,
+            "grade_mae": mae,
+            "grade_rmse": rmse,
+            "parsing_failure": 0.0,  # No parsing failure
+        }
+        
+    except (ValueError, IndexError, TypeError, AttributeError) as e:
+        # Handle any errors gracefully
+        return {
+            "exact_grade_match": 0.0,
+            "grade_mae": 1.0,
+            "grade_rmse": 1.0,
+            "parsing_failure": 1.0,
+        }
 
 
-def grade_mae(predictions: List[str], formatted_doc, **kwargs) -> float:
+
+
+def grade_mae(model_response, doc, **kwargs) -> float:
     """
     Calculate Mean Absolute Error for grade prediction (normalized).
     
     Args:
-        predictions: List of model predictions (strings)
-        formatted_doc: Doc object with expected grade and rubric range
+        model_response: ModelResponse object with generated text
+        doc: Doc object with expected grade and rubric range
         **kwargs: Additional keyword arguments
         
     Returns:
         float: Absolute error between predicted and expected grade (normalized to [0, 1])
     """
     try:
-        pred_grade = parse_grade(predictions[0])
+        pred_grade = parse_grade(model_response.text[0])
         if pred_grade is None:
             return 1.0  # Maximum error in normalized space
             
-        expected_grade = float(formatted_doc.choices[0])
+        expected_grade = float(doc.choices[0])
         
         # Get rubric range for normalization (required)
-        min_grade = formatted_doc.specific.get("min_grade")
-        max_grade = formatted_doc.specific.get("max_grade")
+        min_grade = doc.specific.get("min_grade")
+        max_grade = doc.specific.get("max_grade")
         
         if min_grade is None or max_grade is None:
-            raise ValueError("min_grade and max_grade must be provided in formatted_doc.specific")
+            raise ValueError("min_grade and max_grade must be provided in doc.specific")
         
         # Normalize both grades to [0, 1] range
         pred_normalized = normalize_grade(pred_grade, min_grade, max_grade)
@@ -161,31 +222,31 @@ def grade_mae(predictions: List[str], formatted_doc, **kwargs) -> float:
         return 1.0  # Maximum error in normalized space
 
 
-def grade_rmse(predictions: List[str], formatted_doc, **kwargs) -> float:
+def grade_rmse(model_response, doc, **kwargs) -> float:
     """
     Calculate squared error for RMSE computation (normalized).
     
     Args:
-        predictions: List of model predictions (strings)
-        formatted_doc: Doc object with expected grade and rubric range
+        model_response: ModelResponse object with generated text
+        doc: Doc object with expected grade and rubric range
         **kwargs: Additional keyword arguments
         
     Returns:
         float: Squared error between predicted and expected grade (normalized to [0, 1])
     """
     try:
-        pred_grade = parse_grade(predictions[0])
+        pred_grade = parse_grade(model_response.text[0])
         if pred_grade is None:
             return 1.0  # Maximum error in normalized space
             
-        expected_grade = float(formatted_doc.choices[0])
+        expected_grade = float(doc.choices[0])
         
         # Get rubric range for normalization (required)
-        min_grade = formatted_doc.specific.get("min_grade")
-        max_grade = formatted_doc.specific.get("max_grade")
+        min_grade = doc.specific.get("min_grade")
+        max_grade = doc.specific.get("max_grade")
         
         if min_grade is None or max_grade is None:
-            raise ValueError("min_grade and max_grade must be provided in formatted_doc.specific")
+            raise ValueError("min_grade and max_grade must be provided in doc.specific")
         
         # Normalize both grades to [0, 1] range
         pred_normalized = normalize_grade(pred_grade, min_grade, max_grade)
@@ -204,15 +265,27 @@ def grade_rmse(predictions: List[str], formatted_doc, **kwargs) -> float:
 # Custom SampleLevelComputation classes
 class ExactGradeMatchComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
-        return exact_grade_match(model_response.text, doc, **kwargs)
+        try:
+            return exact_grade_match(model_response.text, doc, **kwargs)
+        except Exception as e:
+            print(f"Error in ExactGradeMatchComputation: {e}")
+            return 0.0
 
 class GradeMAEComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
-        return grade_mae(model_response.text, doc, **kwargs)
+        try:
+            return grade_mae(model_response.text, doc, **kwargs)
+        except Exception as e:
+            print(f"Error in GradeMAEComputation: {e}")
+            return 1.0
 
 class GradeRMSEComputation(SampleLevelComputation):
     def compute(self, model_response, doc, **kwargs):
-        return grade_rmse(model_response.text, doc, **kwargs)
+        try:
+            return grade_rmse(model_response.text, doc, **kwargs)
+        except Exception as e:
+            print(f"Error in GradeRMSEComputation: {e}")
+            return 1.0
 
 # Exact Grade Match Metric
 exact_grade_match_metric = SampleLevelMetric(
@@ -254,115 +327,141 @@ grade_rmse_metric = SampleLevelMetric(
 # CORPUS-LEVEL METRIC FUNCTIONS
 # =============================================================================
 
-def calculate_pearson_correlation(predictions: List[str], ground_truth: List[float]) -> float:
+def corpus_level_placeholder(model_response, doc, **kwargs) -> float:
+    """
+    Placeholder function for corpus-level metrics.
+    Returns a placeholder value that will be replaced during corpus-level aggregation.
+    """
+    return 0.0  # Placeholder value
+
+
+class CorpusLevelPlaceholderComputation(SampleLevelComputation):
+    """Computation for corpus-level metrics that collects data for later processing."""
+    
+    def compute(self, model_response, doc, **kwargs):
+        # Return the prediction and ground truth for corpus-level processing
+        try:
+            pred_grade = parse_grade(model_response.text[0])
+            expected_grade = float(doc.choices[0])
+            return {
+                'prediction': pred_grade if pred_grade is not None else 0.0,
+                'ground_truth': expected_grade
+            }
+        except (ValueError, IndexError, TypeError, AttributeError):
+            return {
+                'prediction': 0.0,
+                'ground_truth': 0.0
+            }
+
+def calculate_pearson_correlation(sample_results, **kwargs) -> float:
     """
     Calculate Pearson correlation between predictions and ground truth.
     
     Args:
-        predictions: List of model predictions (strings)
-        ground_truth: List of ground truth grades (floats)
+        sample_results: List of dictionaries with 'prediction' and 'ground_truth' keys
         
     Returns:
         float: Pearson correlation coefficient
     """
-    # Parse predictions to grades
-    parsed_predictions = []
-    for pred in predictions:
-        grade = parse_grade(pred)
-        if grade is not None:
-            parsed_predictions.append(grade)
-    
-    if len(parsed_predictions) < 2 or len(ground_truth) < 2:
-        return 0.0
-    
     try:
-        correlation, _ = pearsonr(parsed_predictions, ground_truth)
-        return float(correlation)
-    except Exception:
+        if not sample_results or len(sample_results) < 2:
+            return 0.0
+            
+        # Extract predictions and ground truth
+        predictions = [result.get('prediction', 0.0) for result in sample_results]
+        ground_truth = [result.get('ground_truth', 0.0) for result in sample_results]
+        
+        if len(predictions) != len(ground_truth) or len(predictions) < 2:
+            return 0.0
+        
+        # Calculate Pearson correlation
+        correlation, _ = pearsonr(predictions, ground_truth)
+        return correlation if not np.isnan(correlation) else 0.0
+    except (ValueError, TypeError, AttributeError):
         return 0.0
 
 
-def calculate_spearman_correlation(predictions: List[str], ground_truth: List[float]) -> float:
+def calculate_spearman_correlation(sample_results, **kwargs) -> float:
     """
     Calculate Spearman correlation between predictions and ground truth.
     
     Args:
-        predictions: List of model predictions (strings)
-        ground_truth: List of ground truth grades (floats)
+        sample_results: List of dictionaries with 'prediction' and 'ground_truth' keys
         
     Returns:
         float: Spearman correlation coefficient
     """
-    # Parse predictions to grades
-    parsed_predictions = []
-    for pred in predictions:
-        grade = parse_grade(pred)
-        if grade is not None:
-            parsed_predictions.append(grade)
-    
-    if len(parsed_predictions) < 2 or len(ground_truth) < 2:
-        return 0.0
-    
     try:
-        correlation, _ = spearmanr(parsed_predictions, ground_truth)
-        return float(correlation)
-    except Exception:
+        if not sample_results or len(sample_results) < 2:
+            return 0.0
+            
+        # Extract predictions and ground truth
+        predictions = [result.get('prediction', 0.0) for result in sample_results]
+        ground_truth = [result.get('ground_truth', 0.0) for result in sample_results]
+        
+        if len(predictions) != len(ground_truth) or len(predictions) < 2:
+            return 0.0
+        
+        # Calculate Spearman correlation
+        correlation, _ = spearmanr(predictions, ground_truth)
+        return correlation if not np.isnan(correlation) else 0.0
+    except (ValueError, TypeError, AttributeError):
         return 0.0
 
 
-def calculate_ks_statistic(predictions: List[str], ground_truth: List[float]) -> float:
+def calculate_ks_statistic(sample_results, **kwargs) -> float:
     """
     Calculate Kolmogorov-Smirnov statistic between predictions and ground truth.
     
     Args:
-        predictions: List of model predictions (strings)
-        ground_truth: List of ground truth grades (floats)
+        sample_results: List of dictionaries with 'prediction' and 'ground_truth' keys
         
     Returns:
         float: KS statistic
     """
-    # Parse predictions to grades
-    parsed_predictions = []
-    for pred in predictions:
-        grade = parse_grade(pred)
-        if grade is not None:
-            parsed_predictions.append(grade)
-    
-    if len(parsed_predictions) < 2 or len(ground_truth) < 2:
-        return 0.0
-    
     try:
-        ks_stat, _ = ks_2samp(parsed_predictions, ground_truth)
+        if not sample_results or len(sample_results) < 2:
+            return 0.0
+            
+        # Extract predictions and ground truth
+        predictions = [result.get('prediction', 0.0) for result in sample_results]
+        ground_truth = [result.get('ground_truth', 0.0) for result in sample_results]
+        
+        if len(predictions) != len(ground_truth) or len(predictions) < 2:
+            return 0.0
+        
+        # Calculate KS statistic
+        ks_stat, _ = ks_2samp(predictions, ground_truth)
         return float(ks_stat)
-    except Exception:
+    except (ValueError, TypeError, AttributeError):
         return 0.0
 
 
-def calculate_wasserstein_distance(predictions: List[str], ground_truth: List[float]) -> float:
+def calculate_wasserstein_distance(sample_results, **kwargs) -> float:
     """
     Calculate Wasserstein distance between predictions and ground truth.
     
     Args:
-        predictions: List of model predictions (strings)
-        ground_truth: List of ground truth grades (floats)
+        sample_results: List of dictionaries with 'prediction' and 'ground_truth' keys
         
     Returns:
         float: Wasserstein distance
     """
-    # Parse predictions to grades
-    parsed_predictions = []
-    for pred in predictions:
-        grade = parse_grade(pred)
-        if grade is not None:
-            parsed_predictions.append(grade)
-    
-    if len(parsed_predictions) < 2 or len(ground_truth) < 2:
-        return 0.0
-    
     try:
-        wd = wasserstein_distance(parsed_predictions, ground_truth)
+        if not sample_results or len(sample_results) < 2:
+            return 0.0
+            
+        # Extract predictions and ground truth
+        predictions = [result.get('prediction', 0.0) for result in sample_results]
+        ground_truth = [result.get('ground_truth', 0.0) for result in sample_results]
+        
+        if len(predictions) != len(ground_truth) or len(predictions) < 2:
+            return 0.0
+        
+        # Calculate Wasserstein distance
+        wd = wasserstein_distance(predictions, ground_truth)
         return float(wd)
-    except Exception:
+    except (ValueError, TypeError, AttributeError):
         return 0.0
 
 
@@ -375,7 +474,7 @@ pearson_correlation_metric = CorpusLevelMetric(
     metric_name="pearson_correlation",
     higher_is_better=True,
     category=SamplingMethod.GENERATIVE,
-    sample_level_fn=None,  # Not applicable for corpus-level metrics
+    sample_level_fn=CorpusLevelPlaceholderComputation(),  # Placeholder for sample-level processing
     corpus_level_fn=calculate_pearson_correlation,
     batched_compute=False,
 )
@@ -385,7 +484,7 @@ spearman_correlation_metric = CorpusLevelMetric(
     metric_name="spearman_correlation",
     higher_is_better=True,
     category=SamplingMethod.GENERATIVE,
-    sample_level_fn=None,  # Not applicable for corpus-level metrics
+    sample_level_fn=CorpusLevelPlaceholderComputation(),  # Placeholder for sample-level processing
     corpus_level_fn=calculate_spearman_correlation,
     batched_compute=False,
 )
@@ -395,7 +494,7 @@ ks_statistic_metric = CorpusLevelMetric(
     metric_name="ks_statistic",
     higher_is_better=False,  # Lower is better (more similar distributions)
     category=SamplingMethod.GENERATIVE,
-    sample_level_fn=None,  # Not applicable for corpus-level metrics
+    sample_level_fn=CorpusLevelPlaceholderComputation(),  # Placeholder for sample-level processing
     corpus_level_fn=calculate_ks_statistic,
     batched_compute=False,
 )
@@ -405,7 +504,7 @@ wasserstein_distance_metric = CorpusLevelMetric(
     metric_name="wasserstein_distance",
     higher_is_better=False,  # Lower is better (more similar distributions)
     category=SamplingMethod.GENERATIVE,
-    sample_level_fn=None,  # Not applicable for corpus-level metrics
+    sample_level_fn=CorpusLevelPlaceholderComputation(),  # Placeholder for sample-level processing
     corpus_level_fn=calculate_wasserstein_distance,
     batched_compute=False,
 )
@@ -458,34 +557,8 @@ class MetricsCalculator:
 # LIGHTEVAL METRIC REGISTRATION
 # =============================================================================
 
-# Create metric grouping following LightEval patterns
-mentoreval_metrics = CorpusLevelMetricGrouping(
-    metric_name=["exact_grade_match", "grade_mae", "grade_rmse"],
-    higher_is_better={
-        "exact_grade_match": True,
-        "grade_mae": False,
-        "grade_rmse": False,
-    },
-    category=SamplingMethod.GENERATIVE,
-    sample_level_fn={
-        "exact_grade_match": exact_grade_match_metric,
-        "grade_mae": grade_mae_metric,
-        "grade_rmse": grade_rmse_metric,
-    },
-    corpus_level_fn={
-        "exact_grade_match": np.mean,
-        "grade_mae": np.mean,
-        "grade_rmse": np.mean,
-    },
-)
-
-# Extend Metrics enum (only if not already registered)
-from aenum import extend_enum
-try:
-    extend_enum(Metrics, "mentoreval_metrics", mentoreval_metrics)
-except TypeError:
-    # Already registered, skip
-    pass
+# Note: Individual metrics are used directly in task configuration
+# No need for complex metric grouping
 
 # =============================================================================
 # EXPORT SECTION
@@ -521,7 +594,4 @@ __all__ = [
     
     # Utility functions
     'parse_grade',
-    
-    # Metric grouping
-    'mentoreval_metrics',
 ]

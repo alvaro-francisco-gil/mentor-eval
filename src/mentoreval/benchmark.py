@@ -20,6 +20,36 @@ from .run_manager import RunManager, RunInfo
 from .models import ModelConfig
 
 
+class CustomEvaluationTracker(EvaluationTracker):
+    """Custom evaluation tracker that captures detailed interactions."""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.interactions = []  # Store detailed interactions
+    
+    def log(self, task_name: str, doc, response, output):
+        """Override log method to capture detailed interactions."""
+        # Call parent method
+        super().log(task_name, doc, response, output)
+        
+        # Capture detailed interaction
+        interaction = {
+            "task_name": task_name,
+            "doc_id": getattr(doc, 'doc_id', 'unknown'),
+            "prompt": getattr(doc, 'query', ''),
+            "response": getattr(response, 'text', [''])[0] if hasattr(response, 'text') and response.text else '',
+            "expected_grade": getattr(doc, 'choices', [''])[0] if hasattr(doc, 'choices') and doc.choices else '',
+            "metrics": output,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.interactions.append(interaction)
+        # Debug: print(f"DEBUG: Captured interaction for {task_name}: {interaction['response'][:50]}...")
+    
+    def get_interactions(self):
+        """Get captured interactions."""
+        return self.interactions
+
+
 class LightEvalBenchmark:
     """
     LightEval-native benchmark that uses the proper LightEval pipeline.
@@ -46,7 +76,7 @@ class LightEvalBenchmark:
         default_max_samples = 20 if task_name == "mentoreval" else 1000
         task_args = {**{"max_samples": default_max_samples, "num_fewshot_seeds": 1}, **(task_args or {})}
         model_args = {**{"use_chat_template": True}, **(model_args or {})}
-        generation_args = {**{"max_new_tokens": 10, "temperature": 0.0, "do_sample": False}, **(generation_args or {})}
+        generation_args = {**{"max_new_tokens": 500, "temperature": 0.0, "do_sample": False}, **(generation_args or {})}
         
         # Create user-friendly parameters (like 7_run.json)
         parameters = {
@@ -79,8 +109,8 @@ class LightEvalBenchmark:
         self.run_manager.update_run_status(run_info.run_id, "running")
 
         try:
-            results = self._run_evaluation(run_info)
-            processed_results = self._process_results(results, run_info)
+            results, evaluation_tracker = self._run_evaluation(run_info)
+            processed_results = self._process_results(results, run_info, evaluation_tracker)
             self._save_results(processed_results, run_info)
             self.run_manager.update_run_status(run_info.run_id, "completed")
             return processed_results
@@ -92,15 +122,15 @@ class LightEvalBenchmark:
     def execute_evaluation_directly(self, run_info: RunInfo) -> Dict[str, Any]:
         """Execute evaluation directly without creating new run files."""
         try:
-            results = self._run_evaluation(run_info)
-            processed_results = self._process_results(results, run_info)
+            results, evaluation_tracker = self._run_evaluation(run_info)
+            processed_results = self._process_results(results, run_info, evaluation_tracker)
             self._save_results(processed_results, run_info)
             return {"status": "completed", "run_id": run_info.run_id, "results": processed_results}
         except Exception as e:
             print(f"❌ Run {run_info.run_id} failed: {e}")
             return {"status": "failed", "run_id": run_info.run_id, "error": str(e)}
 
-    def _run_evaluation(self, run_info: RunInfo) -> Dict[str, Any]:
+    def _run_evaluation(self, run_info: RunInfo) -> tuple[Dict[str, Any], CustomEvaluationTracker]:
         """Core evaluation logic shared between execute_run and execute_evaluation_directly."""
         # Set environment variables to avoid Windows cache path issues
         import os
@@ -131,6 +161,10 @@ class LightEvalBenchmark:
         # Apply the monkey patch
         lighteval.utils.cache_management.SampleCache.get_cache_path = windows_compatible_get_cache_path
         
+        # Store interactions globally for capture
+        global captured_interactions
+        captured_interactions = []
+        
         # Extract configuration
         use_local_backend = run_info.configuration.get("use_local_backend", False)
         model_name = run_info.configuration.get("model_name", run_info.model_name)
@@ -142,8 +176,8 @@ class LightEvalBenchmark:
         if task_name == "mentoreval":
             task_name = "custom|mentor_eval:asap_exercise_set_1|0"  # Map to a working specific task
 
-        # Create evaluation tracker
-        evaluation_tracker = EvaluationTracker(
+        # Create custom evaluation tracker that captures interactions
+        evaluation_tracker = CustomEvaluationTracker(
             output_dir=self.results_dir,
             save_details=True,
             push_to_hub=False,
@@ -186,8 +220,44 @@ class LightEvalBenchmark:
             model_config=model_config,
         )
         
+        # Monkey patch the pipeline's _compute_metrics method to capture interactions
+        original_compute_metrics = pipeline._compute_metrics
+        
+        def capture_interactions_compute_metrics(sampling_method_responses):
+            """Monkey patched version that captures interactions."""
+            # Call original method
+            original_compute_metrics(sampling_method_responses)
+            
+            # Import parse_grade function
+            from mentoreval.metrics import parse_grade
+            
+            # Capture interactions from the responses
+            global captured_interactions
+            for sampling_method, model_responses in sampling_method_responses.items():
+                for doc, response in zip(pipeline.sampling_docs[sampling_method], model_responses):
+                    response_text = getattr(response, 'text', [''])[0] if hasattr(response, 'text') and response.text else ''
+                    parsed_grade = parse_grade(response_text)
+                    
+                    interaction = {
+                        "task_name": doc.task_name,
+                        "doc_id": getattr(doc, 'doc_id', 'unknown'),
+                        "prompt": getattr(doc, 'query', ''),
+                        "response": response_text,
+                        "parsed_grade": parsed_grade,
+                        "expected_grade": getattr(doc, 'choices', [''])[0] if hasattr(doc, 'choices') and doc.choices else '',
+                        "timestamp": datetime.now().isoformat()
+                    }
+                    captured_interactions.append(interaction)
+                    # Debug: print(f"DEBUG: Captured interaction for {doc.task_name}: {interaction['response'][:50]}...")
+        
+        pipeline._compute_metrics = capture_interactions_compute_metrics
+        
         pipeline.evaluate()
-        return self._clean_results(pipeline.get_results())
+        
+        # Add captured interactions to evaluation tracker
+        evaluation_tracker.interactions = captured_interactions
+        
+        return self._clean_results(pipeline.get_results()), evaluation_tracker
 
     def execute_unexecuted_runs(self) -> List[Dict[str, Any]]:
         """Execute all unexecuted runs from the runs directory."""
@@ -230,9 +300,9 @@ class LightEvalBenchmark:
         except (TypeError, ValueError):
             return clean_value(results)
 
-    def _process_results(self, results: Dict[str, Any], run_info: RunInfo) -> Dict[str, Any]:
+    def _process_results(self, results: Dict[str, Any], run_info: RunInfo, evaluation_tracker=None) -> Dict[str, Any]:
         """Process LightEval results into our format."""
-        return {
+        processed_results = {
             "run_id": run_info.run_id,
             "model_name": run_info.model_name,
             "benchmark_mode": run_info.benchmark_mode,
@@ -245,19 +315,140 @@ class LightEvalBenchmark:
             "results": results,
             "status": "completed"
         }
+        
+        # Add interactions if available
+        if evaluation_tracker and hasattr(evaluation_tracker, 'get_interactions'):
+            processed_results["interactions"] = evaluation_tracker.get_interactions()
+        
+        return processed_results
+    
+    def _process_clean_metrics(self, results: Dict[str, Any], run_info: RunInfo) -> Dict[str, Any]:
+        """Process results into clean metrics format for results/ directory."""
+        return {
+            "run_info": {
+                "run_id": run_info.run_id,
+                "model_name": run_info.model_name,
+                "task_name": run_info.parameters.get("task_name", "unknown"),
+                "timestamp": datetime.now().isoformat(),
+                "status": "completed"
+            },
+            "metrics_summary": self._extract_metrics_summary(results)
+        }
+    
+    def _extract_metrics_summary(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract clean metrics summary from LightEval results."""
+        metrics_summary = {}
+        
+        # The actual task results are in results.results.results
+        task_results = results.get("results", {}).get("results", {})
+        
+        # Process each task
+        for task_key, task_metrics in task_results.items():
+            if task_key == "all":
+                continue  # Skip aggregated for now
+                
+            # Extract task name (e.g., "mentoreval_asap2_ex1" from "custom:mentoreval_asap2_ex1:0")
+            if ':' in task_key:
+                task_name_clean = task_key.split(':')[1]
+            else:
+                task_name_clean = task_key
+            
+            metrics_summary[task_name_clean] = {
+                "exact_grade_match": {
+                    "value": task_metrics.get("exact_grade_match", 0.0),
+                    "stderr": task_metrics.get("exact_grade_match_stderr", 0.0)
+                },
+                "grade_mae": {
+                    "value": task_metrics.get("grade_mae", 0.0),
+                    "stderr": task_metrics.get("grade_mae_stderr", 0.0)
+                },
+                "grade_rmse": {
+                    "value": task_metrics.get("grade_rmse", 0.0),
+                    "stderr": task_metrics.get("grade_rmse_stderr", 0.0)
+                },
+                "pearson_correlation": {
+                    "value": task_metrics.get("pearson_correlation", 0.0),
+                    "stderr": task_metrics.get("pearson_correlation_stderr", 0.0)
+                },
+                "spearman_correlation": {
+                    "value": task_metrics.get("spearman_correlation", 0.0),
+                    "stderr": task_metrics.get("spearman_correlation_stderr", 0.0)
+                },
+                "ks_statistic": {
+                    "value": task_metrics.get("ks_statistic", 0.0),
+                    "stderr": task_metrics.get("ks_statistic_stderr", 0.0)
+                },
+                "wasserstein_distance": {
+                    "value": task_metrics.get("wasserstein_distance", 0.0),
+                    "stderr": task_metrics.get("wasserstein_distance_stderr", 0.0)
+                }
+            }
+        
+        # Add aggregated results if available
+        if "all" in task_results:
+            metrics_summary["aggregated"] = {
+                "exact_grade_match": {
+                    "value": task_results["all"].get("exact_grade_match", 0.0),
+                    "stderr": task_results["all"].get("exact_grade_match_stderr", 0.0)
+                },
+                "grade_mae": {
+                    "value": task_results["all"].get("grade_mae", 0.0),
+                    "stderr": task_results["all"].get("grade_mae_stderr", 0.0)
+                },
+                "grade_rmse": {
+                    "value": task_results["all"].get("grade_rmse", 0.0),
+                    "stderr": task_results["all"].get("grade_rmse_stderr", 0.0)
+                },
+                "pearson_correlation": {
+                    "value": task_results["all"].get("pearson_correlation", 0.0),
+                    "stderr": task_results["all"].get("pearson_correlation_stderr", 0.0)
+                },
+                "spearman_correlation": {
+                    "value": task_results["all"].get("spearman_correlation", 0.0),
+                    "stderr": task_results["all"].get("spearman_correlation_stderr", 0.0)
+                },
+                "ks_statistic": {
+                    "value": task_results["all"].get("ks_statistic", 0.0),
+                    "stderr": task_results["all"].get("ks_statistic_stderr", 0.0)
+                },
+                "wasserstein_distance": {
+                    "value": task_results["all"].get("wasserstein_distance", 0.0),
+                    "stderr": task_results["all"].get("wasserstein_distance_stderr", 0.0)
+                }
+            }
+        
+        return metrics_summary
 
     def _save_results(self, results: Dict[str, Any], run_info: RunInfo):
-        """Save results to both results directories."""
+        """Save results to both results directories with different formats."""
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{run_info.run_id}_{run_info.model_name}_{run_info.benchmark_mode}_{timestamp}.json"
         
-        # Save to both directories
-        for directory in [self.results_dir, self.results_extended_dir]:
-            filepath = os.path.join(directory, filename)
-            with open(filepath, 'w', encoding='utf-8') as f:
-                json.dump(results, f, indent=2)
+        # Save clean metrics to results/ directory
+        clean_metrics = self._process_clean_metrics(results, run_info)
+        results_filepath = os.path.join(self.results_dir, filename)
+        with open(results_filepath, 'w', encoding='utf-8') as f:
+            json.dump(clean_metrics, f, indent=2)
         
-        print(f"Results saved to {self.results_dir}/{filename} and {self.results_extended_dir}/{filename}")
+        # Save detailed results with interactions to results_extended/ directory
+        extended_results = {
+            "run_info": {
+                "run_id": run_info.run_id,
+                "model_name": run_info.model_name,
+                "task_name": run_info.parameters.get("task_name", "unknown"),
+                "timestamp": datetime.now().isoformat(),
+                "status": "completed"
+            },
+            "interactions": results.get("interactions", []),
+            "raw_results": results  # Include the full raw results
+        }
+        
+        extended_filepath = os.path.join(self.results_extended_dir, filename)
+        with open(extended_filepath, 'w', encoding='utf-8') as f:
+            json.dump(extended_results, f, indent=2)
+        
+        print(f"✅ Clean metrics saved to: {self.results_dir}/{filename}")
+        print(f"✅ Detailed interactions saved to: {self.results_extended_dir}/{filename}")
 
 
 def create_lighteval_benchmark(runs_dir: str = "runs", 

@@ -1,0 +1,30 @@
+{
+  "run_id": 20,
+  "model_name": "gpt-4o-mini",
+  "benchmark_mode": "mentoreval-test",
+  "description": "Test run 20 with proper configuration",
+  "status": "completed",
+  "parameters": {
+    "model_name": "gpt-4o-mini",
+    "training_examples": 1,
+    "test_samples": 2,
+    "task_name": "mentoreval_asap2",
+    "show_guidance": true,
+    "prompt_type": "with_explanation"
+  },
+  "configuration": {
+    "use_local_backend": false,
+    "task_args": {
+      "max_samples": 2,
+      "num_fewshot_seeds": 1
+    },
+    "model_args": {
+      "use_chat_template": true
+    },
+    "generation_args": {
+      "max_new_tokens": 50,
+      "temperature": 0.0,
+      "do_sample": false
+    }
+  }
+}

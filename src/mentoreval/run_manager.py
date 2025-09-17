@@ -50,7 +50,7 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
             "use_chat_template": True,
         },
         "generation_args": {
-            "max_new_tokens": config.get("generation_args", {}).get("max_new_tokens", 50),
+            "max_new_tokens": config.get("generation_args", {}).get("max_new_tokens", 500),
             "temperature": config.get("generation_args", {}).get("temperature", 0.0),
             "do_sample": config.get("generation_args", {}).get("do_sample", False),
         },
