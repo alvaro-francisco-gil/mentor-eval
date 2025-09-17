@@ -154,5 +154,21 @@ def show_run_status(run_manager: RunManager, run_id: int):
     print(f"   Created: {run_info.configuration.get('timestamp', 'Unknown')}")
 
 
+def reset_run_status(run_manager: RunManager, run_id: int):
+    """Reset a run status to pending (allows rerunning)."""
+    run_info = run_manager.get_run_info(run_id)
+    if not run_info:
+        print(f"❌ Run {run_id} not found.")
+        return
+    
+    if run_info.status == "pending":
+        print(f"⚠️ Run {run_id} is already pending. No change needed.")
+        return
+    
+    print(f"🔄 Resetting run {run_id} status from '{run_info.status}' to 'pending'...")
+    run_manager.update_run_status(run_id, "pending")
+    print(f"✅ Run {run_id} status reset to pending. You can now rerun it with: python -m mentoreval --execute {run_id}")
+
+
 if __name__ == "__main__":
     main()

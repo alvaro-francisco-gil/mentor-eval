@@ -7,7 +7,9 @@ help:
 	@echo "MentorEval Project - Available Commands:"
 	@echo ""
 	@echo "🐍 Environment:"
-	@echo "  make venv         - Create venv and install all dependencies"
+	@echo "  make venv         - Create venv and install MentorEval package (includes all dependencies)"
+	@echo "  make install      - Install MentorEval package in existing venv"
+	@echo "  make install-requirements - Install only requirements.txt (alternative approach)"
 	@echo "  make venv-clean   - Remove the venv folder"
 	@echo ""
 	@echo "📊 Dataset Processing:"
@@ -64,7 +66,35 @@ clean:
 venv:
 	@echo "🐍 Creating virtual environment..."
 	@python3 -m venv venv 2>/dev/null || python -m venv venv
-	@echo "📦 Installing dependencies into venv..."
+	@echo "📦 Installing MentorEval package and dependencies..."
+	@if [ -x "venv/bin/pip" ]; then \
+		venv/bin/pip install -e .; \
+	elif [ -x "venv/Scripts/pip.exe" ]; then \
+		venv/Scripts/pip.exe install -e .; \
+	elif [ -x "venv/Scripts/pip" ]; then \
+		venv/Scripts/pip install -e .; \
+	else \
+		echo "❌ Could not find venv pip. Ensure Python venv was created."; exit 1; \
+	fi
+	@echo "✅ venv ready with MentorEval package installed!"
+
+# Install MentorEval package in existing venv
+install:
+	@echo "📦 Installing MentorEval package..."
+	@if [ -x "venv/bin/pip" ]; then \
+		venv/bin/pip install -e .; \
+	elif [ -x "venv/Scripts/pip.exe" ]; then \
+		venv/Scripts/pip.exe install -e .; \
+	elif [ -x "venv/Scripts/pip" ]; then \
+		venv/Scripts/pip install -e .; \
+	else \
+		echo "❌ Could not find venv pip. Create venv first with: make venv"; exit 1; \
+	fi
+	@echo "✅ MentorEval package installed!"
+
+# Install only requirements.txt (alternative approach)
+install-requirements:
+	@echo "📦 Installing requirements.txt..."
 	@if [ -x "venv/bin/pip" ]; then \
 		venv/bin/pip install -r requirements.txt; \
 	elif [ -x "venv/Scripts/pip.exe" ]; then \
@@ -72,9 +102,9 @@ venv:
 	elif [ -x "venv/Scripts/pip" ]; then \
 		venv/Scripts/pip install -r requirements.txt; \
 	else \
-		echo "❌ Could not find venv pip. Ensure Python venv was created."; exit 1; \
+		echo "❌ Could not find venv pip. Create venv first with: make venv"; exit 1; \
 	fi
-	@echo "✅ venv ready. You can now run: make asap2"
+	@echo "✅ Requirements installed!"
 
 # Remove venv directory
 venv-clean:
@@ -144,17 +174,37 @@ stats:
 # CLI Commands
 cli-list:
 	@echo "📋 Listing all runs..."
-	@python -m mentoreval --list
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" -m mentoreval --list
 
 cli-summary:
 	@echo "📊 Showing run summary..."
-	@python -m mentoreval --summary
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" -m mentoreval --summary
 
 cli-execute:
 	@if [ -z "$(N)" ]; then echo "❌ Usage: make cli-execute N=<run_id>"; exit 1; fi
 	@echo "🚀 Executing run $(N)..."
-	@python -m mentoreval --execute $(N)
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" -m mentoreval --execute $(N)
 
 cli-execute-all:
 	@echo "🚀 Executing all unexecuted runs..."
-	@python -m mentoreval --execute-all
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" -m mentoreval --execute-all

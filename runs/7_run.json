@@ -1,5 +1,5 @@
 {
-  "run_id": 0,
+  "run_id": 7,
   "parameters": {
     "model_name": "gpt-4o-mini",
     "training_examples": 3,
@@ -16,5 +16,5 @@
       "do_sample": false
     }
   },
-  "status": "created"
+  "status": "pending"
 }

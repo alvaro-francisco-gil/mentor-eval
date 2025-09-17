@@ -22,8 +22,9 @@ import numpy as np
 from scipy.stats import pearsonr, spearmanr, ks_2samp, wasserstein_distance
 
 # LightEval imports for compatibility
-from lighteval.metrics.metrics import SampleLevelMetric, CorpusLevelMetric
+from lighteval.metrics.metrics import SampleLevelMetric, CorpusLevelMetric, Metrics
 from lighteval.metrics.metrics_sample import SampleLevelComputation
+from lighteval.metrics.utils.metric_utils import CorpusLevelMetricGrouping
 from lighteval.tasks.requests import SamplingMethod
 
 
@@ -454,6 +455,39 @@ class MetricsCalculator:
 
 
 # =============================================================================
+# LIGHTEVAL METRIC REGISTRATION
+# =============================================================================
+
+# Create metric grouping following LightEval patterns
+mentoreval_metrics = CorpusLevelMetricGrouping(
+    metric_name=["exact_grade_match", "grade_mae", "grade_rmse"],
+    higher_is_better={
+        "exact_grade_match": True,
+        "grade_mae": False,
+        "grade_rmse": False,
+    },
+    category=SamplingMethod.GENERATIVE,
+    sample_level_fn={
+        "exact_grade_match": exact_grade_match_metric,
+        "grade_mae": grade_mae_metric,
+        "grade_rmse": grade_rmse_metric,
+    },
+    corpus_level_fn={
+        "exact_grade_match": np.mean,
+        "grade_mae": np.mean,
+        "grade_rmse": np.mean,
+    },
+)
+
+# Extend Metrics enum (only if not already registered)
+from aenum import extend_enum
+try:
+    extend_enum(Metrics, "mentoreval_metrics", mentoreval_metrics)
+except TypeError:
+    # Already registered, skip
+    pass
+
+# =============================================================================
 # EXPORT SECTION
 # =============================================================================
 
@@ -487,4 +521,7 @@ __all__ = [
     
     # Utility functions
     'parse_grade',
+    
+    # Metric grouping
+    'mentoreval_metrics',
 ]

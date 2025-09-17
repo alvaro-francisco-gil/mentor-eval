@@ -17,6 +17,8 @@ Icon?
 # Test output
 *.log
 
+*.egg-info
+
 .deepeval/
 .litellm_cache/
 results_extended/

@@ -21,8 +21,52 @@ class RunInfo:
     run_id: int
     model_name: str
     benchmark_mode: str
-    configuration: Dict[str, Any]
+    parameters: Dict[str, Any]  # User-friendly parameters
+    configuration: Dict[str, Any]  # Technical configuration
     status: str = 'created'  # 'created', 'running', 'completed', 'failed'
+
+
+def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
+    """Convert simplified JSON format to RunInfo."""
+    # Extract parameters (important for benchmark)
+    parameters = json_data.get('parameters', {})
+    
+    # Extract configuration (how to run it)
+    config = json_data.get('configuration', {})
+    
+    # Determine if we should include guidance (rubric or desired_answer - whichever is present)
+    show_guidance = parameters.get('show_guidance', True)
+    
+    # Build the full configuration for LightEval
+    full_config = {
+        "use_local_backend": config.get("use_local_backend", False),
+        "model_name": parameters.get("model_name", "gpt-4o-mini"),
+        "task_name": parameters.get("task_name", "mentoreval"),  # Read from parameters, default to mentoreval
+        "task_args": {
+            "max_samples": parameters.get("test_samples", 20),  # Use test_samples, default to 20
+            "num_fewshot_seeds": 1,
+        },
+        "model_args": {
+            "use_chat_template": True,
+        },
+        "generation_args": {
+            "max_new_tokens": config.get("generation_args", {}).get("max_new_tokens", 50),
+            "temperature": config.get("generation_args", {}).get("temperature", 0.0),
+            "do_sample": config.get("generation_args", {}).get("do_sample", False),
+        },
+        "benchmark_mode": "mentoreval-test",
+        "description": f"{parameters.get('model_name', 'gpt-4o-mini')} with {parameters.get('test_samples', 20)} test samples",
+        "show_guidance": show_guidance
+    }
+    
+    return RunInfo(
+        run_id=json_data.get('run_id', 0),
+        model_name=parameters.get('model_name', 'gpt-4o-mini'),
+        benchmark_mode='mentoreval-test',
+        parameters=parameters,  # Include the user-friendly parameters
+        configuration=full_config,
+        status=json_data.get('status', 'created')
+    )
 
 
 class RunManager:
@@ -69,6 +113,26 @@ class RunManager:
         
         return run_info
     
+    def create_run_user_friendly(self, parameters: Dict[str, Any], configuration: Dict[str, Any], benchmark_mode: str = "mentoreval-test") -> RunInfo:
+        """Create a new run using the user-friendly format (like 7_run.json)."""
+        run_id = self.get_next_run_id()
+        
+        # Create the user-friendly JSON structure
+        run_data = {
+            "run_id": run_id,
+            "parameters": parameters,
+            "configuration": configuration,
+            "status": "created"
+        }
+        
+        # Save run data to file in user-friendly format
+        run_file = os.path.join(self.runs_dir, f"{run_id}_run.json")
+        with open(run_file, 'w', encoding='utf-8') as f:
+            json.dump(run_data, f, indent=2)
+        
+        # Convert to RunInfo for internal use
+        return convert_simplified_json_to_run_info(run_data)
+    
     def update_run_status(self, run_id: int, status: str):
         """Update the status of a run."""
         # Find the run file by looking through all JSON files
@@ -114,7 +178,9 @@ class RunManager:
                 
                 # Check if this file contains the run_id we're looking for
                 if run_data.get('run_id') == run_id:
-                    return RunInfo(**run_data)
+                    # Only support simplified format
+                    if 'parameters' in run_data:
+                        return convert_simplified_json_to_run_info(run_data)
                     
             except (json.JSONDecodeError, TypeError):
                 continue
@@ -130,7 +196,10 @@ class RunManager:
             try:
                 with open(run_file, 'r', encoding='utf-8') as f:
                     run_data = json.load(f)
-                runs.append(RunInfo(**run_data))
+                
+                # Only support simplified format
+                if 'parameters' in run_data:
+                    runs.append(convert_simplified_json_to_run_info(run_data))
             except (json.JSONDecodeError, TypeError):
                 continue
         
@@ -243,26 +312,17 @@ class RunManager:
             generation_args = run_info.configuration.get("generation_args", {})
             use_local_backend = run_info.configuration.get("use_local_backend", False)
             
-            # Create run info for benchmark
-            benchmark_run_info = benchmark.create_run(
-                model_config=model_config,
-                benchmark_mode=run_info.benchmark_mode,
-                description=f"Executing run {run_id}",
-                use_local_backend=use_local_backend,
-                task_name=task_name,
-                task_args=task_args,
-                model_args=model_args,
-                generation_args=generation_args
-            )
+            # Execute the evaluation directly without creating new run files
+            result = benchmark.execute_evaluation_directly(run_info)
             
-            # Execute the run
-            result = benchmark.execute_run(benchmark_run_info)
-            
-            # Update original run status to completed
-            self.update_run_status(run_id, "completed")
+            # Update original run status based on result
+            if result.get("status") == "completed":
+                self.update_run_status(run_id, "completed")
+            else:
+                self.update_run_status(run_id, "failed")
             
             return {
-                "status": "completed",
+                "status": result.get("status", "failed"),
                 "run_id": run_id,
                 "result": result
             }
