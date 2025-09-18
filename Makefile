@@ -1,7 +1,7 @@
 # Makefile for MentorEval project
 # Provides convenient commands for dataset processing and testing
 
-.PHONY: help dataset upload-hf tests venv venv-clean cli
+.PHONY: help dataset upload-hf asap asap2 mohler ellipse arasag ptasag2018 tests venv venv-clean cli
 
 help:
 	@echo "MentorEval Project - Available Commands:"
@@ -16,6 +16,12 @@ help:
 	@echo "  make dataset      - Process all datasets using unified script"
 	@echo "  make upload-hf    - Upload processed dataset to Hugging Face Hub"
 	@echo "  make dataset-workflow - Process datasets and upload to HF in one command"
+	@echo "  make asap         - Process ASAP dataset only"
+	@echo "  make asap2        - Process ASAP2 dataset only"
+	@echo "  make mohler       - Process Mohler dataset only"
+	@echo "  make ellipse      - Process ELLIPSE dataset only"
+	@echo "  make arasag       - Process ARASAG dataset only"
+	@echo "  make ptasag2018   - Process PTASAG2018 dataset only"
 	@echo ""
 	@echo "🧪 Testing:"
 	@echo "  make tests       - Run all validation tests"
@@ -47,6 +53,67 @@ upload-hf:
 	fi; \
 	"$$PY" scripts/data_upload_hf.py
 	@echo "✅ Dataset uploaded to Hugging Face Hub successfully!"
+
+# Individual dataset processing targets
+asap:
+	@echo "🔄 Processing ASAP dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets asap
+	@echo "✅ ASAP dataset processed!"
+
+asap2:
+	@echo "🔄 Processing ASAP2 dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets asap2
+	@echo "✅ ASAP2 dataset processed!"
+
+mohler:
+	@echo "🔄 Processing Mohler dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets mohler
+	@echo "✅ Mohler dataset processed!"
+
+ellipse:
+	@echo "🔄 Processing ELLIPSE dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets ellipse
+	@echo "✅ ELLIPSE dataset processed!"
+
+arasag:
+	@echo "🔄 Processing ARASAG dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets arasag
+	@echo "✅ ARASAG dataset processed!"
+
+ptasag2018:
+	@echo "🔄 Processing PTASAG2018 dataset..."
+	@ROOT=$$(pwd); PY="python3"; \
+	if [ -x "$$ROOT/venv/bin/python" ]; then PY="$$ROOT/venv/bin/python"; \
+	elif [ -x "$$ROOT/venv/Scripts/python.exe" ]; then PY="$$ROOT/venv/Scripts/python.exe"; \
+	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
+	fi; \
+	"$$PY" scripts/process_datasets.py --datasets ptasag2018
+	@echo "✅ PTASAG2018 dataset processed!"
 
 tests:
 	@echo "🧪 Running All JSONL Validation Tests..."

@@ -622,17 +622,17 @@ class EllipseProcessor(DatasetProcessor):
         
         self.data = self.data.dropna(subset=scoring_columns)
         
-        # Calculate total grade as sum of the 6 scoring dimensions, rounded up to nearest integer
-        self.data['total_grade'] = np.ceil(
-            self.data['Cohesion'] + 
-            self.data['Syntax'] + 
-            self.data['Vocabulary'] + 
-            self.data['Phraseology'] + 
-            self.data['Grammar'] + 
-            self.data['Conventions']
+        # Calculate total grade as average of the 6 scoring dimensions, rounded to nearest integer
+        self.data['total_grade'] = np.round(
+            (self.data['Cohesion'] + 
+             self.data['Syntax'] + 
+             self.data['Vocabulary'] + 
+             self.data['Phraseology'] + 
+             self.data['Grammar'] + 
+             self.data['Conventions']) / 6
         ).astype(int)
         
-        self.data = self.data[(self.data['total_grade'] >= 5) & (self.data['total_grade'] <= 30)]
+        self.data = self.data[(self.data['total_grade'] >= 1) & (self.data['total_grade'] <= 5)]
         logger.info(f"After cleaning: {len(self.data)} rows")
         return self.data
     
@@ -667,8 +667,8 @@ class EllipseProcessor(DatasetProcessor):
                 'question': question,
                 'answer': row['full_text'],
                 'grade': float(row['total_grade']),
-                'min_grade': 5.0,
-                'max_grade': 30.0,
+                'min_grade': 1.0,
+                'max_grade': 5.0,
                 'subject': 'english',
                 'exercise_type': 'essay_writing',
                 'isced_level': 3,
