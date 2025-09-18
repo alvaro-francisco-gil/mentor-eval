@@ -63,7 +63,9 @@ asap:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets asap
-	@echo "✅ ASAP dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ ASAP dataset processed and combined!"
 
 asap2:
 	@echo "🔄 Processing ASAP2 dataset..."
@@ -73,7 +75,9 @@ asap2:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets asap2
-	@echo "✅ ASAP2 dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ ASAP2 dataset processed and combined!"
 
 mohler:
 	@echo "🔄 Processing Mohler dataset..."
@@ -83,7 +87,9 @@ mohler:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets mohler
-	@echo "✅ Mohler dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ Mohler dataset processed and combined!"
 
 ellipse:
 	@echo "🔄 Processing ELLIPSE dataset..."
@@ -93,7 +99,9 @@ ellipse:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets ellipse
-	@echo "✅ ELLIPSE dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ ELLIPSE dataset processed and combined!"
 
 arasag:
 	@echo "🔄 Processing ARASAG dataset..."
@@ -103,7 +111,9 @@ arasag:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets arasag
-	@echo "✅ ARASAG dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ ARASAG dataset processed and combined!"
 
 ptasag2018:
 	@echo "🔄 Processing PTASAG2018 dataset..."
@@ -113,7 +123,9 @@ ptasag2018:
 	elif [ -x "$$ROOT/venv/Scripts/python" ]; then PY="$$ROOT/venv/Scripts/python"; \
 	fi; \
 	"$$PY" scripts/process_datasets.py --datasets ptasag2018
-	@echo "✅ PTASAG2018 dataset processed!"
+	@echo "🔄 Combining all processed datasets..."
+	@"$$PY" -c "import sys; sys.path.append('scripts'); from process_datasets import combine_all_datasets; combine_all_datasets(['asap', 'asap2', 'mohler', 'ellipse', 'arasag', 'ptasag2018'])"
+	@echo "✅ PTASAG2018 dataset processed and combined!"
 
 tests:
 	@echo "🧪 Running All JSONL Validation Tests..."
