@@ -88,11 +88,8 @@ mentor-eval/
 git clone https://github.com/alvaro-francisco-gil/mentor-eval.git
 cd mentor-eval
 
-# Install the package
+# Install the package (includes all dependencies automatically)
 pip install -e .
-
-# Or install from requirements
-pip install -r requirements.txt
 ```
 
 ### Running Evaluations
