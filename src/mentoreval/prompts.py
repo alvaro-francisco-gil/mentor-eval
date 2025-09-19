@@ -22,7 +22,7 @@ ISCED_LEVELS = {
 
 # Note: Training example handling is now done by LightEval's custom few-shot selection function
 
-def create_rubric_prompt(question: str, answer: str, rubric: str, min_grade: float, max_grade: float, force_explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
+def create_rubric_prompt(question: str, answer: str, rubric: str, min_grade: float, max_grade: float, explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
     """
     Create a prompt for rubric-based grading.
     
@@ -32,7 +32,7 @@ def create_rubric_prompt(question: str, answer: str, rubric: str, min_grade: flo
         rubric: Grading rubric
         min_grade: Minimum grade on the scale
         max_grade: Maximum grade on the scale
-        force_explanation: Whether to require explanation with the grade
+        explanation: Whether to require explanation with the grade
         show_isced_level: Whether to include ISCED level context
         isced_level: The ISCED level for educational context
     
@@ -52,7 +52,7 @@ Student Answer: {answer}
 
 Rubric: {rubric}"""
     
-    if force_explanation:
+    if explanation:
         return f"""{base_prompt}
 
 Provide your grade and a brief explanation. Format your response as:
@@ -66,7 +66,7 @@ Grade (on a scale from {min_grade} to {max_grade}):"""
 Grade (on a scale from {min_grade} to {max_grade}):"""
 
 
-def create_desired_answer_prompt(question: str, answer: str, desired_answer: str, min_grade: float, max_grade: float, force_explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
+def create_desired_answer_prompt(question: str, answer: str, desired_answer: str, min_grade: float, max_grade: float, explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
     """
     Create a prompt for desired answer comparison grading.
     
@@ -76,7 +76,7 @@ def create_desired_answer_prompt(question: str, answer: str, desired_answer: str
         desired_answer: Expected/desired answer
         min_grade: Minimum grade on the scale
         max_grade: Maximum grade on the scale
-        force_explanation: Whether to require explanation with the grade
+        explanation: Whether to require explanation with the grade
         show_isced_level: Whether to include ISCED level context
         isced_level: The ISCED level for educational context
     
@@ -96,7 +96,7 @@ Student Answer: {answer}
 
 Expected Answer: {desired_answer}"""
     
-    if force_explanation:
+    if explanation:
         return f"""{base_prompt}
 
 Provide your grade and a brief explanation. Format your response as:
@@ -129,7 +129,7 @@ def get_grading_instruction(grading_type: str) -> str:
     return instructions[grading_type]
 
 
-def mentor_eval_prompt_fn(line, task_name: str = None, force_explanation: bool = False, show_isced_level: bool = False, **kwargs):
+def mentor_eval_prompt_fn(line, task_name: str = None, explanation: bool = False, show_isced_level: bool = False, show_guidance: bool = True, **kwargs):
     """
     Convert dataset rows to LightEval Doc objects for student exam grading.
     Handles two main cases:
@@ -150,8 +150,9 @@ def mentor_eval_prompt_fn(line, task_name: str = None, force_explanation: bool =
               - subject: Subject area (e.g., 'english')
               - exercise_type: Type of exercise (e.g., 'essay_writing')
         task_name: Optional task name for the Doc object
-        force_explanation: Whether to require explanation with the grade
+        explanation: Whether to require explanation with the grade
         show_isced_level: Whether to include ISCED level context in prompts
+        show_guidance: Whether to include rubric/desired_answer guidance in prompts
         **kwargs: Additional arguments (ignored, for compatibility)
     
     Returns:
@@ -172,24 +173,20 @@ def mentor_eval_prompt_fn(line, task_name: str = None, force_explanation: bool =
     desired_answer = line.get('desired_answer')
     
     # Get appropriate instruction based on grading type first
-    if rubric and rubric not in [None, '', 'None', 'NaN']:
-        grading_type = 'rubric'
-        instruction = get_grading_instruction(grading_type)
-        base_query = create_rubric_prompt(question, answer, rubric, min_grade, max_grade, force_explanation, show_isced_level, isced_level)
-    elif desired_answer and desired_answer not in [None, '', 'None', 'NaN']:
-        grading_type = 'desired_answer'
-        instruction = get_grading_instruction(grading_type)
-        base_query = create_desired_answer_prompt(question, answer, desired_answer, min_grade, max_grade, force_explanation, show_isced_level, isced_level)
-    else:
+    # If show_guidance is False, skip rubric/desired_answer and use simple grading
+    if not show_guidance:
         grading_type = 'simple'
-        instruction = "You are an expert teacher grading student work. Provide a numerical grade."
+        if explanation:
+            instruction = "You are an expert teacher grading student work. Provide a numerical grade and explanation."
+        else:
+            instruction = "You are an expert teacher grading student work. You must provide ONLY a numerical grade in JSON format. Do not include any explanation, reasoning, or additional text."
         
         # Add ISCED level context if requested
         isced_context = ""
         if show_isced_level and isced_level in ISCED_LEVELS:
             isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
         
-        if force_explanation:
+        if explanation:
             base_query = f"""Grade this student answer.{isced_context}
 
 Question: {question}
@@ -207,6 +204,47 @@ Grade (on a scale from {min_grade} to {max_grade}):"""
 Question: {question}
 
 Student Answer: {answer}
+
+CRITICAL: You must provide ONLY a numerical grade. Do not include any explanation, reasoning, or additional text. Your response must be in JSON format: {{"grade": [numerical_value]}}
+
+Grade (on a scale from {min_grade} to {max_grade}):"""
+    elif rubric and rubric not in [None, '', 'None', 'NaN']:
+        grading_type = 'rubric'
+        instruction = get_grading_instruction(grading_type)
+        base_query = create_rubric_prompt(question, answer, rubric, min_grade, max_grade, explanation, show_isced_level, isced_level)
+    elif desired_answer and desired_answer not in [None, '', 'None', 'NaN']:
+        grading_type = 'desired_answer'
+        instruction = get_grading_instruction(grading_type)
+        base_query = create_desired_answer_prompt(question, answer, desired_answer, min_grade, max_grade, explanation, show_isced_level, isced_level)
+    else:
+        grading_type = 'simple'
+        instruction = "You are an expert teacher grading student work. Provide a numerical grade."
+        
+        # Add ISCED level context if requested
+        isced_context = ""
+        if show_isced_level and isced_level in ISCED_LEVELS:
+            isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
+        
+        if explanation:
+            base_query = f"""Grade this student answer.{isced_context}
+
+Question: {question}
+
+Student Answer: {answer}
+
+Provide your grade and a brief explanation. Format your response as:
+Grade: [numerical value]
+Explanation: [brief explanation of your grading decision]
+
+Grade (on a scale from {min_grade} to {max_grade}):"""
+        else:
+            base_query = f"""Grade this student answer.{isced_context}
+
+Question: {question}
+
+Student Answer: {answer}
+
+CRITICAL: You must provide ONLY a numerical grade. Do not include any explanation, reasoning, or additional text. Your response must be in JSON format: {{"grade": [numerical_value]}}
 
 Grade (on a scale from {min_grade} to {max_grade}):"""
     
@@ -228,6 +266,6 @@ Grade (on a scale from {min_grade} to {max_grade}):"""
             "dataset": line.get("dataset", "unknown"),
             "exercise_set": line.get("exercise_set", 1),
             "grading_type": grading_type,
-            "force_explanation": force_explanation
+            "explanation": explanation
         }
     )

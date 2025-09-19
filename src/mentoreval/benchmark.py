@@ -170,27 +170,37 @@ class LightEvalBenchmark:
         model_args = run_info.configuration.get("model_args", {})
         
         # Handle task name mapping
-        from mentoreval.task import TASKS_GROUPS, set_force_explanation, set_show_isced_level
+        from mentoreval.task import TASKS_GROUPS, set_explanation, set_show_isced_level, set_show_guidance
         
-        # Set the force_explanation parameter from run configuration
-        force_explanation = run_info.configuration.get("force_explanation", False)
-        set_force_explanation(force_explanation)
-        print(f"🔍 DEBUG: Set force_explanation to: {force_explanation}")
+        # Set the explanation parameter from run configuration
+        explanation = run_info.configuration.get("explanation", False)
+        set_explanation(explanation)
+        print(f"🔍 DEBUG: Set explanation to: {explanation}")
         
         # Set the show_isced_level parameter from run configuration
         show_isced_level = run_info.configuration.get("show_isced_level", False)
         set_show_isced_level(show_isced_level)
         print(f"🔍 DEBUG: Set show_isced_level to: {show_isced_level}")
         
+        # Set the show_guidance parameter from run configuration
+        show_guidance = run_info.configuration.get("show_guidance", True)
+        set_show_guidance(show_guidance)
+        print(f"🔍 DEBUG: Set show_guidance to: {show_guidance}")
+        
         print(f"🔍 DEBUG: Original task_name from run config: '{task_name}'")
         
         if task_name in TASKS_GROUPS:
             original_task_name = task_name
-            task_name = TASKS_GROUPS[task_name]  # Map to task group
-            print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group: '{task_name}'")
-            print(f"🔍 DEBUG: This will run {len(task_name.split(','))} individual tasks!")
+            task_name = TASKS_GROUPS[task_name]  # Map to task group or individual task
+            if ',' in task_name:
+                print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group: '{task_name}'")
+                print(f"🔍 DEBUG: This will run {len(task_name.split(','))} individual tasks!")
+            else:
+                print(f"🔍 DEBUG: Mapped '{original_task_name}' to individual task: '{task_name}'")
+        elif task_name.startswith("custom|mentoreval_"):
+            print(f"🔍 DEBUG: Using individual task: '{task_name}'")
         else:
-            raise ValueError(f"❌ ERROR: Task name '{task_name}' not found in TASKS_GROUPS. Please provide a valid task name.")
+            raise ValueError(f"❌ ERROR: Task name '{task_name}' not found in TASKS_GROUPS and not a valid individual task. Please provide a valid task name.")
 
         # Create custom evaluation tracker that captures interactions
         evaluation_tracker = CustomEvaluationTracker(

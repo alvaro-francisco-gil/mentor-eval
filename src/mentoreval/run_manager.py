@@ -39,7 +39,7 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
     
     # Determine if we should include guidance (rubric or desired_answer - whichever is present)
     show_guidance = parameters.get('show_guidance', True)
-    force_explanation = parameters.get('force_explanation', False)
+    explanation = parameters.get('explanation', False)
     show_isced_level = parameters.get('show_isced_level', False)
     
     # Build the full configuration for LightEval
@@ -60,7 +60,7 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
             "do_sample": config.get("generation_args", {}).get("do_sample", False),
         },
         "show_guidance": show_guidance,
-        "force_explanation": force_explanation,
+        "explanation": explanation,
         "show_isced_level": show_isced_level
     }
     
