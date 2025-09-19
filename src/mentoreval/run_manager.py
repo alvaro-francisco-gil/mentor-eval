@@ -51,9 +51,7 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
             "max_samples": parameters.get("test_samples", 20),  # Use test_samples, default to 20
             "num_fewshot_seeds": 1,
         },
-        "model_args": {
-            "use_chat_template": True,
-        },
+        "model_args": {},  # use_chat_template is always True, handled in benchmark.py
         "generation_args": {
             "max_new_tokens": config.get("generation_args", {}).get("max_new_tokens", 500),
             "temperature": config.get("generation_args", {}).get("temperature", 0.0),

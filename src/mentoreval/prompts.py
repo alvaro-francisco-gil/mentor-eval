@@ -161,12 +161,38 @@ def mentor_eval_prompt_fn(line, task_name: str = None, explanation: bool = False
     # Import Doc here to avoid circular imports
     from lighteval.tasks.requests import Doc
     
+    # Check if this is a few-shot example
+    is_fewshot = line.get("__few_shots", False)
+    
     # Extract common fields
     question = line['question']
     answer = line['answer']
     min_grade = line['min_grade']
     max_grade = line['max_grade']
     isced_level = line.get('isced_level', 3)  # Default to level 3 if not specified
+    
+    # For few-shot examples, create a simplified version
+    if is_fewshot:
+        # Simplified few-shot format: just student answer (grade will be added automatically by LightEval)
+        query = f"Student Answer: {answer}"
+        
+        return Doc(
+            task_name=task_name,
+            query=query,
+            choices=[str(line['grade'])],
+            gold_index=0,
+            specific={
+                "min_grade": min_grade,
+                "max_grade": max_grade,
+                "subject": line["subject"],
+                "exercise_type": line["exercise_type"],
+                "isced_level": line.get("isced_level", 3),
+                "dataset": line.get("dataset", "unknown"),
+                "exercise_set": line.get("exercise_set", 1),
+                "grading_type": "fewshot",
+                "explanation": explanation
+            }
+        )
     
     # Determine grading type and create appropriate prompt
     rubric = line.get('rubric')

@@ -112,7 +112,8 @@ class LightEvalBenchmark:
         # Default arguments - use 20 samples for unified task, 1000 for specific tasks
         default_max_samples = 20 if task_name == "mentoreval" else 1000
         task_args = {**{"max_samples": default_max_samples, "num_fewshot_seeds": 1}, **(task_args or {})}
-        model_args = {**{"use_chat_template": True}, **(model_args or {})}
+        # use_chat_template is always True, so we don't need to include it in model_args
+        model_args = model_args or {}
         generation_args = {**{"max_new_tokens": 500, "temperature": 0.0, "do_sample": False}, **(generation_args or {})}
         
         # Create user-friendly parameters (like 7_run.json)
@@ -208,6 +209,10 @@ class LightEvalBenchmark:
         task_args = run_info.configuration.get("task_args", {})
         model_args = run_info.configuration.get("model_args", {})
         
+        # Get test_samples from parameters and add to task_args
+        test_samples = run_info.parameters.get("test_samples", 1)
+        task_args["max_samples"] = test_samples
+        
         # Handle task name mapping
         from mentoreval.task import TASKS_GROUPS, set_explanation, set_show_isced_level, set_show_guidance
         
@@ -228,18 +233,54 @@ class LightEvalBenchmark:
         
         print(f"🔍 DEBUG: Original task_name from run config: '{task_name}'")
         
+        # Get num_fewshot_seeds from parameters for dynamic task name building
+        num_fewshot_seeds = run_info.parameters.get("training_examples", 1)
+        original_task_name = task_name  # Store original for debugging
+        
         if task_name in TASKS_GROUPS:
-            original_task_name = task_name
             task_name = TASKS_GROUPS[task_name]  # Map to task group or individual task
             if ',' in task_name:
-                print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group: '{task_name}'")
+                # For task groups, update all individual tasks to use dynamic few-shot count
+                individual_tasks = task_name.split(',')
+                updated_tasks = []
+                for individual_task in individual_tasks:
+                    if '|' in individual_task:
+                        # Replace the few-shot count with the dynamic value
+                        base_task = individual_task.rsplit('|', 1)[0]  # Remove existing few-shot count
+                        updated_task = f"{base_task}|{num_fewshot_seeds}"
+                        updated_tasks.append(updated_task)
+                    else:
+                        updated_tasks.append(individual_task)
+                task_name = ','.join(updated_tasks)
+                print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group with {num_fewshot_seeds} few-shots: '{task_name}'")
                 print(f"🔍 DEBUG: This will run {len(task_name.split(','))} individual tasks!")
             else:
-                print(f"🔍 DEBUG: Mapped '{original_task_name}' to individual task: '{task_name}'")
+                # For individual tasks in TASKS_GROUPS, update few-shot count
+                if '|' in task_name:
+                    base_task = task_name.rsplit('|', 1)[0]  # Remove existing few-shot count
+                    task_name = f"{base_task}|{num_fewshot_seeds}"
+                print(f"🔍 DEBUG: Mapped '{original_task_name}' to individual task with {num_fewshot_seeds} few-shots: '{task_name}'")
         elif task_name.startswith("custom|mentoreval_"):
             print(f"🔍 DEBUG: Using individual task: '{task_name}'")
         else:
-            raise ValueError(f"❌ ERROR: Task name '{task_name}' not found in TASKS_GROUPS and not a valid individual task. Please provide a valid task name.")
+            # Try to build task name dynamically for individual exercises
+            if task_name.startswith("mentoreval_") and "_ex" in task_name:
+                # Extract dataset and exercise number from task_name like "mentoreval_asap_ex7"
+                parts = task_name.split("_")
+                if len(parts) >= 3 and parts[0] == "mentoreval":
+                    dataset = parts[1]
+                    exercise_part = parts[2]  # "ex7"
+                    if exercise_part.startswith("ex"):
+                        exercise_num = exercise_part[2:]  # "7"
+                        # Build full LightEval task name with dynamic few-shot count
+                        task_name = f"custom|mentoreval_{dataset}_ex{exercise_num}|{num_fewshot_seeds}"
+                        print(f"🔍 DEBUG: Built dynamic task name: '{task_name}' from '{original_task_name}' with {num_fewshot_seeds} few-shots")
+                    else:
+                        raise ValueError(f"❌ ERROR: Invalid exercise format in task name '{original_task_name}'. Expected format: 'mentoreval_[dataset]_ex[number]'")
+                else:
+                    raise ValueError(f"❌ ERROR: Invalid task name format '{original_task_name}'. Expected format: 'mentoreval_[dataset]_ex[number]'")
+            else:
+                raise ValueError(f"❌ ERROR: Task name '{original_task_name}' not found in TASKS_GROUPS and not a valid individual task. Please provide a valid task name.")
 
         # Create custom evaluation tracker that captures interactions
         evaluation_tracker = CustomEvaluationTracker(
@@ -258,13 +299,30 @@ class LightEvalBenchmark:
             max_samples=task_args.get("max_samples", 1000),
         )
         
+        # Get generation args
+        generation_args = run_info.configuration.get("generation_args", {})
+        max_new_tokens = generation_args.get("max_new_tokens", 500)
+        do_sample = generation_args.get("do_sample", False)
+        temperature = generation_args.get("temperature", 0.0)
+        
+        # Create generation parameters dict
+        generation_parameters = {
+            "max_new_tokens": max_new_tokens,
+            "temperature": temperature,
+        }
+        
+        # Note: do_sample is not supported by LiteLLMModelConfig, only by TransformersModelConfig
+        if use_local_backend:
+            generation_parameters["do_sample"] = do_sample
+        
         # Create model config
         if use_local_backend:
             model_config = TransformersModelConfig(
                 model_name=model_name,
-                use_chat_template=model_args.get("use_chat_template", True),
+                use_chat_template=True,  # Always use chat template
                 dtype="float16",
                 cache_dir="./lighteval_cache",  # Windows-compatible cache directory
+                generation_parameters=generation_parameters,
             )
             print(f"Running LightEval evaluation with Transformers backend for {model_name}...")
         else:
@@ -274,6 +332,7 @@ class LightEvalBenchmark:
                 base_url=None,
                 api_key=None,
                 cache_dir="./lighteval_cache",  # Windows-compatible cache directory
+                generation_parameters=generation_parameters,
             )
             print(f"Running LightEval evaluation with LiteLLM backend for {model_name}...")
         
