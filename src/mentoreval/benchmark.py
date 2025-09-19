@@ -29,21 +29,60 @@ class CustomEvaluationTracker(EvaluationTracker):
     
     def log(self, task_name: str, doc, response, output):
         """Override log method to capture detailed interactions."""
+        print(f"🔍 DEBUG: CustomEvaluationTracker.log() called for task: {task_name}")
         # Call parent method
         super().log(task_name, doc, response, output)
+        
+        # Capture few-shot examples if they exist
+        fewshot_info = []
+        if hasattr(doc, 'fewshot_samples') and doc.fewshot_samples:
+            for i, fewshot_doc in enumerate(doc.fewshot_samples):
+                fewshot_info.append({
+                    "index": i,
+                    "query": getattr(fewshot_doc, 'query', ''),
+                    "choices": getattr(fewshot_doc, 'choices', []),
+                    "gold_index": getattr(fewshot_doc, 'gold_index', None),
+                    "instruction": getattr(fewshot_doc, 'instruction', None)
+                })
+        
+        # Try to reconstruct the full prompt that was sent to the model
+        full_prompt_parts = []
+        
+        # Add instruction if present
+        if hasattr(doc, 'instruction') and doc.instruction:
+            full_prompt_parts.append(f"Instruction: {doc.instruction}")
+        
+        # Add few-shot examples
+        if fewshot_info:
+            full_prompt_parts.append("Few-shot examples:")
+            for fewshot in fewshot_info:
+                full_prompt_parts.append(f"Example {fewshot['index'] + 1}:")
+                full_prompt_parts.append(f"Query: {fewshot['query']}")
+                if fewshot['choices']:
+                    full_prompt_parts.append(f"Choices: {fewshot['choices']}")
+                if fewshot['gold_index'] is not None:
+                    full_prompt_parts.append(f"Correct answer: {fewshot['choices'][fewshot['gold_index']] if fewshot['choices'] else 'N/A'}")
+                full_prompt_parts.append("---")
+        
+        # Add main query
+        full_prompt_parts.append(f"Main Query: {getattr(doc, 'query', '')}")
+        
+        reconstructed_full_prompt = "\n".join(full_prompt_parts)
         
         # Capture detailed interaction
         interaction = {
             "task_name": task_name,
-            "doc_id": getattr(doc, 'doc_id', 'unknown'),
-            "prompt": getattr(doc, 'query', ''),
+            "doc_id": getattr(doc, 'id', 'unknown'),
+            "prompt": getattr(doc, 'query', ''),  # Original query only
+            "full_prompt_reconstructed": reconstructed_full_prompt,  # Our reconstruction
+            "instruction": getattr(doc, 'instruction', None),
+            "fewshot_samples": fewshot_info,
             "response": getattr(response, 'text', [''])[0] if hasattr(response, 'text') and response.text else '',
             "expected_grade": getattr(doc, 'choices', [''])[0] if hasattr(doc, 'choices') and doc.choices else '',
             "metrics": output,
             "timestamp": datetime.now().isoformat()
         }
         self.interactions.append(interaction)
-        # Debug: print(f"DEBUG: Captured interaction for {task_name}: {interaction['response'][:50]}...")
     
     def get_interactions(self):
         """Get captured interactions."""
@@ -265,10 +304,65 @@ class LightEvalBenchmark:
                     response_text = getattr(response, 'text', [''])[0] if hasattr(response, 'text') and response.text else ''
                     parsed_grade = parse_grade(response_text)
                     
+                    # Debug: Print Doc attributes to understand few-shot selection
+                    print(f"🔍 DEBUG: Doc attributes: {[attr for attr in dir(doc) if not attr.startswith('_')]}")
+                    print(f"🔍 DEBUG: Doc.fewshot_samples: {getattr(doc, 'fewshot_samples', 'NOT_FOUND')}")
+                    print(f"🔍 DEBUG: Doc.task_name: {getattr(doc, 'task_name', 'NOT_FOUND')}")
+                    print(f"🔍 DEBUG: Doc.id: {getattr(doc, 'id', 'NOT_FOUND')}")
+                    print(f"🔍 DEBUG: Doc.num_samples: {getattr(doc, 'num_samples', 'NOT_FOUND')}")
+                    print(f"🔍 DEBUG: Doc.generation_size: {getattr(doc, 'generation_size', 'NOT_FOUND')}")
+                    
+                    # Check if there are any other few-shot related attributes
+                    for attr in ['fewshot_sorting_class', 'sampling_methods']:
+                        if hasattr(doc, attr):
+                            print(f"🔍 DEBUG: Doc.{attr}: {getattr(doc, attr)}")
+                    
+                    # Capture few-shot examples if they exist
+                    fewshot_info = []
+                    if hasattr(doc, 'fewshot_samples') and doc.fewshot_samples:
+                        print(f"🔍 DEBUG: Found {len(doc.fewshot_samples)} few-shot samples!")
+                        for i, fewshot_doc in enumerate(doc.fewshot_samples):
+                            fewshot_info.append({
+                                "index": i,
+                                "query": getattr(fewshot_doc, 'query', ''),
+                                "choices": getattr(fewshot_doc, 'choices', []),
+                                "gold_index": getattr(fewshot_doc, 'gold_index', None),
+                                "instruction": getattr(fewshot_doc, 'instruction', None)
+                            })
+                    else:
+                        print(f"🔍 DEBUG: No few-shot samples found. hasattr: {hasattr(doc, 'fewshot_samples')}, value: {getattr(doc, 'fewshot_samples', 'NOT_FOUND')}")
+                    
+                    # Try to reconstruct the full prompt that was sent to the model
+                    full_prompt_parts = []
+                    
+                    # Add instruction if present
+                    if hasattr(doc, 'instruction') and doc.instruction:
+                        full_prompt_parts.append(f"Instruction: {doc.instruction}")
+                    
+                    # Add few-shot examples
+                    if fewshot_info:
+                        full_prompt_parts.append("Few-shot examples:")
+                        for fewshot in fewshot_info:
+                            full_prompt_parts.append(f"Example {fewshot['index'] + 1}:")
+                            full_prompt_parts.append(f"Query: {fewshot['query']}")
+                            if fewshot['choices']:
+                                full_prompt_parts.append(f"Choices: {fewshot['choices']}")
+                            if fewshot['gold_index'] is not None:
+                                full_prompt_parts.append(f"Correct answer: {fewshot['choices'][fewshot['gold_index']] if fewshot['choices'] else 'N/A'}")
+                            full_prompt_parts.append("---")
+                    
+                    # Add main query
+                    full_prompt_parts.append(f"Main Query: {getattr(doc, 'query', '')}")
+                    
+                    reconstructed_full_prompt = "\n".join(full_prompt_parts)
+                    
                     interaction = {
                         "task_name": doc.task_name,
-                        "doc_id": getattr(doc, 'doc_id', 'unknown'),
-                        "prompt": getattr(doc, 'query', ''),
+                        "doc_id": getattr(doc, 'id', 'unknown'),
+                        "prompt": getattr(doc, 'query', ''),  # Original query only
+                        "full_prompt_reconstructed": reconstructed_full_prompt,  # Our reconstruction
+                        "instruction": getattr(doc, 'instruction', None),
+                        "fewshot_samples": fewshot_info,
                         "response": response_text,
                         "parsed_grade": parsed_grade,
                         "expected_grade": getattr(doc, 'choices', [''])[0] if hasattr(doc, 'choices') and doc.choices else '',

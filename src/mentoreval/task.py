@@ -85,7 +85,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fe
         hf_avail_splits=["train", "test"],
         evaluation_splits=["test"],
         few_shots_split="train",
-        few_shots_select="random",  # Use random for now, but filter at dataset level
+        few_shots_select="balanced",  # Use balanced few-shot sampling
         num_fewshots=num_fewshots,  # This was missing!
         generation_size=generation_size,
         stop_sequence=["\n", ".", " "],
@@ -124,7 +124,7 @@ def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, genera
         hf_avail_splits=["train", "test"],
         evaluation_splits=["test"],
         few_shots_split="train",
-        few_shots_select="random",  # Now random selection will be exercise-aware due to filtering
+        few_shots_select="balanced",  # Use balanced few-shot sampling for exercise-aware selection
         num_fewshots=num_fewshots,  # This was missing!
         generation_size=generation_size,
         stop_sequence=["\n", ".", " "],
@@ -198,17 +198,17 @@ TASKS_GROUPS = {
     
     # Individual exercise tasks (user-friendly format)
     # ASAP individual exercises
-    **{f"mentoreval_asap_ex{i}": f"custom|mentoreval_asap_ex{i}|0" for i in range(1, 9)},
+        **{f"mentoreval_asap_ex{i}": f"custom|mentoreval_asap_ex{i}|1" for i in range(1, 9)},
     # ASAP2 individual exercises  
-    **{f"mentoreval_asap2_ex{i}": f"custom|mentoreval_asap2_ex{i}|0" for i in range(1, 8)},
+    **{f"mentoreval_asap2_ex{i}": f"custom|mentoreval_asap2_ex{i}|1" for i in range(1, 8)},
     # Mohler individual exercises
-    **{f"mentoreval_mohler_ex{i}": f"custom|mentoreval_mohler_ex{i}|0" for i in range(1, 82)},
+    **{f"mentoreval_mohler_ex{i}": f"custom|mentoreval_mohler_ex{i}|1" for i in range(1, 82)},
     # Ellipse individual exercises
-    **{f"mentoreval_ellipse_ex{i}": f"custom|mentoreval_ellipse_ex{i}|0" for i in range(1, 45)},
+    **{f"mentoreval_ellipse_ex{i}": f"custom|mentoreval_ellipse_ex{i}|1" for i in range(1, 45)},
     # PTASAG2018 individual exercises
-    **{f"mentoreval_ptasag2018_ex{i}": f"custom|mentoreval_ptasag2018_ex{i}|0" for i in range(1, 16)},
+    **{f"mentoreval_ptasag2018_ex{i}": f"custom|mentoreval_ptasag2018_ex{i}|1" for i in range(1, 16)},
     # ARASAG individual exercises
-    **{f"mentoreval_arasag_ex{i}": f"custom|mentoreval_arasag_ex{i}|0" for i in range(1, 49)},
+    **{f"mentoreval_arasag_ex{i}": f"custom|mentoreval_arasag_ex{i}|1" for i in range(1, 49)},
     
     # Exercise type groups
     "mentoreval_essay_writing": ",".join([
