@@ -116,7 +116,7 @@ def list_runs(run_manager: RunManager):
     print("-" * 60)
     
     for run in runs:
-        print(f"{run.run_id:<4} {run.model_name:<20} {run.benchmark_mode:<15} {run.status:<10}")
+        print(f"{run.run_id:<4} {run.model_name:<20} {run.status:<10}")  # Uses @property
 
 
 def show_summary(run_manager: RunManager):
@@ -137,7 +137,7 @@ def show_summary(run_manager: RunManager):
     if incomplete:
         print(f"\n   Incomplete runs: {len(incomplete)}")
         for run in incomplete:
-            print(f"     {run.run_id}: {run.model_name} - {run.benchmark_mode} ({run.status})")
+            print(f"     {run.run_id}: {run.model_name} ({run.status})")
 
 
 def show_run_status(run_manager: RunManager, run_id: int):
@@ -149,7 +149,6 @@ def show_run_status(run_manager: RunManager, run_id: int):
     
     print(f"\n📋 Run {run_id} Status:")
     print(f"   Model: {run_info.model_name}")
-    print(f"   Mode: {run_info.benchmark_mode}")
     print(f"   Status: {run_info.status}")
     print(f"   Created: {run_info.configuration.get('timestamp', 'Unknown')}")
 

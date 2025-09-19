@@ -64,8 +64,6 @@ class LightEvalBenchmark:
 
     def create_run(self,
                    model_config: ModelConfig,
-                   benchmark_mode: str = "mentoreval-lighteval",
-                   description: str = None,
                    use_local_backend: bool = False,
                    task_name: str = "mentoreval",
                    task_args: Dict[str, Any] = None,
@@ -100,8 +98,7 @@ class LightEvalBenchmark:
         # Create the run using the user-friendly format
         return self.run_manager.create_run_user_friendly(
             parameters=parameters,
-            configuration=configuration,
-            benchmark_mode=benchmark_mode
+            configuration=configuration
         )
 
     def execute_run(self, run_info: RunInfo) -> Dict[str, Any]:
@@ -173,20 +170,27 @@ class LightEvalBenchmark:
         model_args = run_info.configuration.get("model_args", {})
         
         # Handle task name mapping
-        from mentoreval.task import TASKS_GROUPS
+        from mentoreval.task import TASKS_GROUPS, set_force_explanation, set_show_isced_level
+        
+        # Set the force_explanation parameter from run configuration
+        force_explanation = run_info.configuration.get("force_explanation", False)
+        set_force_explanation(force_explanation)
+        print(f"🔍 DEBUG: Set force_explanation to: {force_explanation}")
+        
+        # Set the show_isced_level parameter from run configuration
+        show_isced_level = run_info.configuration.get("show_isced_level", False)
+        set_show_isced_level(show_isced_level)
+        print(f"🔍 DEBUG: Set show_isced_level to: {show_isced_level}")
         
         print(f"🔍 DEBUG: Original task_name from run config: '{task_name}'")
         
-        if task_name == "mentoreval":
-            task_name = "custom|mentor_eval:asap_exercise_set_1|0"  # Map to a working specific task
-            print(f"🔍 DEBUG: Mapped 'mentoreval' to: '{task_name}'")
-        elif task_name in TASKS_GROUPS:
+        if task_name in TASKS_GROUPS:
             original_task_name = task_name
             task_name = TASKS_GROUPS[task_name]  # Map to task group
             print(f"🔍 DEBUG: Mapped '{original_task_name}' to task group: '{task_name}'")
             print(f"🔍 DEBUG: This will run {len(task_name.split(','))} individual tasks!")
         else:
-            print(f"🔍 DEBUG: No mapping found, using original task_name: '{task_name}'")
+            raise ValueError(f"❌ ERROR: Task name '{task_name}' not found in TASKS_GROUPS. Please provide a valid task name.")
 
         # Create custom evaluation tracker that captures interactions
         evaluation_tracker = CustomEvaluationTracker(
@@ -318,7 +322,6 @@ class LightEvalBenchmark:
         processed_results = {
             "run_id": run_info.run_id,
             "model_name": run_info.model_name,
-            "benchmark_mode": run_info.benchmark_mode,
             "timestamp": datetime.now().isoformat(),
             "use_local_backend": run_info.configuration.get("use_local_backend", False),
             "task_name": run_info.parameters.get("task_name", "unknown"),
@@ -435,7 +438,7 @@ class LightEvalBenchmark:
     def _save_results(self, results: Dict[str, Any], run_info: RunInfo):
         """Save results to both results directories with different formats."""
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{run_info.run_id}_{run_info.model_name}_{run_info.benchmark_mode}_{timestamp}.json"
+        filename = f"{run_info.run_id}_{run_info.model_name}_mentoreval-test_{timestamp}.json"
         
         # Save clean metrics to results/ directory
         clean_metrics = self._process_clean_metrics(results, run_info)

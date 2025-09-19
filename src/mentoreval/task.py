@@ -39,10 +39,28 @@ from mentoreval.metrics import (
 
 from mentoreval.prompts import mentor_eval_prompt_fn
 
+# Global variables to store settings
+_force_explanation_global = False
+_show_isced_level_global = False
+
+def set_force_explanation(force_explanation: bool):
+    """Set the global force_explanation setting."""
+    global _force_explanation_global
+    _force_explanation_global = force_explanation
+
+def set_show_isced_level(show_isced_level: bool):
+    """Set the global show_isced_level setting."""
+    global _show_isced_level_global
+    _show_isced_level_global = show_isced_level
+
+def mentor_eval_prompt_fn_wrapper(line, task_name: str = None, **kwargs):
+    """Wrapper function that uses the global settings."""
+    return mentor_eval_prompt_fn(line, task_name, force_explanation=_force_explanation_global, show_isced_level=_show_isced_level_global, **kwargs)
+
 # Note: mentoreval_metrics is already registered when mentoreval package is imported
 # No need to create or extend the enum again
 
-def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fewshots: int = 1) -> LightevalTaskConfig:
+def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fewshots: int = 1, force_explanation: bool = False) -> LightevalTaskConfig:
     """
     Create a MentorEval task for a specific dataset following LightEval patterns.
     
@@ -57,7 +75,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fe
     return LightevalTaskConfig(
         name=f"mentoreval_{dataset_name}",
         suite=["custom"],
-        prompt_function=mentor_eval_prompt_fn,
+        prompt_function=mentor_eval_prompt_fn_wrapper,
         hf_repo="alvaro-francisco-gil/mentor-eval",
         hf_subset="default",
         hf_filter=lambda line, dataset=dataset_name: line.get('dataset') == dataset,
@@ -80,7 +98,7 @@ def create_mentoreval_task(dataset_name: str, generation_size: int = 500, num_fe
         version=0,
     )
 
-def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, generation_size: int = 500, num_fewshots: int = 1) -> LightevalTaskConfig:
+def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, generation_size: int = 500, num_fewshots: int = 1, force_explanation: bool = False) -> LightevalTaskConfig:
     """
     Create a MentorEval task for a specific dataset and exercise set.
     This ensures that few-shot examples come from the same exercise set.
@@ -94,7 +112,7 @@ def create_mentoreval_exercise_task(dataset_name: str, exercise_set: int, genera
     return LightevalTaskConfig(
         name=f"mentoreval_{dataset_name}_ex{exercise_set}",  # Base task name - LightEval adds custom| and |0
         suite=["custom"],
-        prompt_function=mentor_eval_prompt_fn,
+        prompt_function=mentor_eval_prompt_fn_wrapper,
         hf_repo="alvaro-francisco-gil/mentor-eval",
         hf_subset="default",
         hf_filter=lambda line, dataset=dataset_name, ex_set=exercise_set: (
@@ -187,18 +205,8 @@ TASKS_GROUPS = {
         ",".join([f"custom|mentoreval_arasag_ex{i}|0" for i in range(1, 49)])
     ]),
     
-    # Sample groups for testing
-    "mentoreval_sample": ",".join([
-        "custom|mentoreval_asap_ex1|0",
-        "custom|mentoreval_asap2_ex1|0", 
-        "custom|mentoreval_mohler_ex1|0",
-        "custom|mentoreval_ellipse_ex1|0",
-        "custom|mentoreval_ptasag2018_ex1|0",
-        "custom|mentoreval_arasag_ex1|0"
-    ]),
-    
     # All tasks
-    "mentoreval_all": ",".join([
+    "mentoreval": ",".join([
         ",".join([f"custom|mentoreval_asap_ex{i}|0" for i in range(1, 9)]),
         ",".join([f"custom|mentoreval_asap2_ex{i}|0" for i in range(1, 8)]),
         ",".join([f"custom|mentoreval_mohler_ex{i}|0" for i in range(1, 82)]),

@@ -19,11 +19,14 @@ from pathlib import Path
 class RunInfo:
     """Information about a benchmark run."""
     run_id: int
-    model_name: str
-    benchmark_mode: str
     parameters: Dict[str, Any]  # User-friendly parameters
     configuration: Dict[str, Any]  # Technical configuration
     status: str = 'created'  # 'created', 'running', 'completed', 'failed'
+    
+    @property
+    def model_name(self) -> str:
+        """Get model name from parameters."""
+        return self.parameters.get('model_name', 'gpt-4o-mini')
 
 
 def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
@@ -36,6 +39,8 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
     
     # Determine if we should include guidance (rubric or desired_answer - whichever is present)
     show_guidance = parameters.get('show_guidance', True)
+    force_explanation = parameters.get('force_explanation', False)
+    show_isced_level = parameters.get('show_isced_level', False)
     
     # Build the full configuration for LightEval
     full_config = {
@@ -54,15 +59,13 @@ def convert_simplified_json_to_run_info(json_data: Dict[str, Any]) -> RunInfo:
             "temperature": config.get("generation_args", {}).get("temperature", 0.0),
             "do_sample": config.get("generation_args", {}).get("do_sample", False),
         },
-        "benchmark_mode": "mentoreval-test",
-        "description": f"{parameters.get('model_name', 'gpt-4o-mini')} with {parameters.get('test_samples', 20)} test samples",
-        "show_guidance": show_guidance
+        "show_guidance": show_guidance,
+        "force_explanation": force_explanation,
+        "show_isced_level": show_isced_level
     }
     
     return RunInfo(
         run_id=json_data.get('run_id', 0),
-        model_name=parameters.get('model_name', 'gpt-4o-mini'),
-        benchmark_mode='mentoreval-test',
         parameters=parameters,  # Include the user-friendly parameters
         configuration=full_config,
         status=json_data.get('status', 'created')
@@ -94,14 +97,13 @@ class RunManager:
         # Return next available ID
         return max(existing_ids, default=-1) + 1
     
-    def create_run(self, model_name: str, benchmark_mode: str, configuration: Dict[str, Any]) -> RunInfo:
+    def create_run(self, parameters: Dict[str, Any], configuration: Dict[str, Any]) -> RunInfo:
         """Create a new run and save it to the runs directory."""
         run_id = self.get_next_run_id()
         
         run_info = RunInfo(
             run_id=run_id,
-            model_name=model_name,
-            benchmark_mode=benchmark_mode,
+            parameters=parameters,
             configuration=configuration,
             status='created'
         )
@@ -113,7 +115,7 @@ class RunManager:
         
         return run_info
     
-    def create_run_user_friendly(self, parameters: Dict[str, Any], configuration: Dict[str, Any], benchmark_mode: str = "mentoreval-test") -> RunInfo:
+    def create_run_user_friendly(self, parameters: Dict[str, Any], configuration: Dict[str, Any]) -> RunInfo:
         """Create a new run using the user-friendly format (like 7_run.json)."""
         run_id = self.get_next_run_id()
         
@@ -270,7 +272,6 @@ class RunManager:
                 {
                     "run_id": run.run_id,
                     "model_name": run.model_name,
-                    "benchmark_mode": run.benchmark_mode,
                     "status": run.status
                 }
                 for run in runs
