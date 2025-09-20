@@ -1,24 +1,17 @@
 {
   "run_id": 1,
-  "status": "completed",
+  "status": "running",
   "parameters": {
     "model_name": "gpt-4o-mini",
-    "training_examples": 3,
-    "test_samples": 2,
-    "task_name": "custom|mentoreval_asap_ex7|3",
-    "show_guidance": false,
+    "training_examples": 0,
+    "test_samples": 10,
+    "task_name": "mentoreval",
+    "show_guidance": true,
     "explanation": false,
     "show_isced_level": true
   },
   "configuration": {
     "use_local_backend": false,
-    "task_args": {
-      "max_samples": 2,
-      "num_fewshot_seeds": 3
-    },
-    "model_args": {
-      "use_chat_template": true
-    },
     "generation_args": {
       "max_new_tokens": 50,
       "temperature": 0.0,

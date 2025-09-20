@@ -1,0 +1,21 @@
+{
+  "run_id": 5,
+  "status": "completed",
+  "parameters": {
+    "model_name": "gpt-4o-mini",
+    "training_examples": 1,
+    "test_samples": 1,
+    "task_name": "mentoreval",
+    "show_guidance": false,
+    "explanation": false,
+    "show_isced_level": false
+  },
+  "configuration": {
+    "use_local_backend": false,
+    "generation_args": {
+      "max_new_tokens": 10,
+      "temperature": 0.0,
+      "do_sample": false
+    }
+  }
+}

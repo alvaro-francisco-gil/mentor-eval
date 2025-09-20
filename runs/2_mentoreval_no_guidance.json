@@ -1,11 +1,11 @@
 {
   "run_id": 2,
-  "status": "completed",
+  "status": "running",
   "parameters": {
     "model_name": "gpt-4o-mini",
-    "training_examples": 3,
-    "test_samples": 1,
-    "task_name": "mentoreval_asap",
+    "training_examples": 0,
+    "test_samples": 10,
+    "task_name": "mentoreval",
     "show_guidance": false,
     "explanation": false,
     "show_isced_level": true
