@@ -1,19 +1,19 @@
 {
   "run_id": 3,
-  "status": "completed",
+  "status": "created",
   "parameters": {
     "model_name": "gpt-4o-mini",
-    "training_examples": 1,
-    "test_samples": 1,
-    "task_name": "mentoreval_asap_ex7",
-    "show_guidance": false,
-    "explanation": false,
+    "training_examples": 0,
+    "test_samples": 5,
+    "task_name": "mentoreval",
+    "show_guidance": true,
+    "explanation": true,
     "show_isced_level": true
   },
   "configuration": {
     "use_local_backend": false,
     "generation_args": {
-      "max_new_tokens": 1,
+      "max_new_tokens": 100,
       "temperature": 0.0,
       "do_sample": false
     }
