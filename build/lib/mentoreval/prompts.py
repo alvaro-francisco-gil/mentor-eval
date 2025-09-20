@@ -22,6 +22,74 @@ ISCED_LEVELS = {
 
 # Note: Training example handling is now done by LightEval's custom few-shot selection function
 
+def _build_prompt(question: str, answer: str, min_grade: float, max_grade: float, 
+                 explanation: bool = False, show_isced_level: bool = False, isced_level: int = None,
+                 rubric: str = None, desired_answer: str = None) -> str:
+    """
+    Build a complete prompt by conditionally adding different components.
+    
+    Args:
+        question: The essay question/prompt
+        answer: Student's response
+        min_grade: Minimum grade on the scale
+        max_grade: Maximum grade on the scale
+        explanation: Whether to require explanation with the grade
+        show_isced_level: Whether to include ISCED level context
+        isced_level: The ISCED level for educational context
+        rubric: Grading rubric (optional)
+        desired_answer: Expected answer (optional)
+    
+    Returns:
+        str: Complete formatted prompt
+    """
+    # Start with base instruction
+    if explanation:
+        instruction = (
+            "You are an expert teacher grading student work. Provide a numerical grade and explanation. "
+            "Your output must be a dictionary in the following format: "
+            '{"grade": [numerical_value], "explanation": "[brief explanation]"}'
+        )
+    else:
+        instruction = (
+            "You are an expert teacher grading student work. You must provide ONLY a numerical grade in JSON format. "
+            "Do not include any explanation, reasoning, or additional text. "
+            "Your response must be a dictionary in the following format: {\"grade\": [numerical_value]}"
+        )
+    
+    # Build the main content
+    content_parts = []
+    
+    # Add ISCED level context if requested
+    if show_isced_level and isced_level and isced_level in ISCED_LEVELS:
+        content_parts.append(f"Educational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response.")
+    
+    # Add grading instruction based on available guidance
+    if rubric and rubric not in [None, '', 'None', 'NaN']:
+        content_parts.append("Grade this student answer based on the rubric.")
+    elif desired_answer and desired_answer not in [None, '', 'None', 'NaN']:
+        content_parts.append("Grade this student answer by comparing it to the expected answer. Evaluate the student's response based on factual accuracy and correctness, not on semantic similarity to the expected answer.")
+    else:
+        content_parts.append("Grade this student answer.")
+    
+    # Add question and answer
+    content_parts.extend([
+        f"Question: {question}",
+        f"Student Answer: {answer}"
+    ])
+    
+    # Add guidance if available
+    if rubric and rubric not in [None, '', 'None', 'NaN']:
+        content_parts.append(f"Rubric: {rubric}")
+    elif desired_answer and desired_answer not in [None, '', 'None', 'NaN']:
+        content_parts.append(f"Expected Answer: {desired_answer}")
+    
+    # Add final instruction
+    content_parts.append(f"Grade (on a scale from {min_grade} to {max_grade}):")
+    
+    # Combine everything
+    content = "\n\n".join(content_parts)
+    return f"{instruction}\n\n{content}"
+
 def create_rubric_prompt(question: str, answer: str, rubric: str, min_grade: float, max_grade: float, explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
     """
     Create a prompt for rubric-based grading.
@@ -39,31 +107,7 @@ def create_rubric_prompt(question: str, answer: str, rubric: str, min_grade: flo
     Returns:
         str: Formatted prompt for rubric-based grading
     """
-    # Add ISCED level context if requested
-    isced_context = ""
-    if show_isced_level and isced_level in ISCED_LEVELS:
-        isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
-    
-    base_prompt = f"""Grade this student answer based on the rubric.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-Rubric: {rubric}"""
-    
-    if explanation:
-        return f"""{base_prompt}
-
-Provide your grade and a brief explanation. Format your response as:
-Grade: [numerical value]
-Explanation: [brief explanation of your grading decision]
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
-    else:
-        return f"""{base_prompt}
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
+    return _build_prompt(question, answer, min_grade, max_grade, explanation, show_isced_level, isced_level, rubric=rubric)
 
 
 def create_desired_answer_prompt(question: str, answer: str, desired_answer: str, min_grade: float, max_grade: float, explanation: bool = False, show_isced_level: bool = False, isced_level: int = 3) -> str:
@@ -83,50 +127,10 @@ def create_desired_answer_prompt(question: str, answer: str, desired_answer: str
     Returns:
         str: Formatted prompt for desired answer comparison
     """
-    # Add ISCED level context if requested
-    isced_context = ""
-    if show_isced_level and isced_level in ISCED_LEVELS:
-        isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
-    
-    base_prompt = f"""Grade this student answer by comparing it to the expected answer. Evaluate the student's response based on factual accuracy and correctness, not on semantic similarity to the expected answer.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-Expected Answer: {desired_answer}"""
-    
-    if explanation:
-        return f"""{base_prompt}
-
-Provide your grade and a brief explanation. Format your response as:
-Grade: [numerical value]
-Explanation: [brief explanation of your grading decision]
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
-    else:
-        return f"""{base_prompt}
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
+    return _build_prompt(question, answer, min_grade, max_grade, explanation, show_isced_level, isced_level, desired_answer=desired_answer)
 
 
-
-
-def get_grading_instruction(grading_type: str) -> str:
-    """
-    Get the appropriate instruction based on grading type.
-    
-    Args:
-        grading_type: Type of grading ('rubric' or 'desired_answer')
-    
-    Returns:
-        str: Instruction for the LLM
-    """
-    instructions = {
-        'rubric': "You are an expert teacher grading student work. Provide a numerical grade based on the rubric.",
-        'desired_answer': "You are an expert teacher grading student work. Compare the student answer to the expected answer and provide a numerical grade."
-    }
-    return instructions[grading_type]
+# Note: get_grading_instruction function removed - instructions are now handled in _build_prompt
 
 
 def mentor_eval_prompt_fn(line, task_name: str = None, explanation: bool = False, show_isced_level: bool = False, show_guidance: bool = True, **kwargs):
@@ -169,7 +173,7 @@ def mentor_eval_prompt_fn(line, task_name: str = None, explanation: bool = False
     answer = line['answer']
     min_grade = line['min_grade']
     max_grade = line['max_grade']
-    isced_level = line.get('isced_level', 3)  # Default to level 3 if not specified
+    isced_level = line.get('isced_level')
     
     # For few-shot examples, create a simplified version
     if is_fewshot:
@@ -198,91 +202,28 @@ def mentor_eval_prompt_fn(line, task_name: str = None, explanation: bool = False
     rubric = line.get('rubric')
     desired_answer = line.get('desired_answer')
     
-    # Get appropriate instruction based on grading type first
-    # If show_guidance is False, skip rubric/desired_answer and use simple grading
+    # Determine grading type
     if not show_guidance:
         grading_type = 'simple'
-        if explanation:
-            instruction = "You are an expert teacher grading student work. Provide a numerical grade and explanation."
-        else:
-            instruction = "You are an expert teacher grading student work. You must provide ONLY a numerical grade in JSON format. Do not include any explanation, reasoning, or additional text."
-        
-        # Add ISCED level context if requested
-        isced_context = ""
-        if show_isced_level and isced_level in ISCED_LEVELS:
-            isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
-        
-        if explanation:
-            base_query = f"""Grade this student answer.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-Provide your grade and a brief explanation. Format your response as:
-Grade: [numerical value]
-Explanation: [brief explanation of your grading decision]
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
-        else:
-            base_query = f"""Grade this student answer.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-CRITICAL: You must provide ONLY a numerical grade. Do not include any explanation, reasoning, or additional text. Your response must be in JSON format: {{"grade": [numerical_value]}}
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
+        rubric = None  # Don't use rubric/desired_answer when show_guidance is False
+        desired_answer = None
     elif rubric and rubric not in [None, '', 'None', 'NaN']:
         grading_type = 'rubric'
-        instruction = get_grading_instruction(grading_type)
-        base_query = create_rubric_prompt(question, answer, rubric, min_grade, max_grade, explanation, show_isced_level, isced_level)
     elif desired_answer and desired_answer not in [None, '', 'None', 'NaN']:
         grading_type = 'desired_answer'
-        instruction = get_grading_instruction(grading_type)
-        base_query = create_desired_answer_prompt(question, answer, desired_answer, min_grade, max_grade, explanation, show_isced_level, isced_level)
     else:
         grading_type = 'simple'
-        instruction = "You are an expert teacher grading student work. Provide a numerical grade."
-        
-        # Add ISCED level context if requested
-        isced_context = ""
-        if show_isced_level and isced_level in ISCED_LEVELS:
-            isced_context = f"\n\nEducational Context: This response is from a student at ISCED level {isced_level} ({ISCED_LEVELS[isced_level]}). Please consider this educational level when evaluating the response."
-        
-        if explanation:
-            base_query = f"""Grade this student answer.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-Provide your grade and a brief explanation. Format your response as:
-Grade: [numerical value]
-Explanation: [brief explanation of your grading decision]
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
-        else:
-            base_query = f"""Grade this student answer.{isced_context}
-
-Question: {question}
-
-Student Answer: {answer}
-
-CRITICAL: You must provide ONLY a numerical grade. Do not include any explanation, reasoning, or additional text. Your response must be in JSON format: {{"grade": [numerical_value]}}
-
-Grade (on a scale from {min_grade} to {max_grade}):"""
+        rubric = None
+        desired_answer = None
     
-    # Combine instruction and query (LightEval expects query to start with instruction)
-    query = f"{instruction}\n\n{base_query}"
+    # Build the complete prompt using the unified function
+    query = _build_prompt(question, answer, min_grade, max_grade, explanation, show_isced_level, isced_level, rubric, desired_answer)
     
     return Doc(
         task_name=task_name,
         query=query,
         choices=[str(line['grade'])],
         gold_index=0,
-        instruction=instruction,
         specific={
             "min_grade": min_grade,
             "max_grade": max_grade,

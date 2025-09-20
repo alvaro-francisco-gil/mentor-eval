@@ -7,6 +7,7 @@ removing custom evaluation logic in favor of LightEval's built-in capabilities.
 
 import os
 import json
+import numpy as np
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 
@@ -515,11 +516,14 @@ class LightEvalBenchmark:
         }
     
     def _extract_metrics_summary(self, results: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract clean metrics summary from LightEval results."""
+        """Extract clean metrics summary from LightEval results with subdataset aggregation."""
         metrics_summary = {}
         
         # The actual task results are in results.results.results
         task_results = results.get("results", {}).get("results", {})
+        
+        # Dictionary to collect metrics by subdataset for aggregation
+        subdataset_metrics = {}
         
         # Process each task
         for task_key, task_metrics in task_results.items():
@@ -532,6 +536,7 @@ class LightEvalBenchmark:
             else:
                 task_name_clean = task_key
             
+            # Store individual task metrics
             metrics_summary[task_name_clean] = {
                 "exact_grade_match": {
                     "value": task_metrics.get("exact_grade_match", 0.0),
@@ -560,6 +565,67 @@ class LightEvalBenchmark:
                 "wasserstein_distance": {
                     "value": task_metrics.get("wasserstein_distance", 0.0),
                     "stderr": task_metrics.get("wasserstein_distance_stderr", 0.0)
+                }
+            }
+            
+            # Extract subdataset name for aggregation (e.g., "asap" from "mentoreval_asap_ex1")
+            if task_name_clean.startswith("mentoreval_"):
+                # Extract subdataset name (e.g., "asap" from "mentoreval_asap_ex1")
+                parts = task_name_clean.split("_")
+                if len(parts) >= 3:  # mentoreval_[subdataset]_ex[number]
+                    subdataset_name = f"mentoreval_{parts[1]}"  # e.g., "mentoreval_asap"
+                    
+                    # Initialize subdataset metrics if not exists
+                    if subdataset_name not in subdataset_metrics:
+                        subdataset_metrics[subdataset_name] = {
+                            "exact_grade_match": [],
+                            "grade_mae": [],
+                            "grade_rmse": [],
+                            "pearson_correlation": [],
+                            "spearman_correlation": [],
+                            "ks_statistic": [],
+                            "wasserstein_distance": []
+                        }
+                    
+                    # Collect metrics for subdataset aggregation
+                    subdataset_metrics[subdataset_name]["exact_grade_match"].append(task_metrics.get("exact_grade_match", 0.0))
+                    subdataset_metrics[subdataset_name]["grade_mae"].append(task_metrics.get("grade_mae", 0.0))
+                    subdataset_metrics[subdataset_name]["grade_rmse"].append(task_metrics.get("grade_rmse", 0.0))
+                    subdataset_metrics[subdataset_name]["pearson_correlation"].append(task_metrics.get("pearson_correlation", 0.0))
+                    subdataset_metrics[subdataset_name]["spearman_correlation"].append(task_metrics.get("spearman_correlation", 0.0))
+                    subdataset_metrics[subdataset_name]["ks_statistic"].append(task_metrics.get("ks_statistic", 0.0))
+                    subdataset_metrics[subdataset_name]["wasserstein_distance"].append(task_metrics.get("wasserstein_distance", 0.0))
+        
+        # Add subdataset-level aggregated metrics
+        for subdataset_name, metrics_lists in subdataset_metrics.items():
+            metrics_summary[subdataset_name] = {
+                "exact_grade_match": {
+                    "value": np.mean(metrics_lists["exact_grade_match"]),
+                    "stderr": np.std(metrics_lists["exact_grade_match"]) / np.sqrt(len(metrics_lists["exact_grade_match"])) if len(metrics_lists["exact_grade_match"]) > 1 else 0.0
+                },
+                "grade_mae": {
+                    "value": np.mean(metrics_lists["grade_mae"]),
+                    "stderr": np.std(metrics_lists["grade_mae"]) / np.sqrt(len(metrics_lists["grade_mae"])) if len(metrics_lists["grade_mae"]) > 1 else 0.0
+                },
+                "grade_rmse": {
+                    "value": np.mean(metrics_lists["grade_rmse"]),
+                    "stderr": np.std(metrics_lists["grade_rmse"]) / np.sqrt(len(metrics_lists["grade_rmse"])) if len(metrics_lists["grade_rmse"]) > 1 else 0.0
+                },
+                "pearson_correlation": {
+                    "value": np.mean(metrics_lists["pearson_correlation"]),
+                    "stderr": np.std(metrics_lists["pearson_correlation"]) / np.sqrt(len(metrics_lists["pearson_correlation"])) if len(metrics_lists["pearson_correlation"]) > 1 else 0.0
+                },
+                "spearman_correlation": {
+                    "value": np.mean(metrics_lists["spearman_correlation"]),
+                    "stderr": np.std(metrics_lists["spearman_correlation"]) / np.sqrt(len(metrics_lists["spearman_correlation"])) if len(metrics_lists["spearman_correlation"]) > 1 else 0.0
+                },
+                "ks_statistic": {
+                    "value": np.mean(metrics_lists["ks_statistic"]),
+                    "stderr": np.std(metrics_lists["ks_statistic"]) / np.sqrt(len(metrics_lists["ks_statistic"])) if len(metrics_lists["ks_statistic"]) > 1 else 0.0
+                },
+                "wasserstein_distance": {
+                    "value": np.mean(metrics_lists["wasserstein_distance"]),
+                    "stderr": np.std(metrics_lists["wasserstein_distance"]) / np.sqrt(len(metrics_lists["wasserstein_distance"])) if len(metrics_lists["wasserstein_distance"]) > 1 else 0.0
                 }
             }
         

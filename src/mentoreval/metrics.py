@@ -46,15 +46,64 @@ def parse_grade(prediction: str) -> Optional[float]:
     """
     Parse a grade from model prediction string.
     
+    This function first tries to parse JSON format responses (as requested in prompts):
+    - {"grade": [numerical_value]}
+    - {"grade": [numerical_value], "explanation": "..."}
+    
+    If JSON parsing fails, falls back to regex extraction of the first number.
+    
     Args:
         prediction: Raw model prediction (string)
         
     Returns:
         Parsed grade as float, or None if parsing fails
     """
+    if not prediction or not prediction.strip():
+        return None
+    
+    prediction = prediction.strip()
+    
+    # Try JSON parsing first (matches the format requested in prompts)
+    try:
+        import json
+        
+        # Look for JSON objects in the response
+        json_objects = []
+        
+        # Try parsing the entire response as JSON first
+        try:
+            obj = json.loads(prediction)
+            if isinstance(obj, dict):
+                json_objects.append(obj)
+        except json.JSONDecodeError:
+            # Look for JSON objects within the text using regex
+            import re
+            json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+            matches = re.findall(json_pattern, prediction)
+            for match in matches:
+                try:
+                    obj = json.loads(match)
+                    if isinstance(obj, dict):
+                        json_objects.append(obj)
+                except json.JSONDecodeError:
+                    continue
+        
+        # Check if we found any JSON objects with a 'grade' field
+        for json_obj in json_objects:
+            if 'grade' in json_obj:
+                try:
+                    grade = float(json_obj['grade'])
+                    return grade
+                except (ValueError, TypeError):
+                    continue  # Try next JSON object
+                    
+    except Exception:
+        pass  # Fall back to regex parsing
+    
+    # Fallback to regex parsing (original behavior)
     try:
         import re
-        numbers = re.findall(r'-?\d+\.?\d*', prediction.strip())
+        numbers = re.findall(r'-?\d+\.?\d*', prediction)
         if numbers:
             return float(numbers[0])
         return None

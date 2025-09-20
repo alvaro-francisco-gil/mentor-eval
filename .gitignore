@@ -24,5 +24,6 @@ Icon?
 results_extended/
 cache/
 lighteval_cache/
+build/
 
 data/processed/asap2/asap2_processed.csv
