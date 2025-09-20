@@ -4,7 +4,7 @@
   "parameters": {
     "model_name": "gpt-4o-mini",
     "training_examples": 0,
-    "test_samples": 10,
+    "test_samples": 5,
     "task_name": "mentoreval",
     "show_guidance": false,
     "explanation": false,
