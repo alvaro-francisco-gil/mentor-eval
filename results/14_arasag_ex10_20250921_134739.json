@@ -1,0 +1,101 @@
+{
+  "run_info": {
+    "run_id": 14,
+    "model_name": "gpt-4o-mini",
+    "task_name": "mentoreval_arasag_ex10",
+    "timestamp": "2025-09-21T13:47:39.869940",
+    "status": "completed"
+  },
+  "metrics_summary": {
+    "mentoreval_arasag_ex10": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.7333333333333334,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.7393691004272945,
+        "stderr": 0.0016725154107222443
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 3.666666666666667,
+        "stderr": 0.008657241865953338
+      }
+    },
+    "mentoreval_arasag": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.7333333333333334,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.7393691004272945,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 3.666666666666667,
+        "stderr": 0.0
+      }
+    },
+    "aggregated": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.7333333333333334,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.7393691004272945,
+        "stderr": 0.0016725154107222443
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 3.666666666666667,
+        "stderr": 0.008657241865953338
+      }
+    }
+  }
+}

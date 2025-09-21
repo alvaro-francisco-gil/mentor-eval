@@ -71,8 +71,8 @@ class MentorEvalLeaderboard {
             '1_gpt-4o-mini_mentoreval-test_20250920_154100.json',
             '2_gpt-4o-mini_mentoreval-test_20250920_211110.json',
             '3_gpt-4o-mini_mentoreval-test_20250921_003313.json',
-            '5_gpt-4o-mini_mentoreval-test_20250919_213831.json',
-            '28_gpt-4o-mini_mentoreval-test_20250919_130205.json'
+            '11_results.json',
+            '14_arasag_ex10_20250921_134739.json'
         ];
     }
 
