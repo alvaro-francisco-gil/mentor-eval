@@ -40,7 +40,8 @@ jobs:
         # Copy webpage files to deploy directory
         cp webpage/index.html deploy/
         cp webpage/style.css deploy/
-        cp webpage/script.js deploy/
+        # Fix paths in script.js for deployment (remove ../ prefixes)
+        sed 's|../results/|results/|g; s|../runs/|runs/|g' webpage/script.js > deploy/script.js
         cp -r webpage/assets deploy/
         
         # Verify the copied script.js
