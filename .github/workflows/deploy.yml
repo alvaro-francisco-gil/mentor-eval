@@ -19,22 +19,40 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
         
-    - name: Build webpage
+    - name: Build and prepare deployment
       run: |
+        # Build the webpage
         cd webpage
         python build.py
-        ls -la
         
-    - name: Deploy to root directory
-      run: |
-        python scripts/deploy_leaderboard_web.py
+        # Create deployment directory
+        cd ..
+        mkdir -p deploy
+        
+        # Copy main webpage files to deploy directory
+        cp index.html deploy/
+        cp style.css deploy/
+        cp script.js deploy/
+        cp -r assets deploy/
+        
+        # Copy data directories
+        cp -r results deploy/
+        cp -r runs deploy/
+        
+        # Verify deployment structure
+        echo "Deployment structure:"
+        ls -la deploy/
+        echo "Results directory:"
+        ls -la deploy/results/
+        echo "Runs directory:"
+        ls -la deploy/runs/
         
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.ACTIONS_DEPLOY_TOKEN }}
-        publish_dir: ./
+        publish_dir: ./deploy
