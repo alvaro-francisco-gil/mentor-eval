@@ -27,6 +27,7 @@ jobs:
       run: |
         cd webpage
         python build.py
+        ls -la
         
     - name: Deploy to root directory
       run: |

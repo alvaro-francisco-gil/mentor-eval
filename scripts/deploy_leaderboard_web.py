@@ -4,16 +4,24 @@ Simple deployment script for MentorEval Leaderboard
 Copies files to repository root for GitHub Pages deployment
 """
 
+import os
 import shutil
 from pathlib import Path
 
 def deploy():
     """Deploy the webpage to repository root."""
     print("🚀 Deploying MentorEval Leaderboard...")
+    print(f"📁 Current directory: {os.getcwd()}")
     
     # Source and destination paths
     webpage_dir = Path("webpage")
     root_dir = Path(".")
+    
+    print(f"📁 Webpage directory: {webpage_dir.absolute()}")
+    print(f"📁 Root directory: {root_dir.absolute()}")
+    print(f"📁 Webpage exists: {webpage_dir.exists()}")
+    if webpage_dir.exists():
+        print(f"📁 Webpage contents: {list(webpage_dir.iterdir())}")
     
     # Files to copy
     files_to_copy = [
