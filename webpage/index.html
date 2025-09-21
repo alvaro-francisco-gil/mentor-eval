@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorEval Benchmark Leaderboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <img src="assets/mentoreval_logo_nobg.png" alt="MentorEval Logo" class="logo">
+                <div class="header-text">
+                    <h1>MentorEval Benchmark Leaderboard</h1>
+                    <p>A Multilingual Benchmark for Educational Assessment</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="metric-selector">
+                <label for="metricSelect">Evaluation Metric:</label>
+                <select id="metricSelect">
+                    <option value="pearson_correlation" selected>Pearson Correlation</option>
+                    <option value="spearman_correlation">Spearman Correlation</option>
+                    <option value="exact_grade_match">Exact Grade Match</option>
+                    <option value="grade_mae">Mean Absolute Error (MAE)</option>
+                    <option value="grade_rmse">Root Mean Square Error (RMSE)</option>
+                    <option value="ks_statistic">Kolmogorov-Smirnov Statistic</option>
+                    <option value="wasserstein_distance">Wasserstein Distance</option>
+                </select>
+            </div>
+            
+
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading">
+            <div class="spinner"></div>
+            <p>Loading benchmark data...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="table-container">
+            <table id="leaderboardTable" class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th class="rank-col">Rank</th>
+                        <th class="params-col">Parameters</th>
+                        <th class="overall-col clickable" data-dataset="overall">
+                            Overall <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="asap">
+                            ASAP <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="asap2">
+                            ASAP 2.0 <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="ellipse">
+                            ELLIPSE <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="mohler">
+                            Mohler <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="ptasag2018">
+                            PT-ASAG 2018 <i class="fas fa-sort"></i>
+                        </th>
+                        <th class="dataset-col clickable" data-dataset="arasag">
+                            AR-ASAG <i class="fas fa-sort"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Dataset Info -->
+        <div class="dataset-info">
+            <h3>Dataset Information</h3>
+            <div class="dataset-grid">
+                <div class="dataset-card">
+                    <h4>ASAP</h4>
+                    <p><strong>Language:</strong> English</p>
+                    <p><strong>Level:</strong> ISCED 2-3</p>
+                    <p><strong>Type:</strong> Essay Writing</p>
+                    <p><strong>Samples:</strong> 12,977</p>
+                    <div class="dataset-links">
+                        <a href="https://www.kaggle.com/competitions/asap-aes" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://www.kaggle.com/competitions/asap-aes" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <h4>ASAP 2.0</h4>
+                    <p><strong>Language:</strong> English</p>
+                    <p><strong>Level:</strong> ISCED 1-3</p>
+                    <p><strong>Type:</strong> Essay Writing</p>
+                    <p><strong>Samples:</strong> 24,728</p>
+                    <div class="dataset-links">
+                        <a href="https://www.kaggle.com/datasets/lburleigh/asap-2-0" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://the-learning-agency-lab.com/learning-exchange/asap-2-0-dataset/" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <h4>ELLIPSE</h4>
+                    <p><strong>Language:</strong> English</p>
+                    <p><strong>Level:</strong> ISCED 3</p>
+                    <p><strong>Type:</strong> Essay Writing</p>
+                    <p><strong>Samples:</strong> 6,482</p>
+                    <div class="dataset-links">
+                        <a href="https://github.com/scrosseye/ELLIPSE-Corpus" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://benjamins.com/catalog/ijlcr.22026.cro?srsltid=AfmBOoqIEK6lzlQ2UUWOxWDlQ8msOmWAvA3Q_CjZvXSQ2G_mWZVnreJW" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <h4>Mohler</h4>
+                    <p><strong>Language:</strong> English</p>
+                    <p><strong>Level:</strong> ISCED 6</p>
+                    <p><strong>Type:</strong> Short Answer</p>
+                    <p><strong>Samples:</strong> 1,263</p>
+                    <div class="dataset-links">
+                        <a href="https://www.kaggle.com/datasets/abdokamr/mohler" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://aclanthology.org/P11-1076/" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <h4>PT-ASAG 2018</h4>
+                    <p><strong>Language:</strong> Portuguese</p>
+                    <p><strong>Level:</strong> ISCED 2</p>
+                    <p><strong>Type:</strong> Short Answer</p>
+                    <p><strong>Samples:</strong> 9,862</p>
+                    <div class="dataset-links">
+                        <a href="https://www.kaggle.com/datasets/lucasbgalhardi/pt-asag-2018" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://www.researchgate.net/publication/328735284_Portuguese_Automatic_Short_Answer_Grading" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <h4>AR-ASAG</h4>
+                    <p><strong>Language:</strong> Arabic</p>
+                    <p><strong>Level:</strong> ISCED 7</p>
+                    <p><strong>Type:</strong> Short Answer</p>
+                    <p><strong>Samples:</strong> 2,132</p>
+                    <div class="dataset-links">
+                        <a href="https://www.kaggle.com/datasets/mahmoudsammour/ar-asag-dataset/data" target="_blank" class="dataset-link">
+                            <i class="fas fa-database"></i> Dataset
+                        </a>
+                        <a href="https://aclanthology.org/2020.lrec-1.321/" target="_blank" class="dataset-link">
+                            <i class="fas fa-file-alt"></i> Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 MentorEval. Built with ❤️ for the educational AI community.</p>
+            <p>
+                <a href="https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Dataset on Hugging Face
+                </a>
+                |
+                <a href="https://github.com/alvaro-francisco-gil/mentor-eval" target="_blank">
+                    <i class="fab fa-github"></i> GitHub Repository
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
