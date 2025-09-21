@@ -69,6 +69,12 @@ jobs:
         echo "Runs directory:"
         ls -la deploy/runs/
         
+        # Ensure deploy directory is not empty
+        echo "Checking deploy directory contents:"
+        find deploy/ -type f | head -10
+        echo "Deploy directory size:"
+        du -sh deploy/
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
