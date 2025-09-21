@@ -1,6 +1,6 @@
 {
   "run_id": 2,
-  "status": "running",
+  "status": "completed",
   "parameters": {
     "model_name": "gpt-4o-mini",
     "training_examples": 0,
