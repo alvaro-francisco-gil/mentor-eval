@@ -1,0 +1,6311 @@
+{
+  "run_info": {
+    "run_id": 5,
+    "model_name": "gpt-4o-mini",
+    "task_name": "mentoreval",
+    "timestamp": "2025-09-21T16:09:28.068551",
+    "status": "completed"
+  },
+  "metrics_summary": {
+    "mentoreval_ptasag2018_ex3": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.03333333333333334,
+        "stderr": 0.03333333333333334
+      },
+      "grade_rmse": {
+        "value": 0.07453559924999299,
+        "stderr": 0.001412510272702377
+      },
+      "pearson_correlation": {
+        "value": 0.9525793444156803,
+        "stderr": 0.009341053188678566
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.00924173259882398
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.09999999999999998,
+        "stderr": 0.0029318433972001052
+      }
+    },
+    "mentoreval_mohler_ex56": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.275,
+        "stderr": 0.024999999999999998
+      },
+      "grade_rmse": {
+        "value": 0.2795084971874737,
+        "stderr": 0.0007962836261043292
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.1,
+        "stderr": 0.0029318433972000827
+      }
+    },
+    "mentoreval_ellipse_ex37": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021321926681405023
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_arasag_ex25": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.08000000000000002
+      },
+      "grade_rmse": {
+        "value": 0.20000000000000004,
+        "stderr": 0.002611592200740608
+      },
+      "pearson_correlation": {
+        "value": 0.9185586535436918,
+        "stderr": 0.009743803972996326
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.009541926313606864
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005146887452669875
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.01130121575218689
+      }
+    },
+    "mentoreval_arasag_ex43": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.039999999999999994,
+        "stderr": 0.039999999999999994
+      },
+      "grade_rmse": {
+        "value": 0.08944271909999157,
+        "stderr": 0.001695012327242865
+      },
+      "pearson_correlation": {
+        "value": 0.9185586535436919,
+        "stderr": 0.008748049921657891
+      },
+      "spearman_correlation": {
+        "value": 0.968245836551854,
+        "stderr": 0.008859251277108295
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      }
+    },
+    "mentoreval_arasag_ex13": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.17999999999999997,
+        "stderr": 0.058309518948452994
+      },
+      "grade_rmse": {
+        "value": 0.2144761058952721,
+        "stderr": 0.0013659944300514605
+      },
+      "pearson_correlation": {
+        "value": 0.5815799980377998,
+        "stderr": 0.010572756337906334
+      },
+      "spearman_correlation": {
+        "value": 0.7499999999999999,
+        "stderr": 0.010899192861654349
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006085924619848533
+      },
+      "wasserstein_distance": {
+        "value": 0.8999999999999999,
+        "stderr": 0.008181004757292294
+      }
+    },
+    "mentoreval_mohler_ex42": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_ellipse_ex22": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.09999999999999998
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.003306170136707906
+      },
+      "pearson_correlation": {
+        "value": 0.21821789023599228,
+        "stderr": 0.018593944527170708
+      },
+      "spearman_correlation": {
+        "value": 0.15214515486254615,
+        "stderr": 0.01874641565971074
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007025946478868456
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.011369178431980844
+      }
+    },
+    "mentoreval_ellipse_ex5": {
+      "exact_grade_match": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999996,
+        "stderr": 0.009233052000787724
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.009233052000787724
+      },
+      "ks_statistic": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 0.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex19": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.32,
+        "stderr": 0.09695359714832656
+      },
+      "grade_rmse": {
+        "value": 0.3741657386773941,
+        "stderr": 0.002164344172150107
+      },
+      "pearson_correlation": {
+        "value": 0.8401680504168058,
+        "stderr": 0.008868095934643857
+      },
+      "spearman_correlation": {
+        "value": 0.8885233166386386,
+        "stderr": 0.008929056519223157
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      },
+      "wasserstein_distance": {
+        "value": 1.5999999999999999,
+        "stderr": 0.013980291790894765
+      }
+    },
+    "mentoreval_mohler_ex24": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.18371173070873834
+      },
+      "grade_rmse": {
+        "value": 0.4743416490252569,
+        "stderr": 0.006462899695026646
+      },
+      "pearson_correlation": {
+        "value": -0.14744195615489714,
+        "stderr": 0.010105344024534894
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.009952813972178442
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007014924744369625
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.020889327514403252
+      }
+    },
+    "mentoreval_mohler_ex49": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.325,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.34003676271838607,
+        "stderr": 0.0015559454737893621
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.3,
+        "stderr": 0.005816080018946343
+      }
+    },
+    "mentoreval_mohler_ex45": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.275,
+        "stderr": 0.024999999999999998
+      },
+      "grade_rmse": {
+        "value": 0.2795084971874737,
+        "stderr": 0.0008026534438791133
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.1,
+        "stderr": 0.0029315839036575773
+      }
+    },
+    "mentoreval_mohler_ex16": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.00210394173684592
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.009080485406365444
+      }
+    },
+    "mentoreval_mohler_ex30": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016529378723416004
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957942,
+        "stderr": 0.012701390479173272
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012701390479173272
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.0046820852108779565
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_mohler_ex22": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.45,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.4609772228646444,
+        "stderr": 0.0012647636924164214
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.8,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_arasag_ex9": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.16000000000000003,
+        "stderr": 0.04000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.1788854381999832,
+        "stderr": 0.0007455857676796601
+      },
+      "pearson_correlation": {
+        "value": -0.1336306209562122,
+        "stderr": 0.011660732119434764
+      },
+      "spearman_correlation": {
+        "value": -0.18633899812498247,
+        "stderr": 0.01198231203237589
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0065605488185669835
+      },
+      "wasserstein_distance": {
+        "value": 0.4000000000000001,
+        "stderr": 0.00840667783563948
+      }
+    },
+    "mentoreval_arasag_ex5": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.11999999999999997,
+        "stderr": 0.04898979485566356
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829665,
+        "stderr": 0.0010936465747644801
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.010041856605342458
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010045759186415943
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005817205504353438
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.007013897258639815
+      }
+    },
+    "mentoreval_mohler_ex80": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.001781919808879767
+      },
+      "pearson_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.014039386244648995
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.012932137899981667
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004701759941399231
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_asap2_ex6": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.039999999999999994,
+        "stderr": 0.039999999999999994
+      },
+      "grade_rmse": {
+        "value": 0.08944271909999157,
+        "stderr": 0.0017308647789987398
+      },
+      "pearson_correlation": {
+        "value": 0.8728715609439693,
+        "stderr": 0.008967287925991508
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.00909920387124278
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005863167807315155
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.0058631678073151556
+      }
+    },
+    "mentoreval_ellipse_ex36": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.09354143466934853
+      },
+      "grade_rmse": {
+        "value": 0.3535533905932738,
+        "stderr": 0.0022027020458832806
+      },
+      "pearson_correlation": {
+        "value": 0.3273268353539885,
+        "stderr": 0.013968595392348395
+      },
+      "spearman_correlation": {
+        "value": 0.3042903097250923,
+        "stderr": 0.014085165859141309
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005836171767597401
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.010449064213743944
+      }
+    },
+    "mentoreval_ellipse_ex15": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.001816303698906101
+      },
+      "pearson_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.009927653097167921
+      },
+      "spearman_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.009927653097167923
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.00710000352465056
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.00710000352465056
+      }
+    },
+    "mentoreval_ellipse_ex42": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012364853127189279
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.016581436968483368
+      },
+      "spearman_correlation": {
+        "value": 0.49999999999999994,
+        "stderr": 0.0161156320892137
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0056537956635702375
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.00744045162072304
+      }
+    },
+    "mentoreval_ellipse_ex10": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.0020595642228903996
+      },
+      "pearson_correlation": {
+        "value": -0.24999999999999997,
+        "stderr": 0.007135068780199016
+      },
+      "spearman_correlation": {
+        "value": -0.25,
+        "stderr": 0.007135068780199021
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.008849184599050253
+      }
+    },
+    "mentoreval_arasag_ex47": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24,
+        "stderr": 0.04000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.25298221281347033,
+        "stderr": 0.001323689088463146
+      },
+      "pearson_correlation": {
+        "value": 0.8277381083047036,
+        "stderr": 0.00926475778411456
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.009439992852112656
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005427929846858939
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_ellipse_ex2": {
+      "exact_grade_match": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999996,
+        "stderr": 0.009406619184621238
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.009406619184621242
+      },
+      "ks_statistic": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 0.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex31": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24,
+        "stderr": 0.04000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.2529822128134704,
+        "stderr": 0.0013152578798813581
+      },
+      "pearson_correlation": {
+        "value": -0.10206207261596575,
+        "stderr": 0.015184888724377014
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.015353465211262844
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006165667478501874
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.009703306351659443
+      }
+    },
+    "mentoreval_mohler_ex26": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016784908552602202
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.01477082181793465
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.01477082181793465
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004701759941399231
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_arasag_ex34": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.18,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.20493901531919198,
+        "stderr": 0.0010122537591320724
+      },
+      "pearson_correlation": {
+        "value": 0.7857142857142858,
+        "stderr": 0.013642828906206614
+      },
+      "spearman_correlation": {
+        "value": 0.6488856845230502,
+        "stderr": 0.013977141572464324
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005471831589234158
+      },
+      "wasserstein_distance": {
+        "value": 0.9,
+        "stderr": 0.006911242672289511
+      }
+    },
+    "mentoreval_arasag_ex4": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.17888543819998318,
+        "stderr": 0.0006977555008837247
+      },
+      "pearson_correlation": {
+        "value": 0.7905694150420947,
+        "stderr": 0.01373232112360517
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013749143797227558
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005994338336471511
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_mohler_ex32": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.01480686473373886
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.01480686473373886
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004873971234588455
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_ellipse_ex12": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012364853127189279
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0068794743379975406
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_ellipse_ex39": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0013320624763687864
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007028541840268154
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ptasag2018_ex14": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.08164965809277261
+      },
+      "grade_rmse": {
+        "value": 0.25819888974716115,
+        "stderr": 0.0018227442912741249
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.010194617336388096
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010169774994624358
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005868782037407959
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.007013897258639815
+      }
+    },
+    "mentoreval_mohler_ex64": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex24": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.16000000000000003,
+        "stderr": 0.07483314773547883
+      },
+      "grade_rmse": {
+        "value": 0.2190890230020665,
+        "stderr": 0.002053183705274902
+      },
+      "pearson_correlation": {
+        "value": 0.8846517369293829,
+        "stderr": 0.01401514696723446
+      },
+      "spearman_correlation": {
+        "value": 0.7254762501100117,
+        "stderr": 0.01283145437601181
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007002859418840268
+      },
+      "wasserstein_distance": {
+        "value": 0.7999999999999999,
+        "stderr": 0.010932454370293929
+      }
+    },
+    "mentoreval_asap2_ex2": {
+      "exact_grade_match": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999994,
+        "stderr": 0.00961683333969578
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.00961683333969578
+      },
+      "ks_statistic": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 0.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_ellipse_ex21": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012642615285569313
+      },
+      "pearson_correlation": {
+        "value": 0.3273268353539885,
+        "stderr": 0.013377755409149324
+      },
+      "spearman_correlation": {
+        "value": 0.3042903097250923,
+        "stderr": 0.013581848642181177
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005516636046838048
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.007469151774346838
+      }
+    },
+    "mentoreval_ellipse_ex24": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021321926681405023
+      },
+      "pearson_correlation": {
+        "value": 0.8728715609439693,
+        "stderr": 0.008984226994021752
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.009110640720908298
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_mohler_ex51": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex41": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24,
+        "stderr": 0.050990195135927834
+      },
+      "grade_rmse": {
+        "value": 0.260768096208106,
+        "stderr": 0.00145884014878985
+      },
+      "pearson_correlation": {
+        "value": 0.9128709291752768,
+        "stderr": 0.006481801831746224
+      },
+      "spearman_correlation": {
+        "value": 0.892217816219194,
+        "stderr": 0.006471713030938949
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.004722293940455228
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.007220843481240975
+      }
+    },
+    "mentoreval_arasag_ex26": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.31999999999999995,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.33466401061363027,
+        "stderr": 0.0013232266053858225
+      },
+      "pearson_correlation": {
+        "value": 0.7637626158259732,
+        "stderr": 0.009330056518929618
+      },
+      "spearman_correlation": {
+        "value": 0.7607257743127308,
+        "stderr": 0.009359230147684859
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004391565307022716
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.0071000035246505605
+      }
+    },
+    "mentoreval_ptasag2018_ex10": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.13333333333333333,
+        "stderr": 0.0816496580927726
+      },
+      "grade_rmse": {
+        "value": 0.21081851067789195,
+        "stderr": 0.0023402979524032898
+      },
+      "pearson_correlation": {
+        "value": 0.4082482904638631,
+        "stderr": 0.009707374298973894
+      },
+      "spearman_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.009707374298973894
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0068794743379975406
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.006879474337997541
+      }
+    },
+    "mentoreval_ellipse_ex9": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.0021382538205516
+      },
+      "pearson_correlation": {
+        "value": 0.75,
+        "stderr": 0.012410819941618774
+      },
+      "spearman_correlation": {
+        "value": 0.75,
+        "stderr": 0.013135847306746738
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005183464894094311
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.009191001823224411
+      }
+    },
+    "mentoreval_ptasag2018_ex7": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2333333333333333,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.26874192494328497,
+        "stderr": 0.00140151311690707
+      },
+      "pearson_correlation": {
+        "value": 0.443202630213959,
+        "stderr": 0.018634773765394866
+      },
+      "spearman_correlation": {
+        "value": 0.5407380704358752,
+        "stderr": 0.018218198580289342
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0065423116588742645
+      },
+      "wasserstein_distance": {
+        "value": 0.30000000000000004,
+        "stderr": 0.007461074160442849
+      }
+    },
+    "mentoreval_asap_ex7": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.2833333333333333,
+        "stderr": 0.02041241452319316
+      },
+      "grade_rmse": {
+        "value": 0.2862594006219611,
+        "stderr": 0.0006052262713487929
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 3.4,
+        "stderr": 0.007123897101299971
+      }
+    },
+    "mentoreval_mohler_ex31": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016546113605789296
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_arasag_ex20": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.08000000000000002
+      },
+      "grade_rmse": {
+        "value": 0.2,
+        "stderr": 0.002620139341475748
+      },
+      "pearson_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013562174640580902
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013579912094115628
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0055693678149191725
+      },
+      "wasserstein_distance": {
+        "value": 0.5999999999999999,
+        "stderr": 0.01161265920682482
+      }
+    },
+    "mentoreval_mohler_ex78": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.375,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.40697051490249264,
+        "stderr": 0.001958704674592933
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.5,
+        "stderr": 0.008993671448642448
+      }
+    },
+    "mentoreval_mohler_ex68": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex15": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.0632455532033676
+      },
+      "grade_rmse": {
+        "value": 0.23664319132398468,
+        "stderr": 0.0017407124072359626
+      },
+      "pearson_correlation": {
+        "value": 0.9547859244962513,
+        "stderr": 0.009139629758576791
+      },
+      "spearman_correlation": {
+        "value": 0.8885233166386386,
+        "stderr": 0.008723114560036369
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005401723671071894
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.009342732290216114
+      }
+    },
+    "mentoreval_arasag_ex28": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.11999999999999997,
+        "stderr": 0.04898979485566355
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829662,
+        "stderr": 0.0010612020494021818
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999996,
+        "stderr": 0.009233052000787724
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.009233052000787724
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007045330132554245
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.007045330132554245
+      }
+    },
+    "mentoreval_mohler_ex54": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.5,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.5244044240850758,
+        "stderr": 0.002252362980610183
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 2.0,
+        "stderr": 0.009158812359899309
+      }
+    },
+    "mentoreval_arasag_ex29": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.040000000000000015,
+        "stderr": 0.04000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.08944271909999162,
+        "stderr": 0.0016950123272428653
+      },
+      "pearson_correlation": {
+        "value": 0.8451542547285165,
+        "stderr": 0.009515309536359278
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.009521070016131557
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.20000000000000007,
+        "stderr": 0.0058636867944002104
+      }
+    },
+    "mentoreval_mohler_ex34": {
+      "exact_grade_match": {
+        "value": 0.25,
+        "stderr": 0.25
+      },
+      "grade_mae": {
+        "value": 0.3125,
+        "stderr": 0.11967838846954226
+      },
+      "grade_rmse": {
+        "value": 0.375,
+        "stderr": 0.002766685463170142
+      },
+      "pearson_correlation": {
+        "value": 0.33333333333333326,
+        "stderr": 0.00933553673706022
+      },
+      "spearman_correlation": {
+        "value": 0.3333333333333333,
+        "stderr": 0.009335536737060219
+      },
+      "ks_statistic": {
+        "value": 0.75,
+        "stderr": 0.007149374171985319
+      },
+      "wasserstein_distance": {
+        "value": 1.25,
+        "stderr": 0.013454777256834447
+      }
+    },
+    "mentoreval_asap_ex2": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.046770717334674264
+      },
+      "grade_rmse": {
+        "value": 0.1767766952966369,
+        "stderr": 0.0011300873893023812
+      },
+      "pearson_correlation": {
+        "value": 0.9699253622487317,
+        "stderr": 0.005336215591627642
+      },
+      "spearman_correlation": {
+        "value": 0.9473684210526317,
+        "stderr": 0.005537979906229673
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0051716637657630024
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.010733870503037339
+      }
+    },
+    "mentoreval_arasag_ex14": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.20000000000000004,
+        "stderr": 0.0632455532033676
+      },
+      "grade_rmse": {
+        "value": 0.23664319132398468,
+        "stderr": 0.0016614233249369087
+      },
+      "pearson_correlation": {
+        "value": 0.8987170342729173,
+        "stderr": 0.006728008965432282
+      },
+      "spearman_correlation": {
+        "value": 0.892217816219194,
+        "stderr": 0.0067235313450875545
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005619913115291351
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.00908048540636544
+      }
+    },
+    "mentoreval_ellipse_ex40": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021327996114492076
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_arasag_ex11": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.26,
+        "stderr": 0.10770329614269007
+      },
+      "grade_rmse": {
+        "value": 0.33763886032268264,
+        "stderr": 0.00309299693838725
+      },
+      "pearson_correlation": {
+        "value": 0.8427498280790526,
+        "stderr": 0.006690855576717941
+      },
+      "spearman_correlation": {
+        "value": 0.892217816219194,
+        "stderr": 0.006720104739529189
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005459821393566756
+      },
+      "wasserstein_distance": {
+        "value": 1.3,
+        "stderr": 0.015526593802734556
+      }
+    },
+    "mentoreval_mohler_ex48": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.001806312684476465
+      },
+      "pearson_correlation": {
+        "value": 0.40824829046386296,
+        "stderr": 0.009671893964366844
+      },
+      "spearman_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.009671893964366844
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004177133999340755
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_mohler_ex8": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016784908552602202
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_arasag_ex21": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.11999999999999997,
+        "stderr": 0.04898979485566356
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829665,
+        "stderr": 0.0010656499810950235
+      },
+      "pearson_correlation": {
+        "value": 0.9799578870122225,
+        "stderr": 0.005086226170849998
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.005128089049275288
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005893957816165535
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_mohler_ex40": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016546113605789296
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_ptasag2018_ex5": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.033333333333333326,
+        "stderr": 0.033333333333333326
+      },
+      "grade_rmse": {
+        "value": 0.07453559924999298,
+        "stderr": 0.001412510272702377
+      },
+      "pearson_correlation": {
+        "value": 0.978279740156158,
+        "stderr": 0.004955078331166139
+      },
+      "spearman_correlation": {
+        "value": 0.9733285267845753,
+        "stderr": 0.005156427715559501
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.10000000000000003,
+        "stderr": 0.0029318433972001052
+      }
+    },
+    "mentoreval_ellipse_ex38": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.19364916731037082
+      },
+      "grade_rmse": {
+        "value": 0.4609772228646444,
+        "stderr": 0.007249555807836147
+      },
+      "pearson_correlation": {
+        "value": 1.0253275863509303e-17,
+        "stderr": 0.012214819600824715
+      },
+      "spearman_correlation": {
+        "value": 0.18633899812498247,
+        "stderr": 0.011933373387426303
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0068794743379975406
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.016511401708709822
+      }
+    },
+    "mentoreval_mohler_ex13": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0018156381575132599
+      },
+      "pearson_correlation": {
+        "value": 0.9128709291752767,
+        "stderr": 0.008978629021768748
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.00908451543952536
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007002859418840268
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007002859418840268
+      }
+    },
+    "mentoreval_arasag_ex36": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000004,
+        "stderr": 0.04898979485566358
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829673,
+        "stderr": 0.0010667543883400488
+      },
+      "pearson_correlation": {
+        "value": 0.25,
+        "stderr": 0.007065250221648443
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.007065250221648443
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007087487035083177
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.007087487035083177
+      }
+    },
+    "mentoreval_mohler_ex55": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021327996114492076
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_mohler_ex43": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3125,
+        "stderr": 0.0625
+      },
+      "grade_rmse": {
+        "value": 0.33071891388307384,
+        "stderr": 0.0019363658968655968
+      },
+      "pearson_correlation": {
+        "value": 0.8164965809277258,
+        "stderr": 0.013875076708171966
+      },
+      "spearman_correlation": {
+        "value": 0.8164965809277261,
+        "stderr": 0.013850282896451224
+      },
+      "ks_statistic": {
+        "value": 0.75,
+        "stderr": 0.005665866177341247
+      },
+      "wasserstein_distance": {
+        "value": 1.25,
+        "stderr": 0.0069211742249890235
+      }
+    },
+    "mentoreval_mohler_ex47": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0016540332567322852
+      },
+      "pearson_correlation": {
+        "value": 0.8017837257372731,
+        "stderr": 0.008687579243277775
+      },
+      "spearman_correlation": {
+        "value": 0.8838834764831843,
+        "stderr": 0.008882606933048352
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.004567540084380493
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.007100003524650561
+      }
+    },
+    "mentoreval_mohler_ex69": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0015896037768123406
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_mohler_ex74": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0016176704215493483
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.0070028594188402665
+      }
+    },
+    "mentoreval_ellipse_ex1": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.09354143466934853
+      },
+      "grade_rmse": {
+        "value": 0.27386127875258304,
+        "stderr": 0.0025963695655261266
+      },
+      "pearson_correlation": {
+        "value": 3.867427047524801e-18,
+        "stderr": 0.009724374659473848
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.009869109687151332
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.00710000352465056
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010715935389468871
+      }
+    },
+    "mentoreval_ellipse_ex29": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012642615285569313
+      },
+      "pearson_correlation": {
+        "value": -0.4082482904638629,
+        "stderr": 0.009874329218118273
+      },
+      "spearman_correlation": {
+        "value": -0.408248290463863,
+        "stderr": 0.009874329218118283
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.007492616318703366
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.0074926163187033655
+      }
+    },
+    "mentoreval_ellipse_ex28": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008721943761046542
+      },
+      "pearson_correlation": {
+        "value": 0.8728715609439694,
+        "stderr": 0.008633134653006358
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.008757443089499602
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005201062492515468
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_asap_ex4": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.13333333333333333,
+        "stderr": 0.0816496580927726
+      },
+      "grade_rmse": {
+        "value": 0.21081851067789195,
+        "stderr": 0.0023402979524032898
+      },
+      "pearson_correlation": {
+        "value": 0.801783725737273,
+        "stderr": 0.01325559581371401
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.013091935974050605
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0068794743379975406
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_mohler_ex44": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008277609206109386
+      },
+      "pearson_correlation": {
+        "value": 0.9185586535436916,
+        "stderr": 0.009365177914026091
+      },
+      "spearman_correlation": {
+        "value": 0.9682458365518541,
+        "stderr": 0.00946914019369141
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005981285461819745
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_asap2_ex4": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 1.2412670766236365e-17
+      },
+      "grade_rmse": {
+        "value": 0.2,
+        "stderr": 1.1824053780949117e-18
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004899796731294889
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_mohler_ex1": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016529378723416004
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957944,
+        "stderr": 0.012542226043309273
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012542226043309273
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.0049265109875560285
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_mohler_ex27": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017660347086710716
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.009920164654061108
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.009930925561399654
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0054488650313739605
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ellipse_ex8": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021327996114492076
+      },
+      "pearson_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013515775006240443
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013519628029999859
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_mohler_ex65": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_mohler_ex29": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016529378723416004
+      },
+      "pearson_correlation": {
+        "value": 0.8750000000000001,
+        "stderr": 0.013725833831248294
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013453206542623131
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004701759941399231
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_arasag_ex16": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.1549193338482967,
+        "stderr": 0.0010645012894885274
+      },
+      "pearson_correlation": {
+        "value": 0.3750000000000001,
+        "stderr": 0.0092272229147922
+      },
+      "spearman_correlation": {
+        "value": 0.3952847075210474,
+        "stderr": 0.009301816533393287
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006025358490989969
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.0071238971012999785
+      }
+    },
+    "mentoreval_ellipse_ex33": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.00136607485737918
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679026,
+        "stderr": 0.010273417859857116
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010278855121717693
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006000463779206162
+      },
+      "wasserstein_distance": {
+        "value": 0.5999999999999999,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_mohler_ex66": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.0018139158312711202
+      },
+      "pearson_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.014022164792120565
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.012859599848227108
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004701759941399231
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_asap2_ex3": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.1788854381999832,
+        "stderr": 0.0007455857676796599
+      },
+      "pearson_correlation": {
+        "value": 0.4564354645876384,
+        "stderr": 0.014168364561312539
+      },
+      "spearman_correlation": {
+        "value": 0.45643546458763845,
+        "stderr": 0.014523461540823674
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006186682069981868
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.008077281874645873
+      }
+    },
+    "mentoreval_mohler_ex77": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.0018191193830049029
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.00704533013255425
+      }
+    },
+    "mentoreval_ellipse_ex27": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017855120828152234
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.010166297175517444
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010163613409606673
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0055464874942186
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.007013897258639816
+      }
+    },
+    "mentoreval_ellipse_ex31": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.001834448923281516
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.010288733324753987
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.01027179572273354
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00535128734757122
+      },
+      "wasserstein_distance": {
+        "value": 0.4000000000000001,
+        "stderr": 0.007014924744369625
+      }
+    },
+    "mentoreval_ptasag2018_ex15": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.06666666666666668,
+        "stderr": 0.06666666666666668
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998599,
+        "stderr": 0.0028429235575206696
+      },
+      "pearson_correlation": {
+        "value": 0.9630868246861538,
+        "stderr": 0.008796176217681993
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.008757443089499602
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_ellipse_ex7": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017930147971009689
+      },
+      "pearson_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.009549485586242589
+      },
+      "spearman_correlation": {
+        "value": 0.408248290463863,
+        "stderr": 0.00954948558624259
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007087487035083177
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007087487035083177
+      }
+    },
+    "mentoreval_ptasag2018_ex6": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.16666666666666666,
+        "stderr": 2.2377260456559048e-17
+      },
+      "grade_rmse": {
+        "value": 0.16666666666666669,
+        "stderr": 1.4943997049170715e-18
+      },
+      "pearson_correlation": {
+        "value": 0.24999999999999994,
+        "stderr": 0.007115045421634175
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634176
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005403706139312202
+      },
+      "wasserstein_distance": {
+        "value": 0.5,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_mohler_ex53": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.0020595642228903996
+      },
+      "pearson_correlation": {
+        "value": 0.1666666666666666,
+        "stderr": 0.014602583545286183
+      },
+      "spearman_correlation": {
+        "value": 0.16666666666666669,
+        "stderr": 0.014602583545286188
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.00594131797324963
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.008849184599050253
+      }
+    },
+    "mentoreval_mohler_ex59": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.0020767791561711493
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005863167807315155
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.009080485406365444
+      }
+    },
+    "mentoreval_mohler_ex62": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016992190273154956
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863167807315155
+      }
+    },
+    "mentoreval_ptasag2018_ex2": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.2666666666666666,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.29814239699997197,
+        "stderr": 0.0021302657769550894
+      },
+      "pearson_correlation": {
+        "value": 0.21821789023599228,
+        "stderr": 0.01881181632978629
+      },
+      "spearman_correlation": {
+        "value": 0.35355339059327373,
+        "stderr": 0.019458370974188566
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.004825209077609247
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.005085210848073962
+      }
+    },
+    "mentoreval_asap_ex6": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021187654090535774
+      },
+      "pearson_correlation": {
+        "value": 0.6666666666666665,
+        "stderr": 0.01079883969061426
+      },
+      "spearman_correlation": {
+        "value": 0.6666666666666667,
+        "stderr": 0.01079883969061426
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.005863686794400211
+      }
+    },
+    "mentoreval_arasag_ex22": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.07348469228349536
+      },
+      "grade_rmse": {
+        "value": 0.18973665961010278,
+        "stderr": 0.002573299032483048
+      },
+      "pearson_correlation": {
+        "value": 0.8478260869565218,
+        "stderr": 0.006786774355752009
+      },
+      "spearman_correlation": {
+        "value": 0.892217816219194,
+        "stderr": 0.006752247463317769
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.004840254958994198
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.010312909681855333
+      }
+    },
+    "mentoreval_arasag_ex10": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.07999999999999999,
+        "stderr": 0.04898979485566355
+      },
+      "grade_rmse": {
+        "value": 0.12649110640673514,
+        "stderr": 0.0014387420119275607
+      },
+      "pearson_correlation": {
+        "value": 0.8017837257372731,
+        "stderr": 0.01324565008891568
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.013095852435346621
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007025946478868456
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_mohler_ex20": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex33": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.0812403840463596
+      },
+      "grade_rmse": {
+        "value": 0.2280350850198276,
+        "stderr": 0.0022832412789931178
+      },
+      "pearson_correlation": {
+        "value": -0.3202563076101742,
+        "stderr": 0.016501203069890235
+      },
+      "spearman_correlation": {
+        "value": -0.2961744388795462,
+        "stderr": 0.017894346730598584
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0058748202962741
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.009703058246725087
+      }
+    },
+    "mentoreval_mohler_ex11": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016546113605789296
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_arasag_ex12": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.19999999999999998,
+        "stderr": 0.05477225575051659
+      },
+      "grade_rmse": {
+        "value": 0.22803508501982755,
+        "stderr": 0.0011886374251164986
+      },
+      "pearson_correlation": {
+        "value": 0.3563483225498991,
+        "stderr": 0.01702984910724849
+      },
+      "spearman_correlation": {
+        "value": 0.47222222222222227,
+        "stderr": 0.01715086591421842
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005189621582752626
+      },
+      "wasserstein_distance": {
+        "value": 0.7999999999999999,
+        "stderr": 0.008107286111152627
+      }
+    },
+    "mentoreval_mohler_ex5": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.03061862178478972
+      },
+      "grade_rmse": {
+        "value": 0.2091650066335189,
+        "stderr": 0.0008220605098759274
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.0035069486293199054
+      }
+    },
+    "mentoreval_mohler_ex6": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016546113605789296
+      },
+      "pearson_correlation": {
+        "value": 0.8277381083047037,
+        "stderr": 0.009531478104877944
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.009736440412593483
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005517739160693028
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_arasag_ex27": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.07999999999999999,
+        "stderr": 0.04898979485566356
+      },
+      "grade_rmse": {
+        "value": 0.12649110640673517,
+        "stderr": 0.0014041787714419692
+      },
+      "pearson_correlation": {
+        "value": 0.9583727150068315,
+        "stderr": 0.014702169636217394
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013679749356608263
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005146887452669875
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_ellipse_ex13": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.19364916731037082
+      },
+      "grade_rmse": {
+        "value": 0.4609772228646444,
+        "stderr": 0.007280896462058703
+      },
+      "pearson_correlation": {
+        "value": 0.24999999999999997,
+        "stderr": 0.006961836166186349
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.006961836166186349
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0055464874942186
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.017003532577676922
+      }
+    },
+    "mentoreval_ellipse_ex19": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017984275149094473
+      },
+      "pearson_correlation": {
+        "value": 0.7637626158259732,
+        "stderr": 0.009528826824049447
+      },
+      "spearman_correlation": {
+        "value": 0.7607257743127308,
+        "stderr": 0.009565277599189567
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0052633509158009715
+      },
+      "wasserstein_distance": {
+        "value": 0.3999999999999999,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_asap2_ex7": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829668,
+        "stderr": 0.0010656499810950233
+      },
+      "pearson_correlation": {
+        "value": 0.4082482904638629,
+        "stderr": 0.015606010702200678
+      },
+      "spearman_correlation": {
+        "value": 0.3227486121839514,
+        "stderr": 0.01557093218954816
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005450922174508841
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.007420446281930979
+      }
+    },
+    "mentoreval_ellipse_ex16": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008456482521595298
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005367622506414857
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      }
+    },
+    "mentoreval_mohler_ex18": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0009319822095995696
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957944,
+        "stderr": 0.01246503707255166
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.01246503707255166
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006124497487097967
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_arasag_ex23": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.1788854381999832,
+        "stderr": 0.0006765186017276289
+      },
+      "pearson_correlation": {
+        "value": 0.686406472983644,
+        "stderr": 0.012559139249362791
+      },
+      "spearman_correlation": {
+        "value": 0.7254762501100117,
+        "stderr": 0.012837882725824623
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.0051984097052332635
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      }
+    },
+    "mentoreval_mohler_ex38": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999999,
+        "stderr": 0.014888272588203934
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.014888272588203934
+      },
+      "ks_statistic": {
+        "value": 0.6666666666666666,
+        "stderr": 0.004962757529401216
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex37": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829668,
+        "stderr": 0.001065649981095024
+      },
+      "pearson_correlation": {
+        "value": 0.375,
+        "stderr": 0.009173307057938085
+      },
+      "spearman_correlation": {
+        "value": 0.3952847075210474,
+        "stderr": 0.009251666073203609
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005937492215894978
+      },
+      "wasserstein_distance": {
+        "value": 0.5999999999999999,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ellipse_ex3": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021635809737484157
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957942,
+        "stderr": 0.012479031504335731
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012479031504335731
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005863167807315155
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005863167807315155
+      }
+    },
+    "mentoreval_mohler_ex72": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.325,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.34003676271838607,
+        "stderr": 0.0015322298708243965
+      },
+      "pearson_correlation": {
+        "value": 0.5590169943749475,
+        "stderr": 0.011313790375999984
+      },
+      "spearman_correlation": {
+        "value": 0.5590169943749473,
+        "stderr": 0.011182413829851929
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004067478873256046
+      },
+      "wasserstein_distance": {
+        "value": 1.3,
+        "stderr": 0.005650607876093445
+      }
+    },
+    "mentoreval_mohler_ex60": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_mohler_ex46": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex6": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24000000000000005,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.2529822128134704,
+        "stderr": 0.0013427926842081665
+      },
+      "pearson_correlation": {
+        "value": 0.922224668326776,
+        "stderr": 0.005153771576064548
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.00521950603441004
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.004722293940455228
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_arasag_ex46": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.0632455532033676
+      },
+      "grade_rmse": {
+        "value": 0.23664319132398468,
+        "stderr": 0.001710603056441274
+      },
+      "pearson_correlation": {
+        "value": 0.9190182776172596,
+        "stderr": 0.008353897486906117
+      },
+      "spearman_correlation": {
+        "value": 0.9176629354822471,
+        "stderr": 0.008481322812400141
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005171338583262821
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.009191001823224411
+      }
+    },
+    "mentoreval_arasag_ex32": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15999999999999998,
+        "stderr": 0.07483314773547882
+      },
+      "grade_rmse": {
+        "value": 0.21908902300206645,
+        "stderr": 0.0020826373859315415
+      },
+      "pearson_correlation": {
+        "value": -0.408248290463863,
+        "stderr": 0.009843550622188071
+      },
+      "spearman_correlation": {
+        "value": -0.408248290463863,
+        "stderr": 0.009843550622188071
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007087487035083177
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010752656398286922
+      }
+    },
+    "mentoreval_mohler_ex70": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4166666666666667,
+        "stderr": 0.08333333333333333
+      },
+      "grade_rmse": {
+        "value": 0.4330127018922193,
+        "stderr": 0.001989260166787858
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999999,
+        "stderr": 0.014888272588203934
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.014888272588203934
+      },
+      "ks_statistic": {
+        "value": 0.6666666666666666,
+        "stderr": 0.004962757529401216
+      },
+      "wasserstein_distance": {
+        "value": 1.6666666666666667,
+        "stderr": 0.008657241865953338
+      }
+    },
+    "mentoreval_arasag_ex30": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.08,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.1264911064067352,
+        "stderr": 0.0014284096662521726
+      },
+      "pearson_correlation": {
+        "value": 0.8675276172357089,
+        "stderr": 0.011422953350781863
+      },
+      "spearman_correlation": {
+        "value": 0.7499999999999999,
+        "stderr": 0.010899192861654349
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0055464874942186
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.007013897258639816
+      }
+    },
+    "mentoreval_mohler_ex58": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012364853127189279
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0068794743379975406
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_mohler_ex17": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.09354143466934853
+      },
+      "grade_rmse": {
+        "value": 0.27386127875258304,
+        "stderr": 0.0026716173349989017
+      },
+      "pearson_correlation": {
+        "value": 0.7717436331412897,
+        "stderr": 0.01755030838457853
+      },
+      "spearman_correlation": {
+        "value": 0.49999999999999994,
+        "stderr": 0.01665985298185744
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007025946478868456
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.01086650454014169
+      }
+    },
+    "mentoreval_mohler_ex52": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017855120828152234
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007013897258639816
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007013897258639816
+      }
+    },
+    "mentoreval_arasag_ex2": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829668,
+        "stderr": 0.0010656499810950237
+      },
+      "pearson_correlation": {
+        "value": 0.6666666666666665,
+        "stderr": 0.010509518837561889
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010177177305019935
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.004810062026283735
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_mohler_ex10": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.09354143466934853
+      },
+      "grade_rmse": {
+        "value": 0.27386127875258304,
+        "stderr": 0.002575461763178216
+      },
+      "pearson_correlation": {
+        "value": 0.3273268353539885,
+        "stderr": 0.013556723619711542
+      },
+      "spearman_correlation": {
+        "value": 0.3042903097250923,
+        "stderr": 0.013681905101560275
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006354615735128368
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010664997992601002
+      }
+    },
+    "mentoreval_mohler_ex36": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016784908552602202
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_mohler_ex25": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0016438204913486586
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_mohler_ex28": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.001806312684476465
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ellipse_ex30": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.001330626611860659
+      },
+      "pearson_correlation": {
+        "value": 0.7905694150420947,
+        "stderr": 0.013473811168152284
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.0134795306448264
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0071238971012999785
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.0071238971012999785
+      }
+    },
+    "mentoreval_ptasag2018_ex4": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.13333333333333333,
+        "stderr": 0.0816496580927726
+      },
+      "grade_rmse": {
+        "value": 0.21081851067789195,
+        "stderr": 0.0023979033532125996
+      },
+      "pearson_correlation": {
+        "value": 0.16666666666666663,
+        "stderr": 0.014602583545286181
+      },
+      "spearman_correlation": {
+        "value": 0.16666666666666669,
+        "stderr": 0.014602583545286188
+      },
+      "ks_statistic": {
+        "value": 0.0,
+        "stderr": 0.005638122775217669
+      },
+      "wasserstein_distance": {
+        "value": 0.0,
+        "stderr": 0.005638122775217669
+      }
+    },
+    "mentoreval_mohler_ex9": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.0018431064227601077
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.0071238971012999785
+      }
+    },
+    "mentoreval_mohler_ex81": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.475,
+        "stderr": 0.024999999999999998
+      },
+      "grade_rmse": {
+        "value": 0.47762432936357,
+        "stderr": 0.0006612288015309328
+      },
+      "pearson_correlation": {
+        "value": 0.9185586535436918,
+        "stderr": 0.014462026011440464
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013678730521115035
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004788537364382791
+      },
+      "wasserstein_distance": {
+        "value": 1.9000000000000001,
+        "stderr": 0.0028398635222180663
+      }
+    },
+    "mentoreval_mohler_ex76": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016546113605789296
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005679727044436138
+      }
+    },
+    "mentoreval_mohler_ex35": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999999,
+        "stderr": 0.015019206922356951
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.015019206922356951
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004899796731294889
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_mohler_ex63": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008721943761046542
+      },
+      "pearson_correlation": {
+        "value": 0.9999999999999996,
+        "stderr": 0.01507060460376841
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.01507060460376841
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_arasag_ex42": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.31999999999999995,
+        "stderr": 0.04898979485566356
+      },
+      "grade_rmse": {
+        "value": 0.33466401061363027,
+        "stderr": 0.0013150769299322628
+      },
+      "pearson_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634175
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634176
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.003573767173699475
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_arasag_ex1": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.08,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.1264911064067352,
+        "stderr": 0.0014325550771698958
+      },
+      "pearson_correlation": {
+        "value": 0.9882117688026186,
+        "stderr": 0.008626114489473414
+      },
+      "spearman_correlation": {
+        "value": 0.9999999999999999,
+        "stderr": 0.00868051561552375
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005303516502028363
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007045330132554245
+      }
+    },
+    "mentoreval_mohler_ex75": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0016540332567322852
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.009406619184621242
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.009406619184621242
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0042206935750246245
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.007100003524650562
+      }
+    },
+    "mentoreval_mohler_ex73": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016992190273154956
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863167807315155
+      }
+    },
+    "mentoreval_mohler_ex7": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.16955824957813168
+      },
+      "grade_rmse": {
+        "value": 0.48733971724044817,
+        "stderr": 0.006058597402503544
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 1.4000000000000001,
+        "stderr": 0.019766516009533747
+      }
+    },
+    "mentoreval_ellipse_ex4": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.001834448923281516
+      },
+      "pearson_correlation": {
+        "value": 0.7857142857142856,
+        "stderr": 0.007111643375784629
+      },
+      "spearman_correlation": {
+        "value": 0.8055555555555555,
+        "stderr": 0.007207755730464091
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00535128734757122
+      },
+      "wasserstein_distance": {
+        "value": 0.4000000000000001,
+        "stderr": 0.007014924744369625
+      }
+    },
+    "mentoreval_arasag_ex40": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24000000000000005,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.2529822128134704,
+        "stderr": 0.0013223502978732843
+      },
+      "pearson_correlation": {
+        "value": 0.5601120336112039,
+        "stderr": 0.009923247300315888
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.010433440202042699
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005353561489384463
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_mohler_ex57": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.4,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.4183300132670378,
+        "stderr": 0.0016280007064075857
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.007014924744369625
+      }
+    },
+    "mentoreval_asap_ex1": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.24000000000000005,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.2529822128134704,
+        "stderr": 0.0013593752218523866
+      },
+      "pearson_correlation": {
+        "value": -0.10206207261596571,
+        "stderr": 0.015238233929313248
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.015361509707796112
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006343595289833814
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010146551754784055
+      }
+    },
+    "mentoreval_arasag_ex35": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.0632455532033676
+      },
+      "grade_rmse": {
+        "value": 0.23664319132398465,
+        "stderr": 0.0016381393505644829
+      },
+      "pearson_correlation": {
+        "value": 0.8660254037844387,
+        "stderr": 0.009446816723866071
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.00937895776567365
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0058360619958683895
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.00892429285730827
+      }
+    },
+    "mentoreval_mohler_ex71": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.5,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.5,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 2.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_ptasag2018_ex13": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.06666666666666667,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998596,
+        "stderr": 0.0028437328152656105
+      },
+      "pearson_correlation": {
+        "value": 0.9432422182837986,
+        "stderr": 0.005086170712318427
+      },
+      "spearman_correlation": {
+        "value": 0.9733285267845754,
+        "stderr": 0.0052274521942184664
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005608516332815261
+      },
+      "wasserstein_distance": {
+        "value": 0.19999999999999996,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_mohler_ex37": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016440723498516827
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012387073969773883
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012387073969773897
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004430303329072103
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005608516332815261
+      }
+    },
+    "mentoreval_ellipse_ex34": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008456482521595298
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957946,
+        "stderr": 0.012290642718652125
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012290642718652125
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0060175219626164116
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      }
+    },
+    "mentoreval_arasag_ex48": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.14,
+        "stderr": 0.050990195135927834
+      },
+      "grade_rmse": {
+        "value": 0.17320508075688773,
+        "stderr": 0.0014467787553085127
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.010052349917546046
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.010602427238266068
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006217982253376341
+      },
+      "wasserstein_distance": {
+        "value": 0.5,
+        "stderr": 0.008025083299378429
+      }
+    },
+    "mentoreval_mohler_ex39": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016440723498516827
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005608516332815268
+      }
+    },
+    "mentoreval_ellipse_ex11": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008456482521595298
+      },
+      "pearson_correlation": {
+        "value": 0.6666666666666664,
+        "stderr": 0.010903379752167382
+      },
+      "spearman_correlation": {
+        "value": 0.6666666666666667,
+        "stderr": 0.010903379752167382
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005227474197591664
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      }
+    },
+    "mentoreval_asap_ex8": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.16666666666666666,
+        "stderr": 0.03944053188733078
+      },
+      "grade_rmse": {
+        "value": 0.18439088914585774,
+        "stderr": 0.0011684164699189898
+      },
+      "pearson_correlation": {
+        "value": 0.8156925466796059,
+        "stderr": 0.013451038162421483
+      },
+      "spearman_correlation": {
+        "value": 0.7071067811865475,
+        "stderr": 0.012542416132691341
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.004502634086144854
+      },
+      "wasserstein_distance": {
+        "value": 5.0,
+        "stderr": 0.03295152869357109
+      }
+    },
+    "mentoreval_mohler_ex14": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016784908552602202
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.01477082181793465
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.01477082181793465
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004701759941399231
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_ptasag2018_ex11": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.06666666666666667,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998596,
+        "stderr": 0.002825020545404754
+      },
+      "pearson_correlation": {
+        "value": 0.8750000000000001,
+        "stderr": 0.01396055620245986
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013661373224099568
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.0058636867944002104
+      }
+    },
+    "mentoreval_mohler_ex2": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0013367864407189398
+      },
+      "pearson_correlation": {
+        "value": 0.9525793444156802,
+        "stderr": 0.008984887640549919
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.008939671785067228
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005981620163449017
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.00710000352465056
+      }
+    },
+    "mentoreval_ptasag2018_ex9": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.3333333333333333,
+        "stderr": 0.10540925533894599
+      },
+      "grade_rmse": {
+        "value": 0.39440531887330776,
+        "stderr": 0.002323679794079426
+      },
+      "pearson_correlation": {
+        "value": 0.46656947481584327,
+        "stderr": 0.016683909128626703
+      },
+      "spearman_correlation": {
+        "value": 0.47222222222222227,
+        "stderr": 0.01741832362772533
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.006399399371215424
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010418238800281919
+      }
+    },
+    "mentoreval_ellipse_ex26": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.22360679774997896,
+        "stderr": 0.0008456482521595298
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957946,
+        "stderr": 0.012290642718652125
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.012290642718652125
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0060175219626164116
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.005679727044436127
+      }
+    },
+    "mentoreval_arasag_ex17": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.21999999999999997,
+        "stderr": 0.09165151389911678
+      },
+      "grade_rmse": {
+        "value": 0.2863564212655271,
+        "stderr": 0.002134978674802775
+      },
+      "pearson_correlation": {
+        "value": -0.05455447255899809,
+        "stderr": 0.014116415704309356
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.01460803403634262
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007025946478868456
+      },
+      "wasserstein_distance": {
+        "value": 1.1,
+        "stderr": 0.013155020507949231
+      }
+    },
+    "mentoreval_ellipse_ex32": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017660347086710716
+      },
+      "pearson_correlation": {
+        "value": 0.7071067811865475,
+        "stderr": 0.009247794044661238
+      },
+      "spearman_correlation": {
+        "value": 0.7071067811865475,
+        "stderr": 0.009161711989759302
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.0054488650313739605
+      },
+      "wasserstein_distance": {
+        "value": 0.4000000000000001,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ellipse_ex18": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017552234643024632
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005146887452669875
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_ellipse_ex44": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0013367864407189398
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.010223491218874194
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.01023919642284933
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005981620163449017
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.00710000352465056
+      }
+    },
+    "mentoreval_ellipse_ex23": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.002047674188205599
+      },
+      "pearson_correlation": {
+        "value": -0.6454972243679026,
+        "stderr": 0.010131994728718058
+      },
+      "spearman_correlation": {
+        "value": -0.6454972243679028,
+        "stderr": 0.010144212720180575
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.008588725528633816
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.012285922997638535
+      }
+    },
+    "mentoreval_mohler_ex33": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.11180339887498948
+      },
+      "grade_rmse": {
+        "value": 0.33541019662496846,
+        "stderr": 0.002770767075576061
+      },
+      "pearson_correlation": {
+        "value": -0.6666666666666665,
+        "stderr": 0.010941396019502288
+      },
+      "spearman_correlation": {
+        "value": -0.6666666666666667,
+        "stderr": 0.010941396019502288
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007014924744369625
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.012838948500504202
+      }
+    },
+    "mentoreval_ellipse_ex43": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.0012642615285569313
+      },
+      "pearson_correlation": {
+        "value": 0.6634034720037774,
+        "stderr": 0.010449114314984829
+      },
+      "spearman_correlation": {
+        "value": 0.7499999999999999,
+        "stderr": 0.010856411984796156
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005888180590867677
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.007002859418840268
+      }
+    },
+    "mentoreval_mohler_ex50": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.07905694150420949
+      },
+      "grade_rmse": {
+        "value": 0.2958039891549808,
+        "stderr": 0.0020595642228903996
+      },
+      "pearson_correlation": {
+        "value": -0.24999999999999997,
+        "stderr": 0.007135068780199018
+      },
+      "spearman_correlation": {
+        "value": -0.25,
+        "stderr": 0.007135068780199021
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.008849184599050253
+      }
+    },
+    "mentoreval_ellipse_ex20": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0018156381575132599
+      },
+      "pearson_correlation": {
+        "value": 0.763762615825973,
+        "stderr": 0.009444397401193948
+      },
+      "spearman_correlation": {
+        "value": 0.7607257743127307,
+        "stderr": 0.009477787848276232
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005442883884944189
+      },
+      "wasserstein_distance": {
+        "value": 0.39999999999999997,
+        "stderr": 0.007002859418840268
+      }
+    },
+    "mentoreval_arasag_ex8": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.31999999999999995,
+        "stderr": 0.07999999999999999
+      },
+      "grade_rmse": {
+        "value": 0.3577708763999664,
+        "stderr": 0.002543188969042831
+      },
+      "pearson_correlation": {
+        "value": 0.6864064729836441,
+        "stderr": 0.01248952131974092
+      },
+      "spearman_correlation": {
+        "value": 0.7254762501100117,
+        "stderr": 0.012846932066361071
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.0049265109875560285
+      },
+      "wasserstein_distance": {
+        "value": 1.6,
+        "stderr": 0.011369178431980842
+      }
+    },
+    "mentoreval_arasag_ex44": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.13999999999999999,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.16124515496597097,
+        "stderr": 0.0008306626111649987
+      },
+      "pearson_correlation": {
+        "value": 0.1336306209562122,
+        "stderr": 0.011219923138601545
+      },
+      "spearman_correlation": {
+        "value": 0.18633899812498247,
+        "stderr": 0.0115533774740762
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005428151142407973
+      },
+      "wasserstein_distance": {
+        "value": 0.5,
+        "stderr": 0.006486141382211007
+      }
+    },
+    "mentoreval_arasag_ex3": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.13999999999999999,
+        "stderr": 0.0748331477354788
+      },
+      "grade_rmse": {
+        "value": 0.20493901531919195,
+        "stderr": 0.0023281990351889815
+      },
+      "pearson_correlation": {
+        "value": 0.7717436331412898,
+        "stderr": 0.008085752629026607
+      },
+      "spearman_correlation": {
+        "value": 0.8603090020146066,
+        "stderr": 0.008231674300490882
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005937492215894978
+      },
+      "wasserstein_distance": {
+        "value": 0.7000000000000002,
+        "stderr": 0.01070508799164721
+      }
+    },
+    "mentoreval_mohler_ex19": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.01507060460376841
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.01507060460376841
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004788537364382791
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex39": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12000000000000002,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.1549193338482967,
+        "stderr": 0.0010928598859033481
+      },
+      "pearson_correlation": {
+        "value": 0.8728715609439696,
+        "stderr": 0.009672609603823833
+      },
+      "spearman_correlation": {
+        "value": 0.8249579113843054,
+        "stderr": 0.009639553902948312
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006000463779206162
+      },
+      "wasserstein_distance": {
+        "value": 0.5999999999999999,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_ellipse_ex41": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.19999999999999998
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021187654090535774
+      },
+      "pearson_correlation": {
+        "value": 0.6123724356957942,
+        "stderr": 0.01246503707255166
+      },
+      "spearman_correlation": {
+        "value": 0.6123724356957945,
+        "stderr": 0.01246503707255166
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.00586368679440021
+      },
+      "wasserstein_distance": {
+        "value": 0.20000000000000007,
+        "stderr": 0.0058636867944002104
+      }
+    },
+    "mentoreval_mohler_ex3": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.11180339887498948
+      },
+      "grade_rmse": {
+        "value": 0.33541019662496846,
+        "stderr": 0.002813314099626681
+      },
+      "pearson_correlation": {
+        "value": 0.5929270612815711,
+        "stderr": 0.010823491223783963
+      },
+      "spearman_correlation": {
+        "value": 0.5735393346764044,
+        "stderr": 0.011987382769252417
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006010597914291655
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.012773093278916866
+      }
+    },
+    "mentoreval_mohler_ex67": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.45,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.4609772228646444,
+        "stderr": 0.0012647636924164214
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.8,
+        "stderr": 0.005863686794400167
+      }
+    },
+    "mentoreval_mohler_ex41": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 1.0,
+        "stderr": 0.015019206922356951
+      },
+      "spearman_correlation": {
+        "value": 1.0,
+        "stderr": 0.015019206922356951
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004899796731294889
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_ellipse_ex6": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.001330626611860659
+      },
+      "pearson_correlation": {
+        "value": 0.8728715609439694,
+        "stderr": 0.00904244404634874
+      },
+      "spearman_correlation": {
+        "value": 0.9128709291752769,
+        "stderr": 0.009171622805183017
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.00590201947081111
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.0071238971012999785
+      }
+    },
+    "mentoreval_asap_ex5": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017660347086710716
+      },
+      "pearson_correlation": {
+        "value": 0.8017837257372731,
+        "stderr": 0.013264203741260005
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.013095852435346621
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007028541840268154
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ptasag2018_ex12": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.2
+      },
+      "grade_mae": {
+        "value": 0.26666666666666666,
+        "stderr": 0.06666666666666665
+      },
+      "grade_rmse": {
+        "value": 0.2981423969999719,
+        "stderr": 0.0011758494089491715
+      },
+      "pearson_correlation": {
+        "value": 0.45643546458763834,
+        "stderr": 0.013966190055360053
+      },
+      "spearman_correlation": {
+        "value": 0.45643546458763845,
+        "stderr": 0.014259832969913207
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006184222231178689
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007970413257007954
+      }
+    },
+    "mentoreval_arasag_ex38": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.09273618495495703
+      },
+      "grade_rmse": {
+        "value": 0.24494897427831777,
+        "stderr": 0.00318264689484358
+      },
+      "pearson_correlation": {
+        "value": 0.6621221919717306,
+        "stderr": 0.010483084008675942
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.01003736800486566
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.004751165496335982
+      },
+      "wasserstein_distance": {
+        "value": 0.7999999999999999,
+        "stderr": 0.013592861210057098
+      }
+    },
+    "mentoreval_arasag_ex45": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.16,
+        "stderr": 0.04
+      },
+      "grade_rmse": {
+        "value": 0.1788854381999832,
+        "stderr": 0.0006765186017276289
+      },
+      "pearson_correlation": {
+        "value": 0.4909902530309829,
+        "stderr": 0.013083902744029057
+      },
+      "spearman_correlation": {
+        "value": 0.4714045207910316,
+        "stderr": 0.013142800537418495
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005199199137527966
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007931882169747304
+      }
+    },
+    "mentoreval_ellipse_ex25": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.1,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.15811388300841897,
+        "stderr": 0.0017930147971009689
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007087487035083177
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007087487035083177
+      }
+    },
+    "mentoreval_mohler_ex15": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_arasag_ex18": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.14000000000000004,
+        "stderr": 0.024494897427831768
+      },
+      "grade_rmse": {
+        "value": 0.14832396974191328,
+        "stderr": 0.0007276477532019608
+      },
+      "pearson_correlation": {
+        "value": 0.9207368843792508,
+        "stderr": 0.008465921426101766
+      },
+      "spearman_correlation": {
+        "value": 0.9176629354822471,
+        "stderr": 0.008624869814548398
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.005427929846858939
+      },
+      "wasserstein_distance": {
+        "value": 0.7,
+        "stderr": 0.003522665066277125
+      }
+    },
+    "mentoreval_ptasag2018_ex8": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.0816496580927726
+      },
+      "grade_rmse": {
+        "value": 0.2581988897471611,
+        "stderr": 0.0016486470836252225
+      },
+      "pearson_correlation": {
+        "value": 0.801783725737273,
+        "stderr": 0.008181194737512675
+      },
+      "spearman_correlation": {
+        "value": 0.8838834764831843,
+        "stderr": 0.0083864402430852
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005874905489836773
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.0068794743379975406
+      }
+    },
+    "mentoreval_ellipse_ex35": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.06123724356957946
+      },
+      "grade_rmse": {
+        "value": 0.19364916731037085,
+        "stderr": 0.001330626611860659
+      },
+      "pearson_correlation": {
+        "value": 0.6634034720037775,
+        "stderr": 0.010457833172338463
+      },
+      "spearman_correlation": {
+        "value": 0.7499999999999999,
+        "stderr": 0.01083887796755889
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.006025358490989969
+      },
+      "wasserstein_distance": {
+        "value": 0.6,
+        "stderr": 0.0071238971012999785
+      }
+    },
+    "mentoreval_asap_ex3": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.26666666666666666,
+        "stderr": 0.06666666666666667
+      },
+      "grade_rmse": {
+        "value": 0.29814239699997197,
+        "stderr": 0.0011629258348062018
+      },
+      "pearson_correlation": {
+        "value": 0.10206207261596573,
+        "stderr": 0.015352822985210603
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.015533756645203872
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.006620125834609627
+      },
+      "wasserstein_distance": {
+        "value": 0.3999999999999999,
+        "stderr": 0.00851901012638988
+      }
+    },
+    "mentoreval_mohler_ex12": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016992190273154956
+      },
+      "pearson_correlation": {
+        "value": 0.9432422182837985,
+        "stderr": 0.014500556420635202
+      },
+      "spearman_correlation": {
+        "value": 0.7905694150420948,
+        "stderr": 0.013635411788372983
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.004899796731294889
+      },
+      "wasserstein_distance": {
+        "value": 1.2000000000000002,
+        "stderr": 0.005863167807315155
+      }
+    },
+    "mentoreval_ellipse_ex17": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.15,
+        "stderr": 0.09999999999999999
+      },
+      "grade_rmse": {
+        "value": 0.25,
+        "stderr": 0.003307723702835704
+      },
+      "pearson_correlation": {
+        "value": 1.915296829588831e-17,
+        "stderr": 0.015994242052052465
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.016199643839983267
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.00710000352465056
+      },
+      "wasserstein_distance": {
+        "value": 0.6000000000000001,
+        "stderr": 0.011373134492662425
+      }
+    },
+    "mentoreval_mohler_ex61": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016529378723416004
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_ellipse_ex14": {
+      "exact_grade_match": {
+        "value": 0.8,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.05,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.11180339887498948,
+        "stderr": 0.0021321926681405023
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      },
+      "wasserstein_distance": {
+        "value": 0.2,
+        "stderr": 0.005690390192292665
+      }
+    },
+    "mentoreval_ptasag2018_ex1": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3333333333333333,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.33333333333333337,
+        "stderr": 1.756295101485818e-18
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.0049265109875560285
+      },
+      "wasserstein_distance": {
+        "value": 1.0,
+        "stderr": 0.0
+      }
+    },
+    "mentoreval_asap2_ex1": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829668,
+        "stderr": 0.0010645012894885263
+      },
+      "pearson_correlation": {
+        "value": 0.5976143046671968,
+        "stderr": 0.013204053713834183
+      },
+      "spearman_correlation": {
+        "value": 0.5833333333333334,
+        "stderr": 0.013555728597774087
+      },
+      "ks_statistic": {
+        "value": 0.2,
+        "stderr": 0.005710394785705142
+      },
+      "wasserstein_distance": {
+        "value": 0.20000000000000007,
+        "stderr": 0.0076929019713460845
+      }
+    },
+    "mentoreval_mohler_ex23": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.049999999999999996
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016992190273154956
+      },
+      "pearson_correlation": {
+        "value": 0.6666666666666665,
+        "stderr": 0.010820473577831207
+      },
+      "spearman_correlation": {
+        "value": 0.6666666666666667,
+        "stderr": 0.010820473577831207
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.004365209623266087
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005863167807315155
+      }
+    },
+    "mentoreval_mohler_ex4": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.2,
+        "stderr": 0.09354143466934853
+      },
+      "grade_rmse": {
+        "value": 0.27386127875258304,
+        "stderr": 0.002577533791960755
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.007014924744369625
+      },
+      "wasserstein_distance": {
+        "value": 0.8,
+        "stderr": 0.010666724849691188
+      }
+    },
+    "mentoreval_mohler_ex79": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.3,
+        "stderr": 0.05000000000000001
+      },
+      "grade_rmse": {
+        "value": 0.31622776601683794,
+        "stderr": 0.0016529378723416004
+      },
+      "pearson_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 1.0,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 1.2,
+        "stderr": 0.005690390192292668
+      }
+    },
+    "mentoreval_asap2_ex5": {
+      "exact_grade_match": {
+        "value": 0.4,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.12,
+        "stderr": 0.048989794855663564
+      },
+      "grade_rmse": {
+        "value": 0.15491933384829668,
+        "stderr": 0.001061202049402182
+      },
+      "pearson_correlation": {
+        "value": 0.6454972243679027,
+        "stderr": 0.00993220508367723
+      },
+      "spearman_correlation": {
+        "value": 0.6454972243679028,
+        "stderr": 0.00993739295647341
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.005942584817595298
+      },
+      "wasserstein_distance": {
+        "value": 0.5999999999999999,
+        "stderr": 0.00704533013255425
+      }
+    },
+    "mentoreval_mohler_ex21": {
+      "exact_grade_match": {
+        "value": 0.0,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.35,
+        "stderr": 0.06123724356957944
+      },
+      "grade_rmse": {
+        "value": 0.37080992435478316,
+        "stderr": 0.0018139158312711202
+      },
+      "pearson_correlation": {
+        "value": 0.8017837257372732,
+        "stderr": 0.013264203741260005
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.013095852435346621
+      },
+      "ks_statistic": {
+        "value": 0.8,
+        "stderr": 0.0049265109875560285
+      },
+      "wasserstein_distance": {
+        "value": 1.4,
+        "stderr": 0.007025946478868456
+      }
+    },
+    "mentoreval_arasag_ex7": {
+      "exact_grade_match": {
+        "value": 0.6,
+        "stderr": 0.24494897427831783
+      },
+      "grade_mae": {
+        "value": 0.08000000000000003,
+        "stderr": 0.04898979485566357
+      },
+      "grade_rmse": {
+        "value": 0.12649110640673522,
+        "stderr": 0.0014128277669368553
+      },
+      "pearson_correlation": {
+        "value": 0.8017837257372731,
+        "stderr": 0.01334540753654083
+      },
+      "spearman_correlation": {
+        "value": 0.7453559924999299,
+        "stderr": 0.013154127224440126
+      },
+      "ks_statistic": {
+        "value": 0.4,
+        "stderr": 0.007028541840268154
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.007028541840268154
+      }
+    },
+    "mentoreval_ptasag2018": {
+      "exact_grade_match": {
+        "value": 0.44000000000000006,
+        "stderr": 0.08044321668799123
+      },
+      "grade_mae": {
+        "value": 0.1688888888888889,
+        "stderr": 0.025813512906221633
+      },
+      "grade_rmse": {
+        "value": 0.21958344217777243,
+        "stderr": 0.023208343639960122
+      },
+      "pearson_correlation": {
+        "value": 0.5712539663087287,
+        "stderr": 0.08270095102158363
+      },
+      "spearman_correlation": {
+        "value": 0.5826808755188284,
+        "stderr": 0.07880311332723844
+      },
+      "ks_statistic": {
+        "value": 0.34666666666666673,
+        "stderr": 0.051524895097562445
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.07055336829505575
+      }
+    },
+    "mentoreval_mohler": {
+      "exact_grade_match": {
+        "value": 0.09444444444444444,
+        "stderr": 0.020135193123827274
+      },
+      "grade_mae": {
+        "value": 0.2906378600823045,
+        "stderr": 0.009547560922890903
+      },
+      "grade_rmse": {
+        "value": 0.31641618586281073,
+        "stderr": 0.009282641942556215
+      },
+      "pearson_correlation": {
+        "value": 0.326557550909031,
+        "stderr": 0.048309458956332284
+      },
+      "spearman_correlation": {
+        "value": 0.31626152818166775,
+        "stderr": 0.04673492124110531
+      },
+      "ks_statistic": {
+        "value": 0.8152263374485597,
+        "stderr": 0.022970184733351533
+      },
+      "wasserstein_distance": {
+        "value": 1.162551440329218,
+        "stderr": 0.03819024369156361
+      }
+    },
+    "mentoreval_ellipse": {
+      "exact_grade_match": {
+        "value": 0.5136363636363637,
+        "stderr": 0.03364725086256773
+      },
+      "grade_mae": {
+        "value": 0.13749999999999998,
+        "stderr": 0.01067516717503178
+      },
+      "grade_rmse": {
+        "value": 0.19428905758893586,
+        "stderr": 0.01347590312780517
+      },
+      "pearson_correlation": {
+        "value": 0.4153675434955845,
+        "stderr": 0.06014126276382753
+      },
+      "spearman_correlation": {
+        "value": 0.4207233329189254,
+        "stderr": 0.060564250630913245
+      },
+      "ks_statistic": {
+        "value": 0.3409090909090909,
+        "stderr": 0.026174514017878656
+      },
+      "wasserstein_distance": {
+        "value": 0.5045454545454545,
+        "stderr": 0.0414053916936827
+      }
+    },
+    "mentoreval_arasag": {
+      "exact_grade_match": {
+        "value": 0.3083333333333333,
+        "stderr": 0.03115726982524244
+      },
+      "grade_mae": {
+        "value": 0.1658333333333333,
+        "stderr": 0.010102913725294337
+      },
+      "grade_rmse": {
+        "value": 0.20514227534169496,
+        "stderr": 0.009682437065125468
+      },
+      "pearson_correlation": {
+        "value": 0.6290346115156384,
+        "stderr": 0.053299856793947886
+      },
+      "spearman_correlation": {
+        "value": 0.6290585610433759,
+        "stderr": 0.05143977990148006
+      },
+      "ks_statistic": {
+        "value": 0.4375,
+        "stderr": 0.026124867091634276
+      },
+      "wasserstein_distance": {
+        "value": 0.7875000000000001,
+        "stderr": 0.05201036555341637
+      }
+    },
+    "mentoreval_asap2": {
+      "exact_grade_match": {
+        "value": 0.45714285714285713,
+        "stderr": 0.11927868731593846
+      },
+      "grade_mae": {
+        "value": 0.10857142857142857,
+        "stderr": 0.023855737463187688
+      },
+      "grade_rmse": {
+        "value": 0.13329802269212357,
+        "stderr": 0.023742435970388043
+      },
+      "pearson_correlation": {
+        "value": 0.5686666921472242,
+        "stderr": 0.11491271207370905
+      },
+      "spearman_correlation": {
+        "value": 0.5601265090925861,
+        "stderr": 0.12008380020058176
+      },
+      "ks_statistic": {
+        "value": 0.3142857142857142,
+        "stderr": 0.08905071113988339
+      },
+      "wasserstein_distance": {
+        "value": 0.3714285714285714,
+        "stderr": 0.11730700296489723
+      }
+    },
+    "mentoreval_asap": {
+      "exact_grade_match": {
+        "value": 0.3,
+        "stderr": 0.10606601717798211
+      },
+      "grade_mae": {
+        "value": 0.17375000000000002,
+        "stderr": 0.027395239220427414
+      },
+      "grade_rmse": {
+        "value": 0.2099109234298998,
+        "stderr": 0.02147928201497015
+      },
+      "pearson_correlation": {
+        "value": 0.5069815033836937,
+        "stderr": 0.14256904272297635
+      },
+      "spearman_correlation": {
+        "value": 0.47648173173821323,
+        "stderr": 0.13327507710332015
+      },
+      "ks_statistic": {
+        "value": 0.45,
+        "stderr": 0.08477912478906585
+      },
+      "wasserstein_distance": {
+        "value": 1.4749999999999999,
+        "stderr": 0.583028194000942
+      }
+    },
+    "aggregated": {
+      "exact_grade_match": {
+        "value": 0.28201970443349766,
+        "stderr": 0.1374705923690918
+      },
+      "grade_mae": {
+        "value": 0.20805418719211816,
+        "stderr": 0.05595686639382029
+      },
+      "grade_rmse": {
+        "value": 0.24596740878893036,
+        "stderr": 0.001596994977610381
+      },
+      "pearson_correlation": {
+        "value": 0.4508685874725067,
+        "stderr": 0.008308115601165216
+      },
+      "spearman_correlation": {
+        "value": 0.4472747483328375,
+        "stderr": 0.008316105039930037
+      },
+      "ks_statistic": {
+        "value": 0.5568144499178984,
+        "stderr": 0.004620839365736243
+      },
+      "wasserstein_distance": {
+        "value": 0.859934318555008,
+        "stderr": 0.006954374195094203
+      }
+    }
+  }
+}
