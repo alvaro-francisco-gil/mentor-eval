@@ -43,7 +43,7 @@ class MentorEvalLeaderboard {
             for (const file of resultFiles) {
                 try {
                     // Load from results directory directly
-                    const response = await fetch(`../results/${file}`);
+                    const response = await fetch(`results/${file}`);
                     if (!response.ok) continue;
                     
                     const resultData = await response.json();
@@ -79,31 +79,31 @@ class MentorEvalLeaderboard {
     async loadRunParameters() {
         try {
             // Try to load from runs directory
-            const response = await fetch('../runs/1_mentoreval_guidance.json');
+            const response = await fetch('runs/1_mentoreval_guidance.json');
             if (response.ok) {
                 const run1 = await response.json();
                 this.runParameters[1] = run1;
             }
             
-            const response2 = await fetch('../runs/2_mentoreval_no_guidance.json');
+            const response2 = await fetch('runs/2_mentoreval_no_guidance.json');
             if (response2.ok) {
                 const run2 = await response2.json();
                 this.runParameters[2] = run2;
             }
             
-            const response3 = await fetch('../runs/3_mentoreval_explanation.json');
+            const response3 = await fetch('runs/3_mentoreval_explanation.json');
             if (response3.ok) {
                 const run3 = await response3.json();
                 this.runParameters[3] = run3;
             }
             
-            const response5 = await fetch('../runs/5_mentoreval_few_shot_5.json');
+            const response5 = await fetch('runs/5_mentoreval_few_shot_5.json');
             if (response5.ok) {
                 const run5 = await response5.json();
                 this.runParameters[5] = run5;
             }
             
-            const response11 = await fetch('../runs/11_test.json');
+            const response11 = await fetch('runs/11_test.json');
             if (response11.ok) {
                 const run11 = await response11.json();
                 this.runParameters[11] = run11;
