@@ -667,7 +667,26 @@ class LightEvalBenchmark:
     def _save_results(self, results: Dict[str, Any], run_info: RunInfo):
         """Save results to both results directories with different formats."""
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{run_info.run_id}_{run_info.model_name}_mentoreval-test_{timestamp}.json"
+        
+        # Create descriptive name based on run parameters
+        task_name = run_info.parameters.get("task_name", "mentoreval")
+        show_guidance = run_info.parameters.get("show_guidance", True)
+        explanation = run_info.parameters.get("explanation", False)
+        training_examples = run_info.parameters.get("training_examples", 0)
+        
+        # Build descriptive suffix
+        suffix_parts = []
+        if not show_guidance:
+            suffix_parts.append("no_guidance")
+        if explanation:
+            suffix_parts.append("explanation")
+        if training_examples > 0:
+            suffix_parts.append(f"few_shot_{training_examples}")
+        if task_name != "mentoreval":
+            suffix_parts.append(task_name.replace("mentoreval_", ""))
+        
+        descriptive_suffix = "_".join(suffix_parts) if suffix_parts else "guidance"
+        filename = f"{run_info.run_id}_{descriptive_suffix}_{timestamp}.json"
         
         # Save clean metrics to results/ directory
         clean_metrics = self._process_clean_metrics(results, run_info)

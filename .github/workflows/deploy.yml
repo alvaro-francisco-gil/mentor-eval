@@ -28,7 +28,10 @@ jobs:
         # Build the webpage
         cd webpage
         python build.py
+        echo "Files in webpage directory after build:"
         ls -la
+        echo "Checking script.js content:"
+        head -20 script.js
         
         # Create deployment directory
         cd ..
@@ -39,6 +42,10 @@ jobs:
         cp webpage/style.css deploy/
         cp webpage/script.js deploy/
         cp -r webpage/assets deploy/
+        
+        # Verify the copied script.js
+        echo "Verifying deployed script.js:"
+        head -20 deploy/script.js
         
         # Copy data directories
         cp -r results deploy/

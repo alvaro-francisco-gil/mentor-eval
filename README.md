@@ -10,6 +10,9 @@
 </div>
 
 <div align="center">
+  <a href="https://alvaro-francisco-gil.github.io/mentor-eval/">
+    <img src="https://img.shields.io/badge/📊%20Leaderboard-Results-orange" alt="Leaderboard">
+  </a>
   <a href="https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval">
     <img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-blue" alt="Hugging Face Dataset">
   </a>
@@ -26,6 +29,8 @@
 ## Overview
 
 **MentorEval** is a comprehensive benchmark designed to evaluate language models on multilingual educational assessment tasks. This benchmark focuses on automated essay scoring (AES) and automatic short answer grading (ASAG) across multiple languages and educational levels.
+
+Access the benchmark leaderboard [here](https://alvaro-francisco-gil.github.io/mentor-eval/)
 
 ### Key Features
 
@@ -63,20 +68,20 @@ MentorEval is built on top of **[LightEval](https://github.com/huggingface/light
 mentor-eval/
 ├── src/mentoreval/          # Core package
 │   ├── benchmark.py         # LightEval integration
-│   ├── task.py             # Task definitions
-│   ├── metrics.py          # Evaluation metrics
-│   ├── prompts.py          # Prompt templates
-│   ├── models.py           # Model configurations
-│   ├── run_manager.py      # Run management
-│   └── cli.py              # Command-line interface
-├── data/                   # Dataset files
-│   ├── raw/               # Original datasets
-│   ├── processed/         # Processed datasets
-│   └── mentoreval.parquet # Unified dataset
-├── runs/                  # Run configurations
-├── results/               # Evaluation results
-├── tests/                 # Test suite
-└── scripts/               # Utility scripts
+│   ├── task.py              # Task definitions
+│   ├── metrics.py           # Evaluation metrics
+│   ├── prompts.py           # Prompt templates
+│   ├── models.py            # Model configurations
+│   ├── run_manager.py       # Run management
+│   └── cli.py               # Command-line interface
+├── data/                    # Dataset files
+│   ├── raw/                 # Original datasets
+│   ├── processed/           # Processed datasets
+│   └── mentoreval.parquet   # Unified dataset
+├── runs/                    # Run configurations
+├── results/                 # Evaluation results
+├── tests/                   # Test suite
+└── scripts/                 # Utility scripts
 ```
 
 ## Quick Start
@@ -128,12 +133,6 @@ mentoreval --execute 1
 
 # Run all pending evaluations
 mentoreval --execute-all
-
-# List all runs
-mentoreval --list
-
-# Show run summary
-mentoreval --summary
 ```
 
 3. **Available Task Configurations**:
