@@ -144,6 +144,8 @@ class ASAPProcessor(DatasetProcessor):
             'question': '',
             'rubric': '',
             'academic_level': '',
+            'grade_level': None,
+            'isced_level': 3,  # Default ISCED level
             'rubric_range': '',
             'essay_type': '',
             'scoring_type': '',
@@ -181,7 +183,18 @@ class ASAPProcessor(DatasetProcessor):
                 
                 grade_match = re.search(r'Grade Level:\s*(\d+)', content)
                 if grade_match:
-                    metadata['academic_level'] = grade_match.group(1)
+                    grade_level = int(grade_match.group(1))
+                    metadata['academic_level'] = str(grade_level)
+                    metadata['grade_level'] = grade_level
+                    
+                    # Map grade level to ISCED level
+                    if grade_level in [7, 8]:
+                        metadata['isced_level'] = 2
+                    elif grade_level == 10:
+                        metadata['isced_level'] = 3
+                    else:
+                        # Default to ISCED level 3 for other grades
+                        metadata['isced_level'] = 3
                 
                 rubric_ranges = []
                 rubric_dict = {}
@@ -355,7 +368,7 @@ class ASAPProcessor(DatasetProcessor):
                 'max_grade': max_grade,
                 'subject': 'english',
                 'exercise_type': 'essay_writing',
-                'isced_level': 3,
+                'isced_level': metadata['isced_level'],
                 'language': 'english',
                 'rubric': metadata['rubric'],
                 'desired_answer': np.nan,
@@ -392,12 +405,24 @@ class ASAP2Processor(DatasetProcessor):
                 self.exercise_sets[i] = metadata
     
     def _extract_set_metadata(self, set_dir, set_num):
+        # Custom ISCED level mapping for ASAP2
+        isced_mapping = {
+            1: 3,  # ISCED Level 3
+            2: 3,  # ISCED Level 3
+            3: 3,  # ISCED Level 3
+            4: 2,  # ISCED Level 2
+            5: 1,  # ISCED Level 1
+            6: 2,  # ISCED Level 2
+            7: 3   # ISCED Level 3
+        }
+        
         metadata = {
             'set_id': set_num,
             'question': '',
             'rubric': '',
             'complementary_texts': '',
             'academic_level': '10',
+            'isced_level': isced_mapping.get(set_num, 3),  # Default to 3 if not found
             'rubric_range': {"ideal": "1-6"},
             'essay_type': 'argumentative',
             'scoring_type': 'holistic',
@@ -488,7 +513,7 @@ class ASAP2Processor(DatasetProcessor):
                 'max_grade': 6.0,
                 'subject': 'english',
                 'exercise_type': 'essay_writing',
-                'isced_level': 3,
+                'isced_level': metadata['isced_level'],
                 'language': 'english',
                 'rubric': metadata['rubric'],
                 'desired_answer': np.nan,
@@ -760,7 +785,7 @@ class ARASAGProcessor(DatasetProcessor):
                 'max_grade': 5.0,
                 'subject': 'cybercrimes',
                 'exercise_type': 'short_answer',
-                'isced_level': 6,
+                'isced_level': 7,
                 'language': 'arabic',
                 'rubric': np.nan,
                 'desired_answer': row['Model_Arabic'],
@@ -837,7 +862,7 @@ class PTASAG2018Processor(DatasetProcessor):
                 'max_grade': 3.0,
                 'subject': 'biology',
                 'exercise_type': 'short_answer',
-                'isced_level': 3,
+                'isced_level': 2,
                 'language': 'portuguese',
                 'rubric': np.nan,
                 'desired_answer': np.nan,

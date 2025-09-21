@@ -33,13 +33,13 @@ MentorEval is a multilingual benchmark dataset designed to evaluate automated sy
 
 ## Dataset Summary
 
-MentorEval contains **55,312 student responses** across **6 different datasets** from **3 languages** (English, Portuguese, and Arabic), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).
+MentorEval contains **57,444 student responses** across **6 different datasets** from **3 languages** (English, Portuguese, and Arabic), covering various educational levels and assessment types. The dataset is designed for research in automated essay scoring (AES) and automatic short answer grading (ASAG).
 
 ## Dataset Structure
 
 The dataset is split into:
-- **Train set**: 11,062 samples (20%)
-- **Test set**: 44,250 samples (80%)
+- **Train set**: 11,489 samples (20%)
+- **Test set**: 45,955 samples (80%)
 
 The splits are stratified by dataset and grade ranges to ensure fair evaluation across different educational contexts.
 
@@ -47,17 +47,17 @@ The splits are stratified by dataset and grade ranges to ensure fair evaluation 
 
 | Dataset | Language | ISCED Level | Graders | License | Exercises | Samples | Description |
 |---------|----------|-------------|---------|---------|-----------|---------|-------------|
-| **ASAP** | English | 3 | 2 | GPL | 8 | 12,977 | Student essays from grades 7–10 on 8 distinct essay prompts, scored for overall and attribute-specific writing quality |
-| **ASAP 2.0** | English | 3 | 1 | CC BY 4.0 | 7 | 24,728 | Enhanced automated essay scoring dataset with essays from diverse student populations and multiple essay attributes |
+| **ASAP** | English | 2, 3 | 2 | GPL | 8 | 12,977 | Student essays from grades 7–10 on 8 distinct essay prompts, scored for overall and attribute-specific writing quality |
+| **ASAP 2.0** | English | 1, 2, 3 | 1 | CC BY 4.0 | 7 | 24,728 | Enhanced automated essay scoring dataset with essays from diverse student populations and multiple essay attributes |
 | **ELLIPSE** | English | 3 | 2 | CC BY 4.0 | 44 | 6,482 | English learner essays graded on six linguistic and writing quality dimensions (only data where both raters agreed) |
 | **Mohler** | English | 6 | 2 | GPL | 81 | 1,263 | Short answers from computer science students at a Texas university, graded on a 0–5 scale (only data where both raters agreed) |
-| **PT-ASAG 2018** | Portuguese | 3 | 1 | CC BY 4.0 | 15 | 9,862 | Real student and teacher answers from Brazil for Portuguese Automatic Short Answer Grading research |
-| **AR-ASAG** | Arabic | 6 | 2 | CC BY-NC | 48 | 2,132 | Arabic dataset for automatic short answer grading containing pairs of model and student answers from three university exams |
+| **PT-ASAG 2018** | Portuguese | 2 | 1 | CC BY 4.0 | 15 | 9,862 | Real student and teacher answers from Brazil for Portuguese Automatic Short Answer Grading research |
+| **AR-ASAG** | Arabic | 7 | 2 | CC BY-NC | 48 | 2,132 | Arabic dataset for automatic short answer grading containing pairs of model and student answers from three university exams |
 
 ## Dataset Features
 
 - **Multilingual**: English, Portuguese, and Arabic
-- **Multi-level**: Covers ISCED levels 3 (lower secondary) and 6 (tertiary)
+- **Multi-level**: Covers ISCED levels 1 (primary), 2 (lower secondary), 3 (upper secondary), 6 (bachelor's), and 7 (master's)
 - **Diverse assessment types**: Essay writing and short answer grading
 - **Quality control**: Includes only data where multiple raters agreed (where applicable)
 - **Standardized format**: All datasets converted to unified schema
