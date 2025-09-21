@@ -1,0 +1,101 @@
+{
+  "run_info": {
+    "run_id": 11,
+    "model_name": "gpt-4o-mini",
+    "task_name": "mentoreval_ptasag2018_ex6",
+    "timestamp": "2025-09-21T13:00:11.813914",
+    "status": "completed"
+  },
+  "metrics_summary": {
+    "mentoreval_ptasag2018_ex6": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.1333333333333333,
+        "stderr": 0.033333333333333326
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998596,
+        "stderr": 0.0005637655014396877
+      },
+      "pearson_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634175
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634176
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0060175219626164116
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.0028398635222180637
+      }
+    },
+    "mentoreval_ptasag2018": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.0
+      },
+      "grade_mae": {
+        "value": 0.1333333333333333,
+        "stderr": 0.0
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998596,
+        "stderr": 0.0
+      },
+      "pearson_correlation": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.0
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.0
+      }
+    },
+    "aggregated": {
+      "exact_grade_match": {
+        "value": 0.2,
+        "stderr": 0.20000000000000004
+      },
+      "grade_mae": {
+        "value": 0.1333333333333333,
+        "stderr": 0.033333333333333326
+      },
+      "grade_rmse": {
+        "value": 0.14907119849998596,
+        "stderr": 0.0005637655014396877
+      },
+      "pearson_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634175
+      },
+      "spearman_correlation": {
+        "value": 0.25,
+        "stderr": 0.007115045421634176
+      },
+      "ks_statistic": {
+        "value": 0.6,
+        "stderr": 0.0060175219626164116
+      },
+      "wasserstein_distance": {
+        "value": 0.4,
+        "stderr": 0.0028398635222180637
+      }
+    }
+  }
+}
