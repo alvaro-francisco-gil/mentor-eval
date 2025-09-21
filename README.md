@@ -30,23 +30,23 @@
 ### Key Features
 
 - 🌍 **Multilingual**: Supports English, Portuguese, and Arabic
-- 🎓 **Multi-level**: Covers ISCED levels 3 (lower secondary) and 6 (tertiary)
-- 📊 **Comprehensive**: 55,312+ student responses across 6 datasets
+- 🎓 **Multi-level**: Covers ISCED levels 1 (primary), 2 (lower secondary), 3 (upper secondary), 6 (bachelor's), and 7 (master's)
+- 📊 **Comprehensive**: 57,444 student responses across 6 datasets
 - 🔧 **LightEval Compatible**: Built on [LightEval](https://github.com/huggingface/lighteval) framework
 - 📈 **Extensible**: Collaborative collection of open datasets
 
 ## Dataset
 
-The benchmark contains **55,312+ student responses** across **6 datasets** from **3 languages** (English, Portuguese, Arabic), covering ISCED levels 3 and 6. The dataset is publicly available on Hugging Face and includes automated essay scoring (AES) and automatic short answer grading (ASAG) tasks.
+The benchmark contains **57,444 student responses** across **6 datasets** from **3 languages** (English, Portuguese, Arabic), covering ISCED levels 1, 2, 3, 6, and 7. The dataset is publicly available on Hugging Face and includes automated essay scoring (AES) and automatic short answer grading (ASAG) tasks.
 
 | Dataset | Language | ISCED Level | Samples | Description |
 |---------|----------|-------------|---------|-------------|
-| **ASAP** | English | 3 | 12,977 | Student essays from grades 7–10 |
-| **ASAP 2.0** | English | 3 | 24,728 | Enhanced automated essay scoring |
+| **ASAP** | English | 2, 3 | 12,977 | Student essays from grades 7–10|
+| **ASAP 2.0** | English | 1, 2, 3 | 24,728 | Enhanced automated essay scoring |
 | **ELLIPSE** | English | 3 | 6,482 | English learner essays |
 | **Mohler** | English | 6 | 1,263 | Computer science short answers |
-| **PT-ASAG 2018** | Portuguese | 3 | 9,862 | Portuguese short answer grading |
-| **AR-ASAG** | Arabic | 6 | 2,132 | Arabic short answer grading |
+| **PT-ASAG 2018** | Portuguese | 2 | 9,862 | Portuguese short answer grading |
+| **AR-ASAG** | Arabic | 7 | 2,132 | Arabic short answer grading |
 
 ## Framework Integration
 
