@@ -45,15 +45,19 @@ jobs:
         echo "Checking original script.js paths:"
         grep -n "fetch.*results" webpage/script.js || echo "No results fetch found"
         grep -n "fetch.*runs" webpage/script.js || echo "No runs fetch found"
+        echo "Checking function names in original script.js:"
+        grep -n "getRunParameters\|loadRunParameters" webpage/script.js || echo "No function names found"
         
-        # Fix paths in script.js for deployment (remove ../ prefixes)
-        echo "Running sed to fix paths..."
-        sed 's|../results/|results/|g; s|../runs/|runs/|g' webpage/script.js > deploy/script.js
+        # Fix paths and function names in script.js for deployment
+        echo "Running sed to fix paths and function names..."
+        sed 's|../results/|results/|g; s|../runs/|runs/|g; s|loadRunParameters(runId)|getRunParameters(runId)|g' webpage/script.js > deploy/script.js
         
         # Debug: Check what paths are in the fixed script.js
         echo "Checking fixed script.js paths:"
         grep -n "fetch.*results" deploy/script.js || echo "No results fetch found"
         grep -n "fetch.*runs" deploy/script.js || echo "No runs fetch found"
+        echo "Checking function names in fixed script.js:"
+        grep -n "getRunParameters\|loadRunParameters" deploy/script.js || echo "No function names found"
         
         cp -r webpage/assets deploy/
         
