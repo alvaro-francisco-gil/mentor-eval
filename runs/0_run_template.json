@@ -1,0 +1,20 @@
+{
+  "run_id": 0,
+  "parameters": {
+    "model_name": "gpt-4o-mini",
+    "training_examples": 3,
+    "test_examples": 10,
+    "show_guidance": true,
+    "prompt_type": "with_explanation"
+  },
+  "configuration": {
+    "use_local_backend": false,
+    "model_provider": "openai",
+    "generation_args": {
+      "max_new_tokens": 50,
+      "temperature": 0.0,
+      "do_sample": false
+    }
+  },
+  "status": "created"
+}
