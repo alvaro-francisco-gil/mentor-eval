@@ -34,11 +34,11 @@ jobs:
         cd ..
         mkdir -p deploy
         
-        # Copy main webpage files to deploy directory
-        cp index.html deploy/
-        cp style.css deploy/
-        cp script.js deploy/
-        cp -r assets deploy/
+        # Copy webpage files to deploy directory
+        cp webpage/index.html deploy/
+        cp webpage/style.css deploy/
+        cp webpage/script.js deploy/
+        cp -r webpage/assets deploy/
         
         # Copy data directories
         cp -r results deploy/
