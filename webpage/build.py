@@ -87,7 +87,9 @@ def main():
     print()
     
     # Change to webpage directory
-    os.chdir(Path(__file__).parent)
+    webpage_dir = Path(__file__).parent
+    os.chdir(webpage_dir)
+    print(f"📁 Working directory: {os.getcwd()}")
     
     # Discover files
     result_files = discover_result_files()
