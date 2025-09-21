@@ -40,13 +40,22 @@ jobs:
         # Copy webpage files to deploy directory
         cp webpage/index.html deploy/
         cp webpage/style.css deploy/
-        # Fix paths in script.js for deployment (remove ../ prefixes)
-        sed 's|../results/|results/|g; s|../runs/|runs/|g' webpage/script.js > deploy/script.js
-        cp -r webpage/assets deploy/
         
-        # Verify the copied script.js
-        echo "Verifying deployed script.js:"
-        head -20 deploy/script.js
+        # Debug: Check what paths are in the original script.js
+        echo "Checking original script.js paths:"
+        grep -n "fetch.*results" webpage/script.js || echo "No results fetch found"
+        grep -n "fetch.*runs" webpage/script.js || echo "No runs fetch found"
+        
+        # Fix paths in script.js for deployment (remove ../ prefixes)
+        echo "Running sed to fix paths..."
+        sed 's|../results/|results/|g; s|../runs/|runs/|g' webpage/script.js > deploy/script.js
+        
+        # Debug: Check what paths are in the fixed script.js
+        echo "Checking fixed script.js paths:"
+        grep -n "fetch.*results" deploy/script.js || echo "No results fetch found"
+        grep -n "fetch.*runs" deploy/script.js || echo "No runs fetch found"
+        
+        cp -r webpage/assets deploy/
         
         # Copy data directories
         cp -r results deploy/
