@@ -99,15 +99,23 @@ pip install -e .
 ```json
 {
   "run_id": 1,
-  "model_name": "gpt-4o-mini",
-  "benchmark_mode": "mentoreval-test",
-  "description": "Test run with GPT-4o-mini",
-  "status": "pending",
+  "status": "completed",
   "parameters": {
     "model_name": "gpt-4o-mini",
-    "training_examples": 5,
-    "test_samples": 100,
-    "task_name": "mentoreval_asap2"
+    "training_examples": 0,
+    "test_samples": 5,
+    "task_name": "mentoreval",
+    "show_guidance": true,
+    "explanation": false,
+    "show_isced_level": true
+  },
+  "configuration": {
+    "use_local_backend": false,
+    "generation_args": {
+      "max_new_tokens": 50,
+      "temperature": 0.0,
+      "do_sample": false
+    }
   }
 }
 ```
@@ -128,7 +136,34 @@ mentoreval --list
 mentoreval --summary
 ```
 
-3. **View results** in the `results/` directory.
+3. **Available Task Configurations**:
+
+The benchmark supports multiple task configurations for different evaluation scenarios:
+
+- **Full Benchmark**: `mentoreval` - All datasets and exercise sets
+- **Dataset-level Tasks**: 
+  - `mentoreval_asap` - All ASAP exercise sets (1-8)
+  - `mentoreval_asap2` - All ASAP2 exercise sets (1-7)
+  - `mentoreval_mohler` - All Mohler exercise sets (1-81)
+  - `mentoreval_ellipse` - All ELLIPSE exercise sets (1-44)
+  - `mentoreval_ptasag2018` - All PTASAG2018 exercise sets (1-15)
+  - `mentoreval_arasag` - All ARASAG exercise sets (1-48)
+- **Exercise-type Tasks**:
+  - `mentoreval_essay_writing` - All essay writing tasks (ASAP, ASAP2, ELLIPSE)
+  - `mentoreval_short_answer` - All short answer tasks (Mohler, PTASAG2018, ARASAG)
+- **Individual Exercise Tasks**: `mentoreval_[dataset]_ex[number]` (e.g., `mentoreval_asap_ex1`)
+
+4. **Configuration Parameters**:
+
+The run configuration supports several parameters to customize the evaluation:
+
+- **`show_guidance`**: Include grading guidance in prompts (default: `true`)
+- **`explanation`**: Request explanations for grading decisions (default: `false`)
+- **`show_isced_level`**: Include ISCED educational level information (default: `true`)
+- **`training_examples`**: Number of few-shot examples to include (default: `0`)
+- **`test_samples`**: Number of test samples to evaluate (default: `5` for testing, use `-1` for full evaluation)
+
+5. **View results** in the `results/` directory.
 
 ## Contributing
 
