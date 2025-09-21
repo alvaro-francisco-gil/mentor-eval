@@ -218,7 +218,7 @@ class MentorEvalLeaderboard {
         return datasetMetrics;
     }
 
-    loadRunParameters(runId) {
+    getRunParameters(runId) {
         // Try to load from API data first
         if (this.runParameters[runId]) {
             return this.runParameters[runId].parameters || this.runParameters[runId];
