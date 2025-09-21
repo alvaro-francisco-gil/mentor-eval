@@ -63,7 +63,7 @@ def generate_javascript(result_files, run_files):
     with open(script_path, 'r', encoding='utf-8') as f:
         script_content = f.read()
     
-    # Replace only the result files list (simplified approach)
+    # Replace the result files list with discovered files
     script_content = re.sub(
         r'async getResultFiles\(\) \{\s*// Auto-generated list of result files\s*return \[\s*.*?\s*\];\s*\}',
         f'async getResultFiles() {{\n        // Auto-generated list of result files\n        return [\n            {result_files_js}\n        ];\n    }}',
