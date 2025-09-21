@@ -813,24 +813,37 @@ class PTASAG2018Processor(DatasetProcessor):
         self.data_dir = self.data_dir / 'ptasag2018'
     
     def load_dataset(self):
-        """Load the main CSV file and questions file"""
+        """Load the main CSV file, questions file, and reference answers"""
         main_file = self.data_dir / "student_answers_and_grades_v2.csv"
         questions_file = self.data_dir / "questions.csv"
+        reference_answers_file = self.data_dir / "reference_answers_extended.csv"
         
         if not main_file.exists():
             raise FileNotFoundError(f"Could not find main file: {main_file}")
         if not questions_file.exists():
             raise FileNotFoundError(f"Could not find questions file: {questions_file}")
+        if not reference_answers_file.exists():
+            raise FileNotFoundError(f"Could not find reference answers file: {reference_answers_file}")
         
         main_df = pd.read_csv(main_file)
         questions_df = pd.read_csv(questions_file)
+        reference_answers_df = pd.read_csv(reference_answers_file)
         
         logger.info(f"Loaded main dataset with {len(main_df)} rows")
         logger.info(f"Loaded questions dataset with {len(questions_df)} rows")
+        logger.info(f"Loaded reference answers dataset with {len(reference_answers_df)} rows")
         
         # Merge with questions to get question text
         self.data = main_df.merge(questions_df, on='question_id', how='left')
-        logger.info(f"Final dataset with {len(self.data)} rows after merging with questions")
+        
+        # Merge with reference answers to get desired answers
+        # For each question_id, we'll take the first reference answer as the desired answer
+        reference_answers_unique = reference_answers_df.groupby('question_id')['refans_text'].first().reset_index()
+        reference_answers_unique.columns = ['question_id', 'desired_answer']
+        
+        self.data = self.data.merge(reference_answers_unique, on='question_id', how='left')
+        
+        logger.info(f"Final dataset with {len(self.data)} rows after merging with questions and reference answers")
         return self.data
     
     def clean_data(self):
@@ -865,7 +878,7 @@ class PTASAG2018Processor(DatasetProcessor):
                 'isced_level': 2,
                 'language': 'portuguese',
                 'rubric': np.nan,
-                'desired_answer': np.nan,
+                'desired_answer': row.get('desired_answer', np.nan),
                 'metadata': np.nan
             }
             
