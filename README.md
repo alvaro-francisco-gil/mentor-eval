@@ -53,6 +53,9 @@ The benchmark contains **57,444 student responses** across **6 datasets** from *
 | **PT-ASAG 2018** | Portuguese | 2 | 9,862 | Portuguese short answer grading |
 | **AR-ASAG** | Arabic | 7 | 2,132 | Arabic short answer grading |
 
+
+> Use the [Hugging Face dataset](https://huggingface.co/datasets/alvaro-francisco-gil/mentor-eval) for data download, and the [dedicated repo](https://github.com/alvaro-francisco-gil/mentor-eval-dataset) for collaboration on data updates.
+
 ## Framework Integration
 
 MentorEval is built on top of **[LightEval](https://github.com/huggingface/lighteval)**, Hugging Face's evaluation framework. This ensures:
@@ -74,10 +77,7 @@ mentor-eval/
 │   ├── models.py            # Model configurations
 │   ├── run_manager.py       # Run management
 │   └── cli.py               # Command-line interface
-├── data/                    # Dataset files
-│   ├── raw/                 # Original datasets
-│   ├── processed/           # Processed datasets
-│   └── mentoreval.parquet   # Unified dataset
+├── data/                    # (hosted in mentor-eval-dataset repo / HF dataset)
 ├── runs/                    # Run configurations
 ├── results/                 # Evaluation results
 ├── tests/                   # Test suite
